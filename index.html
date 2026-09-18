@@ -1,0 +1,1398 @@
+<title>TripGO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF3FF;--surf:#fff;--surf2:#F4F8FF;--bdr:#E2E8F4;
+  --pri:#2563EB;--pri-d:#1D4ED8;--pri-l:#DBEAFE;--pri-ll:#EFF6FF;
+  --acc:#F97316;--acc-l:#FFF0E6;
+  --ok:#10B981;--ok-l:#ECFDF5;
+  --warn:#F59E0B;--warn-l:#FFFBEB;
+  --err:#EF4444;--err-l:#FEF2F2;
+  --tx:#0F172A;--tx2:#334155;--mu:#64748B;--mu2:#94A3B8;
+  --p1b:#FEF2F2;--p1c:#DC2626;
+  --p2b:#FFF7ED;--p2c:#EA580C;
+  --p3b:#FEFCE8;--p3c:#CA8A04;
+  --p4b:#F0FDF4;--p4c:#16A34A;
+  --nh:64px;--hh:54px;--r:12px;--r2:8px;--r3:20px;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --shm:0 4px 14px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.05);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0A1628;--surf:#132037;--surf2:#1A2C47;--bdr:#1E3055;
+  --pri:#3B82F6;--pri-d:#2563EB;--pri-l:#1E3A5F;--pri-ll:#0F2040;
+  --acc:#F97316;--acc-l:#3A1F0D;--ok:#10B981;--ok-l:#0D2E21;
+  --warn:#F59E0B;--warn-l:#2E2408;--err:#F87171;--err-l:#2E0F0F;
+  --tx:#F1F5F9;--tx2:#CBD5E1;--mu:#94A3B8;--mu2:#64748B;
+  --p1b:#2E0F0F;--p1c:#F87171;--p2b:#2E1A08;--p2c:#FB923C;
+  --p3b:#2E2408;--p3c:#FCD34D;--p4b:#0D2E21;--p4c:#34D399;
+  --sh:0 1px 3px rgba(0,0,0,.3);--shm:0 4px 14px rgba(0,0,0,.3);
+}}
+:root[data-theme=dark]{
+  --bg:#0A1628;--surf:#132037;--surf2:#1A2C47;--bdr:#1E3055;
+  --pri:#3B82F6;--pri-d:#2563EB;--pri-l:#1E3A5F;--pri-ll:#0F2040;
+  --acc:#F97316;--acc-l:#3A1F0D;--ok:#10B981;--ok-l:#0D2E21;
+  --warn:#F59E0B;--warn-l:#2E2408;--err:#F87171;--err-l:#2E0F0F;
+  --tx:#F1F5F9;--tx2:#CBD5E1;--mu:#94A3B8;--mu2:#64748B;
+  --p1b:#2E0F0F;--p1c:#F87171;--p2b:#2E1A08;--p2c:#FB923C;
+  --p3b:#2E2408;--p3c:#FCD34D;--p4b:#0D2E21;--p4c:#34D399;
+  --sh:0 1px 3px rgba(0,0,0,.3);--shm:0 4px 14px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.5}
+img{max-width:100%;display:block}
+button{cursor:pointer;border:none;background:none;font-family:inherit;color:inherit}
+input,textarea,select{font-family:inherit;font-size:inherit}
+a{color:inherit;text-decoration:none}
+#app{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto;position:relative}
+/* Header */
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:100;background:var(--surf);border-bottom:1px solid var(--bdr);padding:0 16px;height:var(--hh);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{font-family:'Poppins',sans-serif;font-weight:800;font-size:19px;color:var(--pri);display:flex;align-items:center;gap:5px}
+.lang-sel{padding:5px 8px;border-radius:var(--r2);border:1.5px solid var(--bdr);background:var(--surf2);color:var(--tx);font-size:12px;font-weight:600;outline:none;cursor:pointer}
+/* Main */
+.main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nh)+env(safe-area-inset-bottom,0px))}
+/* Nav */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:calc(var(--nh)+env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:var(--surf);border-top:1px solid var(--bdr);display:flex;align-items:flex-start;padding-top:6px;z-index:100}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px;color:var(--mu2);font-size:10px;font-weight:600;transition:color .15s}
+.nb.on{color:var(--pri)}
+.nb .ni{font-size:22px;line-height:1}
+/* Views */
+.vw{display:none}.vw.on{display:block}
+/* Cards */
+.card{background:var(--surf);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--bdr);overflow:hidden}
+/* Btn */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:var(--r2);font-weight:600;font-size:14px;cursor:pointer;border:none;transition:opacity .15s,transform .1s;font-family:inherit}
+.btn:active{transform:scale(.97);opacity:.85}
+.btn-p{background:var(--pri);color:#fff}
+.btn-o{background:transparent;border:1.5px solid var(--bdr);color:var(--tx)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-bl{width:100%}
+/* Badge */
+.bdg{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap}
+.p1{background:var(--p1b);color:var(--p1c)}
+.p2{background:var(--p2b);color:var(--p2c)}
+.p3{background:var(--p3b);color:var(--p3c)}
+.p4{background:var(--p4b);color:var(--p4c)}
+/* Section */
+.sec{padding:16px 16px 0}
+.stl{font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+/* Progress */
+.pgw{background:var(--bdr);border-radius:100px;height:6px;overflow:hidden}
+.pgb{height:100%;background:var(--pri);border-radius:100px;transition:width .4s ease}
+/* ===== HOME ===== */
+.hero{background:linear-gradient(135deg,#1D4ED8 0%,#7C3AED 100%);color:#fff;padding:22px 16px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40px;right:-30px;width:180px;height:180px;background:rgba(255,255,255,.06);border-radius:50%}
+.hero-date{font-size:11px;opacity:.7;margin-bottom:3px}
+.hero-title{font-family:'Poppins',sans-serif;font-size:22px;font-weight:800;line-height:1.2;margin-bottom:6px}
+.hero-sub{font-size:13px;opacity:.8}
+.trip-card{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:var(--r);padding:14px;margin-top:14px}
+.tc-lbl{font-size:10px;opacity:.65;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.tc-dest{font-family:'Poppins',sans-serif;font-size:18px;font-weight:700}
+.tc-dates{font-size:12px;opacity:.75;margin-top:2px}
+.tc-empty{background:rgba(255,255,255,.08);border:1.5px dashed rgba(255,255,255,.3);border-radius:var(--r);padding:14px;margin-top:14px;text-align:center;font-size:13px;opacity:.8;cursor:pointer}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px}
+.sc{background:var(--surf);border-radius:var(--r);padding:14px;border:1px solid var(--bdr);box-shadow:var(--sh)}
+.sv{font-family:'Poppins',sans-serif;font-size:24px;font-weight:800;color:var(--pri)}
+.sl{font-size:12px;color:var(--mu);margin-top:2px}
+.si{font-size:22px;margin-bottom:4px}
+.qa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 16px 16px}
+.qb{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 4px;background:var(--surf);border-radius:var(--r);border:1px solid var(--bdr);font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;transition:transform .1s;box-shadow:var(--sh)}
+.qb:active{transform:scale(.95)}
+.qi{font-size:24px}
+/* ===== CHECKLIST ===== */
+.clhdr{padding:12px 16px;background:var(--surf);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:10}
+.clprow{display:flex;align-items:center;gap:10px;margin-top:8px}
+.clpcnt{font-size:13px;font-weight:700;color:var(--pri);white-space:nowrap}
+.filter-row{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.fc{padding:5px 12px;border-radius:100px;font-size:12px;font-weight:600;border:1.5px solid var(--bdr);background:var(--surf);color:var(--mu);cursor:pointer;white-space:nowrap;transition:all .15s}
+.fc.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.cll{padding:0 16px 12px;display:flex;flex-direction:column;gap:8px}
+.ci{background:var(--surf);border-radius:var(--r);border:1px solid var(--bdr);box-shadow:var(--sh);overflow:hidden;transition:opacity .2s}
+.ci.done{opacity:.55}
+.ci.done .ci-t{text-decoration:line-through;color:var(--mu)}
+.ci-m{display:flex;align-items:flex-start;gap:10px;padding:13px}
+.chk{width:22px;height:22px;border-radius:50%;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .2s;margin-top:2px;background:var(--bg)}
+.chk.on{background:var(--ok);border-color:var(--ok)}
+.chk.on::after{content:'✓';color:#fff;font-size:12px;font-weight:700}
+.ci-ic{font-size:20px;flex-shrink:0;margin-top:1px}
+.ci-body{flex:1;min-width:0}
+.ci-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.ci-t{font-weight:600;font-size:14px;line-height:1.3}
+.ci-s{font-size:12px;color:var(--mu);margin-top:3px;line-height:1.4}
+.ci-links{border-top:1px solid var(--bdr);padding:9px 13px;display:flex;flex-wrap:wrap;gap:6px;background:var(--surf2)}
+.cl{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;background:var(--pri-l);color:var(--pri);font-size:11px;font-weight:700;border:1px solid rgba(37,99,235,.15);cursor:pointer}
+.cl:hover{background:var(--pri);color:#fff}
+.note-area{padding:0 13px 10px;font-size:12px;color:var(--mu);background:var(--surf2);line-height:1.5}
+/* ===== WALLET ===== */
+.wstack{padding:16px;display:flex;flex-direction:column;gap:12px}
+.wc{position:relative;border-radius:20px;padding:20px;min-height:136px;overflow:hidden;box-shadow:var(--shm);cursor:pointer;transition:transform .2s}
+.wc:active{transform:scale(.98)}
+.wc.passport{background:linear-gradient(135deg,#0F4C75,#1B6CA8)}
+.wc.flight{background:linear-gradient(135deg,#1a1a2e,#16213e)}
+.wc.hotel{background:linear-gradient(135deg,#6B2D6B,#A8508A)}
+.wc.car{background:linear-gradient(135deg,#1A3A1A,#2D6A2D)}
+.wc.insurance{background:linear-gradient(135deg,#3D1F00,#7A3F00)}
+.wc.visa{background:linear-gradient(135deg,#1A0030,#4A0080)}
+.wc.other{background:linear-gradient(135deg,#2A2A2A,#4A4A4A)}
+.wc-bg{position:absolute;top:-25px;right:-25px;width:130px;height:130px;background:rgba(255,255,255,.06);border-radius:50%}
+.wc-bg2{position:absolute;bottom:-30px;left:20px;width:80px;height:80px;background:rgba(255,255,255,.04);border-radius:50%}
+.wc-type{font-size:10px;color:rgba(255,255,255,.6);font-weight:700;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:5px;margin-bottom:6px}
+.wc-name{font-family:'Poppins',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:3px}
+.wc-sub{font-size:12px;color:rgba(255,255,255,.7)}
+.wc-exp{position:absolute;bottom:16px;right:16px;text-align:right}
+.wc-el{font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em}
+.wc-ev{font-size:13px;font-weight:700;color:rgba(255,255,255,.85);font-variant-numeric:tabular-nums}
+.wc-icon{position:absolute;bottom:14px;left:18px;font-size:28px;opacity:.35}
+.wadd{margin:0 16px 16px;padding:16px;border:2px dashed var(--bdr);border-radius:20px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--mu);font-size:14px;font-weight:600;cursor:pointer;background:var(--surf);transition:all .2s}
+.wadd:hover{border-color:var(--pri);color:var(--pri)}
+/* ===== DISCOVER ===== */
+.cpicker-wrap{padding:0 16px 8px;position:relative}
+.cpicker-btn{width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--surf);border:2px solid var(--bdr);border-radius:var(--r);cursor:pointer;transition:border-color .15s;text-align:left;font-family:inherit}
+.cpicker-btn:hover{border-color:var(--pri-d)}
+.cpicker-btn.open{border-color:var(--pri);box-shadow:0 0 0 3px var(--pri-l)}
+.cpicker-flag{font-size:26px;line-height:1;flex-shrink:0}
+.cpicker-name{flex:1;font-weight:600;font-size:15px;color:var(--tx)}
+.cpicker-placeholder{flex:1;font-weight:500;font-size:14px;color:var(--mu)}
+.cpicker-arrow{color:var(--mu);font-size:11px;transition:transform .2s;flex-shrink:0}
+.cpicker-btn.open .cpicker-arrow{transform:rotate(180deg)}
+.cpicker-list{display:none;position:absolute;top:calc(100% - 4px);left:16px;right:16px;background:var(--surf);border:1.5px solid var(--pri);border-radius:var(--r);box-shadow:var(--shm);z-index:50;overflow:hidden;max-height:300px;overflow-y:auto}
+.cpicker-list.open{display:block}
+.cpicker-item{display:flex;align-items:center;gap:12px;padding:11px 16px;cursor:pointer;transition:background .1s;border-bottom:1px solid var(--bdr)}
+.cpicker-item:last-child{border-bottom:none}
+.cpicker-item:hover{background:var(--surf2)}
+.cpicker-item.on{background:var(--pri-ll)}
+.cpicker-item.on .cpicker-iname{color:var(--pri);font-weight:700}
+.cpicker-iflag{font-size:22px;flex-shrink:0}
+.cpicker-iname{font-size:14px;font-weight:500;flex:1}
+.cpicker-check{color:var(--pri);font-size:14px;font-weight:700}
+.dtabs{display:flex;background:var(--surf2);border-radius:var(--r2);padding:3px;gap:2px;border:1px solid var(--bdr)}
+.dtab{flex:1;padding:7px 4px;border-radius:6px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;color:var(--mu);transition:all .15s;border:none;background:none;font-family:inherit}
+.dtab.on{background:var(--surf);color:var(--pri);box-shadow:var(--sh)}
+.dsec{display:none}.dsec.on{display:block}
+.ri{display:flex;gap:12px;padding:12px;background:var(--surf);border-radius:var(--r);border:1px solid var(--bdr);margin-bottom:8px}
+.ric{font-size:32px;flex-shrink:0}
+.riy{flex:1;min-width:0}
+.rin{font-weight:600;font-size:14px}
+.rid{font-size:12px;color:var(--mu);margin-top:2px;line-height:1.4}
+.ritags{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.rt{font-size:10px;padding:2px 7px;border-radius:100px;background:var(--pri-l);color:var(--pri);font-weight:700}
+.disc-detail{padding:0 16px 16px}
+/* ===== SETTINGS ===== */
+.slist{padding:16px;display:flex;flex-direction:column;gap:8px}
+.sit{display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--surf);border-radius:var(--r);border:1px solid var(--bdr);gap:12px}
+.sil{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.sic{font-size:20px;flex-shrink:0}
+.silbl{font-weight:600;font-size:14px}
+.sisub{font-size:12px;color:var(--mu);margin-top:1px}
+.langrow{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.lb{padding:5px 10px;border-radius:100px;font-size:12px;font-weight:700;border:2px solid var(--bdr);background:var(--surf);color:var(--tx);cursor:pointer;transition:all .15s}
+.lb.on{border-color:var(--pri);background:var(--pri);color:#fff}
+/* ===== MODALS ===== */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
+.ov.open{display:flex}
+.mo{background:var(--surf);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.mh{width:36px;height:4px;background:var(--bdr);border-radius:100px;margin:-8px auto 16px}
+.mt{font-family:'Poppins',sans-serif;font-size:18px;font-weight:700;margin-bottom:16px}
+.fg{margin-bottom:12px}
+.fl{display:block;font-size:13px;font-weight:600;color:var(--tx2);margin-bottom:5px}
+.fi,.fsl,.fta{width:100%;padding:10px 12px;border:1.5px solid var(--bdr);border-radius:var(--r2);background:var(--bg);color:var(--tx);font-size:14px;outline:none;transition:border-color .15s;font-family:inherit}
+.fi:focus,.fsl:focus,.fta:focus{border-color:var(--pri)}
+.fta{resize:vertical;min-height:70px}
+/* Toast */
+.toast{position:fixed;bottom:calc(var(--nh)+16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(20px);background:var(--tx);color:var(--surf);padding:10px 18px;border-radius:100px;font-size:13px;font-weight:600;opacity:0;transition:all .3s ease;pointer-events:none;white-space:nowrap;z-index:1100;max-width:calc(100% - 32px)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+/* File upload zone */
+.fuz{border:2px dashed var(--bdr);border-radius:var(--r);padding:20px;text-align:center;cursor:pointer;color:var(--mu);font-size:13px;transition:all .2s;background:var(--bg)}
+.fuz:hover{border-color:var(--pri);color:var(--pri)}
+.img-prev{width:100%;border-radius:var(--r);max-height:160px;object-fit:cover;border:1px solid var(--bdr)}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;gap:6px}
+.empty-ic{font-size:48px}
+.empty-t{font-size:15px;font-weight:700}
+.empty-s{font-size:13px;color:var(--mu)}
+.wc-del{position:absolute;top:12px;right:14px;background:rgba(255,255,255,.18);border:none;border-radius:100px;padding:3px 8px;font-size:11px;color:rgba(255,255,255,.8);cursor:pointer;font-weight:700;z-index:2}
+.wc-del:hover{background:rgba(239,68,68,.5);color:#fff}
+/* Rating stars */
+.stars{display:flex;gap:2px;margin-top:4px}
+.star{font-size:14px;cursor:pointer;opacity:.35;transition:opacity .15s}
+.star.on{opacity:1}
+/* OCR indicator */
+.ocr-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;background:var(--ok-l);color:var(--ok);border-radius:100px;font-size:11px;font-weight:700;margin-top:6px}
+</style>
+
+<div id="app">
+  <header class="hdr">
+    <div class="logo">✈️ TripGO</div>
+    <select class="lang-sel" id="lsel" onchange="setLang(this.value)">
+      <option value="ko">🇰🇷 한국어</option>
+      <option value="en">🇺🇸 EN</option>
+      <option value="ja">🇯🇵 日本語</option>
+      <option value="zh">🇨🇳 中文</option>
+    </select>
+  </header>
+
+  <main class="main" id="main">
+    <!-- HOME -->
+    <div class="vw on" id="vw-home">
+      <div class="hero">
+        <div class="hero-date" id="h-date"></div>
+        <div class="hero-title" id="h-title"></div>
+        <div class="hero-sub" id="h-sub"></div>
+        <div id="trip-display"></div>
+      </div>
+      <div class="stats" id="stats-row"></div>
+      <div class="sec"><div class="stl" id="qa-title"></div></div>
+      <div class="qa" id="qa-row"></div>
+      <div class="sec"><div class="stl" id="recent-title"></div>
+        <div id="recent-list" style="padding-bottom:16px"></div>
+      </div>
+    </div>
+
+    <!-- CHECKLIST -->
+    <div class="vw" id="vw-checklist">
+      <div class="clhdr">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:16px" id="cl-hdr-title"></div>
+          <button class="btn btn-sm btn-p" onclick="openAddCheckItem()" id="cl-add-btn"></button>
+        </div>
+        <div class="clprow">
+          <div class="pgw" style="flex:1"><div class="pgb" id="cl-pgb" style="width:0%"></div></div>
+          <div class="clpcnt" id="cl-cnt"></div>
+        </div>
+      </div>
+      <div class="filter-row" id="cl-filters"></div>
+      <div class="cll" id="cl-list"></div>
+    </div>
+
+    <!-- WALLET -->
+    <div class="vw" id="vw-wallet">
+      <div class="sec" style="padding-bottom:12px">
+        <div class="stl" id="wl-title"></div>
+        <div style="font-size:12px;color:var(--mu)" id="wl-sub"></div>
+      </div>
+      <div class="wstack" id="wl-stack"></div>
+      <div class="wadd" id="wadd-btn" onclick="openAddDoc()">
+        <span style="font-size:20px">＋</span><span id="wadd-lbl"></span>
+      </div>
+    </div>
+
+    <!-- DISCOVER -->
+    <div class="vw" id="vw-discover">
+      <div class="sec" style="padding-bottom:8px">
+        <div class="stl" id="dc-title"></div>
+        <div style="font-size:13px;color:var(--mu);margin-bottom:12px" id="dc-sub"></div>
+      </div>
+      <div class="cpicker-wrap" id="cpicker-wrap"></div>
+      <div class="disc-detail" id="disc-detail" style="display:none">
+        <div class="dtabs" id="dtabs"></div>
+        <div id="dsecs"></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="vw" id="vw-settings">
+      <div class="sec" style="padding-bottom:8px"><div class="stl" id="st-title"></div></div>
+      <div class="slist" id="slist"></div>
+    </div>
+  </main>
+
+  <nav class="nav" id="nav"></nav>
+</div>
+
+<!-- MODAL: Add/Edit Trip -->
+<div class="ov" id="mo-trip">
+  <div class="mo">
+    <div class="mh"></div>
+    <div class="mt" id="mo-trip-title"></div>
+    <div class="fg"><label class="fl" id="lbl-dest"></label><input class="fi" id="trip-dest" type="text"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label class="fl" id="lbl-from"></label><input class="fi" id="trip-from" type="date"></div>
+      <div class="fg"><label class="fl" id="lbl-to"></label><input class="fi" id="trip-to" type="date"></div>
+    </div>
+    <div class="fg"><label class="fl" id="lbl-notes"></label><textarea class="fta" id="trip-notes"></textarea></div>
+    <button class="btn btn-p btn-bl" onclick="saveTrip()" id="trip-save-btn"></button>
+  </div>
+</div>
+
+<!-- MODAL: Add Document (Wallet) -->
+<div class="ov" id="mo-doc">
+  <div class="mo">
+    <div class="mh"></div>
+    <div class="mt" id="mo-doc-title"></div>
+    <div class="fg"><label class="fl" id="lbl-doc-type"></label>
+      <select class="fsl" id="doc-type">
+        <option value="passport">🛂 Passport / 여권</option>
+        <option value="flight">✈️ Flight / 항공권</option>
+        <option value="hotel">🏨 Hotel / 호텔</option>
+        <option value="car">🚗 Car Rental / 렌트카</option>
+        <option value="insurance">🛡️ Insurance / 보험</option>
+        <option value="visa">📋 Visa / 비자</option>
+        <option value="other">📄 Other / 기타</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl" id="lbl-doc-name"></label><input class="fi" id="doc-name" type="text"></div>
+    <div class="fg"><label class="fl" id="lbl-doc-sub"></label><input class="fi" id="doc-sub" type="text"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label class="fl" id="lbl-doc-valid"></label><input class="fi" id="doc-valid" type="date"></div>
+      <div class="fg"><label class="fl" id="lbl-doc-link"></label><input class="fi" id="doc-link" type="url" placeholder="https://"></div>
+    </div>
+    <div class="fg">
+      <label class="fl" id="lbl-doc-img"></label>
+      <div class="fuz" id="fuz" onclick="triggerFile()">
+        <div style="font-size:28px;margin-bottom:4px">📎</div>
+        <div id="fuz-lbl"></div>
+        <div style="font-size:11px;color:var(--mu2);margin-top:3px" id="fuz-sub"></div>
+      </div>
+      <img id="doc-img-prev" class="img-prev" style="display:none;margin-top:8px">
+      <div id="ocr-res" style="display:none" class="ocr-badge">🔍 <span id="ocr-txt"></span></div>
+      <input type="file" id="file-inp" accept="image/*,.pdf" style="display:none" onchange="handleFile(event)">
+    </div>
+    <div class="fg"><label class="fl" id="lbl-doc-notes"></label><textarea class="fta" id="doc-notes" style="min-height:60px"></textarea></div>
+    <button class="btn btn-p btn-bl" onclick="saveDoc()" id="doc-save-btn"></button>
+  </div>
+</div>
+
+<!-- MODAL: Add Checklist Item -->
+<div class="ov" id="mo-cla">
+  <div class="mo">
+    <div class="mh"></div>
+    <div class="mt" id="mo-cla-title"></div>
+    <div class="fg"><label class="fl" id="lbl-cla-n"></label><input class="fi" id="cla-name" type="text"></div>
+    <div class="fg"><label class="fl" id="lbl-cla-s"></label><textarea class="fta" id="cla-sub" style="min-height:60px"></textarea></div>
+    <div class="fg"><label class="fl" id="lbl-cla-p"></label>
+      <select class="fsl" id="cla-pri">
+        <option value="1">🔴 P1 — 필수 / Critical</option>
+        <option value="2">🟠 P2 — 중요 / Important</option>
+        <option value="3">🟡 P3 — 보통 / Medium</option>
+        <option value="4">🟢 P4 — 선택 / Optional</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl" id="lbl-cla-ic"></label><input class="fi" id="cla-icon" type="text" placeholder="✈️" style="font-size:22px;width:80px"></div>
+    <div class="fg"><label class="fl" id="lbl-cla-lk"></label><input class="fi" id="cla-link1" type="url" placeholder="https://..."></div>
+    <button class="btn btn-p btn-bl" onclick="saveCheckItem()" id="cla-save-btn"></button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ============================================
+// TRANSLATIONS
+// ============================================
+const T={
+  ko:{
+    home:'홈',checklist:'체크리스트',wallet:'지갑',discover:'탐색',settings:'설정',
+    hi:'안녕하세요, DS님 👋',welcome_sub:'여행을 준비해볼까요?',
+    add_trip:'+ 다가오는 여행 추가',next_trip:'다가오는 여행',
+    trip_title:'여행 추가',save:'저장',
+    dest:'목적지',from:'출발일',to:'귀국일',notes:'메모',
+    checklist_items:'체크리스트',add_item:'+ 추가',
+    all:'전체',todo:'미완료',done_f:'완료',p_critical:'필수',p_important:'중요',
+    progress:'진행률',
+    wallet_title:'여행 지갑',wallet_sub:'중요 서류를 한 곳에 저장하세요. 빠른 접근: Alt+W',
+    add_doc:'+ 서류 추가',
+    doc_type:'서류 유형',doc_name:'제목',doc_sub:'세부 정보',doc_valid:'유효기간',
+    doc_link:'예약/링크',doc_img:'사진 / PDF 첨부',doc_notes:'메모',
+    photo_lbl:'사진 찍기 또는 파일 선택',photo_sub:'이미지·PDF 지원 | OCR 자동인식',
+    add_doc_title:'서류 추가',
+    discover_title:'여행지 탐색',discover_sub:'국가를 선택하면 추천 정보가 나타납니다',
+    attractions:'관광',food:'맛집',transport:'교통',tips:'팁',
+    settings_title:'설정',lang_setting:'언어 설정',theme:'테마',
+    dark:'다크',light:'라이트',system:'시스템',
+    delete:'삭제',add_cl:'항목 추가',
+    cl_name:'항목 이름',cl_sub:'설명',cl_priority:'우선순위',cl_icon:'아이콘',cl_link:'관련 링크',
+    completed_txt:'완료',remaining_txt:'남은 항목',
+    stats_check:'완료한 항목',stats_docs:'저장 서류',
+    recent:'빠른 접근',
+    ocr_done:'OCR 자동 인식 완료',
+    about:'앱 정보',about_sub:'TripGO v1.0 — 여행 준비의 모든 것',
+    booking_link:'예약/링크',
+    share:'공유하기',notification:'알림 설정',notification_sub:'여행 D-day 알림',
+    type_passport:'여권',type_flight:'항공권',type_hotel:'호텔',type_car:'렌트카',
+    type_insurance:'여행보험',type_visa:'비자',type_other:'기타',
+    // checklist items
+    c_passport:'여권 확인',c_passport_s:'여권 유효기간 6개월 이상 확인 필요',
+    c_visa:'비자 신청 확인',c_visa_s:'목적국 비자 필요 여부 확인 후 신청',
+    c_flight:'항공권 예매',c_flight_s:'출·귀국 항공편 예약',
+    c_hotel:'숙소 예약',c_hotel_s:'체크인/체크아웃 날짜 확인',
+    c_insurance:'여행자 보험',c_insurance_s:'의료·분실·지연 포함 종합보험 추천',
+    c_transport:'현지 교통 예약',c_transport_s:'렌트카, 기차, 공항버스 등',
+    c_currency:'환전 / 외화',c_currency_s:'목적국 현지 통화로 환전',
+    c_sim:'로밍 / SIM 카드',c_sim_s:'해외 데이터 사용 준비',
+    c_emergency:'긴급 연락처 저장',c_emergency_s:'대사관, 보험사 긴급번호 저장',
+    c_luggage:'짐 준비 완료',c_luggage_s:'항공사 수하물 규정 확인',
+  },
+  en:{
+    home:'Home',checklist:'Checklist',wallet:'Wallet',discover:'Discover',settings:'Settings',
+    hi:'Hello, DS 👋',welcome_sub:"Let's plan your trip!",
+    add_trip:'+ Add Upcoming Trip',next_trip:'Upcoming Trip',
+    trip_title:'Add Trip',save:'Save',
+    dest:'Destination',from:'Departure',to:'Return',notes:'Notes',
+    checklist_items:'Checklist',add_item:'+ Add',
+    all:'All',todo:'To Do',done_f:'Done',p_critical:'Critical',p_important:'Important',
+    progress:'Progress',
+    wallet_title:'Travel Wallet',wallet_sub:'Store all documents in one place. Quick access: Alt+W',
+    add_doc:'+ Add Document',
+    doc_type:'Document Type',doc_name:'Title',doc_sub:'Details',doc_valid:'Expiry Date',
+    doc_link:'Booking / Link',doc_img:'Photo / PDF Attachment',doc_notes:'Notes',
+    photo_lbl:'Take photo or select file',photo_sub:'Images & PDF supported | OCR auto-scan',
+    add_doc_title:'Add Document',
+    discover_title:'Explore Destinations',discover_sub:'Select a country to see recommendations',
+    attractions:'Sights',food:'Food',transport:'Transport',tips:'Tips',
+    settings_title:'Settings',lang_setting:'Language',theme:'Theme',
+    dark:'Dark',light:'Light',system:'System',
+    delete:'Delete',add_cl:'Add Item',
+    cl_name:'Item Name',cl_sub:'Description',cl_priority:'Priority',cl_icon:'Icon',cl_link:'Related Link',
+    completed_txt:'Completed',remaining_txt:'Remaining',
+    stats_check:'Tasks Done',stats_docs:'Documents',
+    recent:'Quick Access',
+    ocr_done:'OCR scan complete',
+    about:'About',about_sub:'TripGO v1.0 — Everything for trip prep',
+    booking_link:'Book / Link',
+    share:'Share',notification:'Notifications',notification_sub:'D-day travel reminders',
+    type_passport:'Passport',type_flight:'Flight',type_hotel:'Hotel',type_car:'Car Rental',
+    type_insurance:'Insurance',type_visa:'Visa',type_other:'Other',
+    c_passport:'Passport Check',c_passport_s:'Ensure passport is valid for 6+ months',
+    c_visa:'Visa Application',c_visa_s:'Check if visa is required and apply',
+    c_flight:'Book Flights',c_flight_s:'Reserve outbound and return flights',
+    c_hotel:'Book Hotel',c_hotel_s:'Confirm check-in/check-out dates',
+    c_insurance:'Travel Insurance',c_insurance_s:'Comprehensive cover: medical, loss, delay',
+    c_transport:'Local Transport',c_transport_s:'Car rental, trains, airport transfers',
+    c_currency:'Currency Exchange',c_currency_s:'Get local currency before departure',
+    c_sim:'Roaming / SIM Card',c_sim_s:'Set up international data access',
+    c_emergency:'Emergency Contacts',c_emergency_s:'Save embassy, insurer emergency numbers',
+    c_luggage:'Pack Luggage',c_luggage_s:'Check airline baggage allowance',
+  },
+  ja:{
+    home:'ホーム',checklist:'チェックリスト',wallet:'ウォレット',discover:'探索',settings:'設定',
+    hi:'こんにちは、DS さん 👋',welcome_sub:'旅行を計画しましょう！',
+    add_trip:'+ 旅行を追加',next_trip:'次の旅行',
+    trip_title:'旅行追加',save:'保存',
+    dest:'目的地',from:'出発日',to:'帰国日',notes:'メモ',
+    checklist_items:'チェックリスト',add_item:'+ 追加',
+    all:'全て',todo:'未完了',done_f:'完了',p_critical:'必須',p_important:'重要',
+    progress:'進捗',
+    wallet_title:'旅行ウォレット',wallet_sub:'重要書類を一箇所に。クイックアクセス: Alt+W',
+    add_doc:'+ 書類追加',
+    doc_type:'書類の種類',doc_name:'タイトル',doc_sub:'詳細',doc_valid:'有効期限',
+    doc_link:'予約/リンク',doc_img:'写真・PDF添付',doc_notes:'メモ',
+    photo_lbl:'写真または書類を選択',photo_sub:'画像・PDF対応 | OCR自動認識',
+    add_doc_title:'書類追加',
+    discover_title:'目的地を探す',discover_sub:'国を選んでおすすめ情報を確認',
+    attractions:'観光',food:'グルメ',transport:'交通',tips:'ヒント',
+    settings_title:'設定',lang_setting:'言語',theme:'テーマ',
+    dark:'ダーク',light:'ライト',system:'システム',
+    delete:'削除',add_cl:'項目追加',
+    cl_name:'項目名',cl_sub:'説明',cl_priority:'優先度',cl_icon:'アイコン',cl_link:'関連リンク',
+    completed_txt:'完了',remaining_txt:'残り',
+    stats_check:'完了タスク',stats_docs:'保存書類',
+    recent:'クイックアクセス',
+    ocr_done:'OCR完了',
+    about:'アプリ情報',about_sub:'TripGO v1.0 — 旅行準備の全て',
+    booking_link:'予約/リンク',
+    share:'共有',notification:'通知',notification_sub:'旅行D-dayリマインダー',
+    type_passport:'パスポート',type_flight:'航空券',type_hotel:'ホテル',type_car:'レンタカー',
+    type_insurance:'旅行保険',type_visa:'ビザ',type_other:'その他',
+    c_passport:'パスポート確認',c_passport_s:'有効期限6ヶ月以上を確認',
+    c_visa:'ビザ申請確認',c_visa_s:'渡航先のビザ必要か確認・申請',
+    c_flight:'航空券予約',c_flight_s:'往復航空便を予約',
+    c_hotel:'ホテル予約',c_hotel_s:'チェックイン・アウト日程確認',
+    c_insurance:'旅行保険加入',c_insurance_s:'医療・紛失・遅延を含む総合保険',
+    c_transport:'現地交通手配',c_transport_s:'レンタカー・電車・空港送迎など',
+    c_currency:'両替',c_currency_s:'現地通貨を出発前に準備',
+    c_sim:'ローミング/SIM',c_sim_s:'海外データ通信の準備',
+    c_emergency:'緊急連絡先保存',c_emergency_s:'大使館・保険会社の緊急番号',
+    c_luggage:'荷造り',c_luggage_s:'航空会社の手荷物規定を確認',
+  },
+  zh:{
+    home:'首页',checklist:'清单',wallet:'钱包',discover:'发现',settings:'设置',
+    hi:'您好，DS 👋',welcome_sub:'开始规划您的旅行吧！',
+    add_trip:'+ 添加即将到来的旅行',next_trip:'即将出行',
+    trip_title:'添加旅行',save:'保存',
+    dest:'目的地',from:'出发日期',to:'返回日期',notes:'备注',
+    checklist_items:'准备清单',add_item:'+ 添加',
+    all:'全部',todo:'待办',done_f:'完成',p_critical:'必须',p_important:'重要',
+    progress:'进度',
+    wallet_title:'旅行钱包',wallet_sub:'一处保存所有重要文件。快捷键: Alt+W',
+    add_doc:'+ 添加文件',
+    doc_type:'文件类型',doc_name:'标题',doc_sub:'详情',doc_valid:'有效期',
+    doc_link:'预订/链接',doc_img:'照片/PDF附件',doc_notes:'备注',
+    photo_lbl:'拍照或选择文件',photo_sub:'支持图片和PDF | OCR自动识别',
+    add_doc_title:'添加文件',
+    discover_title:'探索目的地',discover_sub:'选择国家查看推荐信息',
+    attractions:'景点',food:'美食',transport:'交通',tips:'提示',
+    settings_title:'设置',lang_setting:'语言设置',theme:'主题',
+    dark:'深色',light:'浅色',system:'系统',
+    delete:'删除',add_cl:'添加项目',
+    cl_name:'项目名称',cl_sub:'说明',cl_priority:'优先级',cl_icon:'图标',cl_link:'相关链接',
+    completed_txt:'已完成',remaining_txt:'剩余',
+    stats_check:'已完成任务',stats_docs:'保存文件',
+    recent:'快速访问',
+    ocr_done:'OCR识别完成',
+    about:'关于',about_sub:'TripGO v1.0 — 旅行准备一站式解决',
+    booking_link:'预订/链接',
+    share:'分享',notification:'通知',notification_sub:'旅行倒计时提醒',
+    type_passport:'护照',type_flight:'机票',type_hotel:'酒店',type_car:'租车',
+    type_insurance:'旅行保险',type_visa:'签证',type_other:'其他',
+    c_passport:'护照检查',c_passport_s:'确认护照有效期6个月以上',
+    c_visa:'签证申请确认',c_visa_s:'确认目的地是否需要签证并申请',
+    c_flight:'预订机票',c_flight_s:'预订往返航班',
+    c_hotel:'预订酒店',c_hotel_s:'确认入住/退房日期',
+    c_insurance:'旅行保险',c_insurance_s:'综合保险含医疗、失物、延误',
+    c_transport:'当地交通',c_transport_s:'租车、火车、机场接送等',
+    c_currency:'兑换外币',c_currency_s:'出发前准备目的地货币',
+    c_sim:'漫游/SIM卡',c_sim_s:'准备海外数据流量',
+    c_emergency:'紧急联系人',c_emergency_s:'保存大使馆和保险公司紧急电话',
+    c_luggage:'整理行李',c_luggage_s:'确认航空公司行李规定',
+  }
+};
+
+// ============================================
+// CHECKLIST DEFAULT DATA
+// ============================================
+const CL_DEFAULT=[
+  {id:'passport',icon:'🛂',p:1,tk:'c_passport',sk:'c_passport_s',links:[
+    {l:'한국 여권 신청',u:'https://www.passport.go.kr'},
+    {l:'영사민원24',u:'https://consul.mofa.go.kr'},
+    {l:'UKVI Passport',u:'https://www.gov.uk/apply-renew-passport'}
+  ]},
+  {id:'visa',icon:'📋',p:1,tk:'c_visa',sk:'c_visa_s',links:[
+    {l:'외교부 여행정보',u:'https://www.0404.go.kr'},
+    {l:'IATA Travel Centre',u:'https://www.iatatravelcentre.com'},
+    {l:'VisaHQ',u:'https://www.visahq.com'}
+  ]},
+  {id:'flight',icon:'✈️',p:2,tk:'c_flight',sk:'c_flight_s',links:[
+    {l:'Google Flights',u:'https://flights.google.com'},
+    {l:'Skyscanner',u:'https://www.skyscanner.net'},
+    {l:'Kayak',u:'https://www.kayak.co.kr'}
+  ]},
+  {id:'hotel',icon:'🏨',p:2,tk:'c_hotel',sk:'c_hotel_s',links:[
+    {l:'Booking.com',u:'https://www.booking.com'},
+    {l:'Airbnb',u:'https://www.airbnb.co.uk'},
+    {l:'Hotels.com',u:'https://www.hotels.com'}
+  ]},
+  {id:'insurance',icon:'🛡️',p:3,tk:'c_insurance',sk:'c_insurance_s',links:[
+    {l:'World Nomads',u:'https://www.worldnomads.com'},
+    {l:'삼성화재',u:'https://www.samsungfire.com'},
+    {l:'AXA Travel',u:'https://www.axa-travel-insurance.com'}
+  ]},
+  {id:'transport',icon:'🚌',p:3,tk:'c_transport',sk:'c_transport_s',links:[
+    {l:'Rentalcars',u:'https://www.rentalcars.com'},
+    {l:'Rome2Rio',u:'https://www.rome2rio.com'},
+    {l:'Trainline',u:'https://www.thetrainline.com'}
+  ]},
+  {id:'currency',icon:'💱',p:3,tk:'c_currency',sk:'c_currency_s',links:[
+    {l:'XE 환율',u:'https://www.xe.com'},
+    {l:'Wise',u:'https://wise.com'},
+    {l:'Revolut',u:'https://www.revolut.com'}
+  ]},
+  {id:'sim',icon:'📶',p:4,tk:'c_sim',sk:'c_sim_s',links:[
+    {l:'Airalo eSIM',u:'https://www.airalo.com'},
+    {l:'KT 로밍',u:'https://roaming.kt.com'}
+  ]},
+  {id:'emergency',icon:'🆘',p:4,tk:'c_emergency',sk:'c_emergency_s',links:[
+    {l:'영사콜센터(+82-2-3210-0404)',u:'tel:+82232100404'},
+    {l:'UK Emergency (+44-20-7008-1500)',u:'tel:+442070081500'}
+  ]},
+  {id:'luggage',icon:'🧳',p:4,tk:'c_luggage',sk:'c_luggage_s',links:[
+    {l:'Korean Air 수하물',u:'https://www.koreanair.com/kr/ko/booking/baggage'},
+    {l:'Heathrow Baggage',u:'https://www.heathrow.com/at-the-airport/baggage'}
+  ]}
+];
+
+// ============================================
+// DISCOVER DATA
+// ============================================
+const COUNTRIES=[
+  {c:'JP',f:'🇯🇵',n:{ko:'일본',en:'Japan',ja:'日本',zh:'日本'}},
+  {c:'KR',f:'🇰🇷',n:{ko:'한국',en:'Korea',ja:'韓国',zh:'韩国'}},
+  {c:'FR',f:'🇫🇷',n:{ko:'프랑스',en:'France',ja:'フランス',zh:'法国'}},
+  {c:'IT',f:'🇮🇹',n:{ko:'이탈리아',en:'Italy',ja:'イタリア',zh:'意大利'}},
+  {c:'TH',f:'🇹🇭',n:{ko:'태국',en:'Thailand',ja:'タイ',zh:'泰国'}},
+  {c:'ES',f:'🇪🇸',n:{ko:'스페인',en:'Spain',ja:'スペイン',zh:'西班牙'}},
+  {c:'US',f:'🇺🇸',n:{ko:'미국',en:'USA',ja:'アメリカ',zh:'美国'}},
+  {c:'GB',f:'🇬🇧',n:{ko:'영국',en:'UK',ja:'イギリス',zh:'英国'}},
+  {c:'AU',f:'🇦🇺',n:{ko:'호주',en:'Australia',ja:'オーストラリア',zh:'澳大利亚'}},
+  {c:'SG',f:'🇸🇬',n:{ko:'싱가포르',en:'Singapore',ja:'シンガポール',zh:'新加坡'}},
+  {c:'TW',f:'🇹🇼',n:{ko:'대만',en:'Taiwan',ja:'台湾',zh:'台湾'}},
+  {c:'VN',f:'🇻🇳',n:{ko:'베트남',en:'Vietnam',ja:'ベトナム',zh:'越南'}},
+];
+const CD={
+  JP:{
+    a:[{ic:'⛩️',n:'Fushimi Inari Taisha',d:{ko:'교토의 상징 10,000개 도리이 터널',en:'Iconic 10,000 torii gate tunnel in Kyoto',ja:'京都の象徴、1万本の鳥居トンネル',zh:'京都标志性的1万座鸟居隧道'},tags:{ko:['무료','인스타명소'],en:['Free','Instagrammable'],ja:['無料','映えスポット'],zh:['免费','打卡地']}},
+       {ic:'🗻',n:'Mt. Fuji',d:{ko:'일본의 상징, 5합목까지 버스로 이동 가능',en:'Symbol of Japan, bus to 5th station',ja:'日本の象徴、5合目までバスで移動可能',zh:'日本象征，巴士可抵5合目'},tags:{ko:['자연','세계유산'],en:['Nature','World Heritage'],ja:['自然','世界遺産'],zh:['自然','世界遗产']}},
+       {ic:'🏯',n:'Osaka Castle',d:{ko:'오사카 역사의 중심, 성 내부 박물관 운영',en:'Heart of Osaka history with castle museum',ja:'大阪の歴史の中心、城内博物館あり',zh:'大阪历史中心，城内设有博物馆'},tags:{ko:['역사','박물관'],en:['History','Museum'],ja:['歴史','博物館'],zh:['历史','博物馆']}},
+       {ic:'🦌',n:'Nara Deer Park',d:{ko:'사슴과 함께 산책 — 나라 공원',en:'Walk with free-roaming deer in Nara',ja:'奈良公園で鹿と散歩',zh:'在奈良公园与鹿同行'},tags:{ko:['자연','무료'],en:['Nature','Free'],ja:['自然','無料'],zh:['自然','免费']}},
+       {ic:'🏙️',n:'Shibuya Crossing',d:{ko:'세계 최대 스크램블 교차로, 포토존',en:'World\'s busiest scramble crossing photo spot',ja:'世界最大のスクランブル交差点',zh:'全球最繁忙的十字路口打卡点'},tags:{ko:['도쿄','포토'],en:['Tokyo','Photo'],ja:['東京','写真'],zh:['东京','拍照']}},
+       {ic:'🌸',n:'Arashiyama Bamboo Grove',d:{ko:'교토 아라시야마 대나무 숲 산책로',en:'Serene bamboo grove walk in Arashiyama, Kyoto',ja:'京都嵐山の竹林の小道',zh:'京都岚山竹林小径'},tags:{ko:['교토','자연'],en:['Kyoto','Nature'],ja:['京都','自然'],zh:['京都','自然']}}],
+    f:[{ic:'🍜',n:'Ichiran Ramen',d:{ko:'후쿠오카 발상, 1인 부스 라멘의 원조',en:'Fukuoka-born solo-booth ramen, the original',ja:'福岡発祥、一人用ブースラーメンの元祖',zh:'福冈发源，单人包厢拉面始祖'},tags:{ko:['라멘','추천'],en:['Ramen','Must-try'],ja:['ラーメン','おすすめ'],zh:['拉面','推荐']}},
+       {ic:'🍣',n:'Tsukiji Outer Market Sushi',d:{ko:'도쿄 최고 신선 스시·해산물 거리',en:'Tokyo\'s freshest sushi & seafood street',ja:'東京最高の新鮮な寿司・海鮮通り',zh:'东京最新鲜的寿司海鲜街'},tags:{ko:['스시','시장'],en:['Sushi','Market'],ja:['寿司','市場'],zh:['寿司','市场']}},
+       {ic:'🐙',n:'Takoyaki (Dotonbori)',d:{ko:'오사카 도톤보리 원조 타코야키',en:'Original takoyaki at Osaka\'s Dotonbori',ja:'大阪道頓堀の元祖たこ焼き',zh:'大阪道顿堀元祖章鱼烧'},tags:{ko:['길거리음식','오사카'],en:['Street food','Osaka'],ja:['B級グルメ','大阪'],zh:['街头小吃','大阪']}},
+       {ic:'🍡',n:'Matcha Sweets — Kyoto',d:{ko:'교토 우지 말차 아이스크림·와라비모치',en:'Uji matcha ice cream & warabimochi in Kyoto',ja:'京都宇治の抹茶アイス・わらび餅',zh:'京都宇治抹茶冰淇淋与蕨饼'},tags:{ko:['디저트','교토'],en:['Dessert','Kyoto'],ja:['スイーツ','京都'],zh:['甜点','京都']}},
+       {ic:'🍱',n:'Kaiseki Ryori',d:{ko:'교토 전통 다코스 코스 요리, 계절 식재료',en:'Kyoto multi-course traditional haute cuisine',ja:'京都の懐石料理、旬の食材を使用',zh:'京都传统怀石料理，使用当季食材'},tags:{ko:['고급','전통'],en:['Fine dining','Traditional'],ja:['高級','伝統'],zh:['高档','传统']}},
+       {ic:'🍢',n:'Yakitori Alley (Yurakucho)',d:{ko:'도쿄 유라쿠초 야키토리 골목, 꼬치구이',en:'Tokyo\'s Yurakucho yakitori alley, grilled skewers',ja:'東京有楽町のやきとり横丁',zh:'东京有乐町烤鸡串小巷'},tags:{ko:['야키토리','이자카야'],en:['Yakitori','Izakaya'],ja:['やきとり','居酒屋'],zh:['烤鸡串','居酒屋']}},
+       {ic:'🥚',n:'Onsen Tamago',d:{ko:'온천 달걀, 온천지역 특산 반숙란',en:'Hot spring soft-boiled eggs, onsen specialty',ja:'温泉たまご、温泉地ならではのゆで卵',zh:'温泉鸡蛋，温泉地特产溏心蛋'},tags:{ko:['온천','간식'],en:['Onsen','Snack'],ja:['温泉','おやつ'],zh:['温泉','小吃']}},
+       {ic:'🍛',n:'Tonkatsu',d:{ko:'두툼한 돈까스 정식, 마이센·카츠동 추천',en:'Thick crispy pork cutlet set, try Maisen',ja:'厚切りとんかつ定食、まい泉がおすすめ',zh:'厚切猪排定食，推荐まい泉'},tags:{ko:['정식','필수'],en:['Set meal','Must-try'],ja:['定食','おすすめ'],zh:['定食','推荐']}}],
+    t:[{ic:'🚄',n:'JR Pass',d:{ko:'신칸센 포함 전국 JR선 무제한 탑승',en:'Unlimited JR trains incl. Shinkansen nationwide',ja:'新幹線を含む全国JR線乗り放題',zh:'包含新干线的全国JR线无限乘坐'},tags:{ko:['필수','14일권 추천'],en:['Essential','14-day recommended'],ja:['必須','14日券推奨'],zh:['必备','推荐14天券']},u:'https://japanrailpass.net'},
+       {ic:'💳',n:'Suica / ICOCA Card',d:{ko:'IC카드로 전철·버스·편의점 결제',en:'IC card for trains, buses & convenience stores',ja:'電車・バス・コンビニ払いに使えるICカード',zh:'可用于电车、公交和便利店支付的IC卡'},tags:{ko:['편리'],en:['Convenient'],ja:['便利'],zh:['方便']}},
+       {ic:'🚇',n:'Tokyo Metro 24h Pass',d:{ko:'도쿄 지하철 24/48/72시간 패스',en:'Tokyo Metro 24/48/72-hour unlimited pass',ja:'東京メトロ24/48/72時間パス',zh:'东京地铁24/48/72小时通票'},tags:{ko:['도쿄'],en:['Tokyo'],ja:['東京'],zh:['东京']}}],
+    tips:[{ko:'음식점 예약 앱: Tabelog, Gurunavi',en:'Restaurant booking apps: Tabelog, Gurunavi',ja:'レストラン予約アプリ: Tabelog・Gurunavi',zh:'餐厅预订App: Tabelog、Gurunavi'},
+          {ko:'면세 쇼핑: 5,500엔 이상 구매 시 적용',en:'Tax-Free shopping applies on purchases ¥5,500+',ja:'免税ショッピング: 5,500円以上で適用',zh:'免税购物: 消费满5500日元可享受'},
+          {ko:'교통: PASMO 카드 하나로 대부분 이동 가능',en:'Transport: one PASMO card covers most transit',ja:'交通: PASMOカード1枚でほとんど移動可能',zh:'交通: 一张PASMO卡即可覆盖大部分出行'}]
+  },
+  KR:{
+    a:[{ic:'🏯',n:'경복궁 Gyeongbokgung',d:{ko:'조선왕조 정궁, 수문장 교대식 관람 가능',en:'Joseon royal palace with guard-changing ceremony',ja:'朝鮮王朝の正宮、守門将の交代式あり',zh:'朝鲜王朝正宫，可观看守门将交接仪式'},tags:{ko:['무료(월)','역사'],en:['Free(Mon)','History'],ja:['無料(月)','歴史'],zh:['免费(周一)','历史']}},
+       {ic:'🗼',n:'N Seoul Tower',d:{ko:'남산서울타워 — 서울 전망 최고, 케이블카',en:'Best city panorama, take the cable car up',ja:'ソウルの絶景スポット、ケーブルカーで登る',zh:'首尔最佳全景，乘坐缆车上山'},tags:{ko:['전망','야경'],en:['View','Night view'],ja:['展望','夜景'],zh:['观景','夜景']}},
+       {ic:'🌊',n:'Jeju Island',d:{ko:'화산섬 자연 경관, 해녀 문화, 감귤 농장',en:'Volcanic island with haenyeo divers & tangerine farms',ja:'火山島の自然景観、海女文化、みかん農園',zh:'火山岛自然景观，海女文化与橘子农场'},tags:{ko:['자연','섬'],en:['Nature','Island'],ja:['自然','島'],zh:['自然','岛屿']}},
+       {ic:'🛍️',n:'Myeongdong & Hongdae',d:{ko:'쇼핑·K뷰티·길거리음식 메카',en:'K-beauty, shopping & street food mecca',ja:'K-ビューティー・ショッピング・屋台グルメの聖地',zh:'韩妆、购物和街头美食圣地'},tags:{ko:['쇼핑','뷰티'],en:['Shopping','K-beauty'],ja:['ショッピング','K-ビューティー'],zh:['购物','韩妆']}},
+       {ic:'🏙️',n:'Bukchon Hanok Village',d:{ko:'600년 된 한옥 마을, 이른 아침 방문 추천',en:'600-year-old hanok village, visit early morning',ja:'600年の歴史ある韓屋村、早朝訪問がおすすめ',zh:'600年历史韩屋村，推荐清晨参观'},tags:{ko:['한옥','사진'],en:['Hanok','Photo'],ja:['韓屋','写真'],zh:['韩屋','拍照']}},
+       {ic:'🌸',n:'Gyeongju Historic Area',d:{ko:'신라왕조 유적, 자전거로 투어 가능',en:'Silla dynasty ruins, great for cycling tours',ja:'新羅王朝の遺跡、自転車ツアーが人気',zh:'新罗王朝遗址，骑行游览最佳'},tags:{ko:['세계유산','경주'],en:['World Heritage','Gyeongju'],ja:['世界遺産','慶州'],zh:['世界遗产','庆州']}}],
+    f:[{ic:'🥩',n:'Korean BBQ (Samgyeopsal)',d:{ko:'삼겹살·갈비·직화구이 — 한국 밤문화의 핵심',en:'Pork belly & ribs on charcoal grill, Korea\'s nightlife staple',ja:'サムギョプサル・カルビ炭火焼き、韓国の夜の定番',zh:'五花肉和排骨炭烤，韩国夜生活核心'},tags:{ko:['필수','인싸'],en:['Must-try','Social'],ja:['必須','定番'],zh:['必试','聚餐']}},
+       {ic:'🍚',n:'Bibimbap',d:{ko:'전주비빔밥 원조 — 돌솥비빔밥 추천',en:'Jeonju-style bibimbap in hot stone bowl',ja:'全州ビビンバの本場の味、石鍋がおすすめ',zh:'全州拌饭发源地，推荐石锅版'},tags:{ko:['전통','전주'],en:['Traditional','Jeonju'],ja:['伝統','全州'],zh:['传统','全州']}},
+       {ic:'🍗',n:'Fried Chicken & Beer (Chimaek)',d:{ko:'한국식 양념치킨 + 맥주 조합 치맥',en:'Korean fried chicken + beer, the iconic combo',ja:'ヤンニョムチキン+ビール、定番の組み合わせ',zh:'韩式炸鸡+啤酒，标志性组合'},tags:{ko:['야식','맥주'],en:['Night snack','Beer'],ja:['夜食','ビール'],zh:['夜宵','啤酒']}},
+       {ic:'🥟',n:'Mandu & Sundaeguk',d:{ko:'광장시장 원조 빈대떡·순대·만두',en:'Gwangjang Market\'s mung bean pancakes & blood sausage',ja:'広蔵市場のパジョン・スンデ・マンドゥ',zh:'广藏市场绿豆煎饼、血肠与饺子'},tags:{ko:['시장음식'],en:['Market food'],ja:['市場グルメ'],zh:['市场小吃']}},
+       {ic:'🌶️',n:'Tteokbokki',d:{ko:'매운 쌀떡 — 신당동 즉석 떡볶이 원조',en:'Spicy rice cake, try Sindang-dong original',ja:'辛いトッポッキ、新堂洞の元祖が有名',zh:'辣炒年糕，新堂洞元祖店最知名'},tags:{ko:['매운맛','길거리'],en:['Spicy','Street food'],ja:['辛い','屋台'],zh:['辣','街头小吃']}},
+       {ic:'🥞',n:'Haemul Pajeon',d:{ko:'해물파전 — 비 오는 날 막걸리와 함께',en:'Seafood scallion pancake, best with makgeolli',ja:'海鮮チヂミ、マッコリと一緒に',zh:'海鲜葱煎饼，搭配马格利酒最佳'},tags:{ko:['전통','술안주'],en:['Traditional','Bar snack'],ja:['伝統','おつまみ'],zh:['传统','下酒菜']}},
+       {ic:'🧊',n:'Bingsu',d:{ko:'팥빙수·망고빙수 — 여름 한국 필수 디저트',en:'Shaved ice dessert with red bean or mango topping',ja:'かき氷デザート、小豆やマンゴートッピング',zh:'刨冰甜点，配红豆或芒果，夏季必备'},tags:{ko:['디저트','여름'],en:['Dessert','Summer'],ja:['スイーツ','夏'],zh:['甜点','夏季']}},
+       {ic:'🍲',n:'Doenjang Jjigae',d:{ko:'된장찌개 — 한국식 된장 두부 뚝배기 찌개',en:'Korean soybean paste stew with tofu in clay pot',ja:'テンジャンチゲ、豆腐入り大豆みそ鍋',zh:'大酱汤，豆腐大豆酱砂锅炖'},tags:{ko:['전통','집밥'],en:['Traditional','Homestyle'],ja:['伝統','家庭料理'],zh:['传统','家常菜']}}],
+    t:[{ic:'💳',n:'T-money Card',d:{ko:'지하철·버스·택시 통합 교통카드',en:'Unified transit card for metro, bus & taxi',ja:'地下鉄・バス・タクシー共通交通カード',zh:'地铁、公交、出租车通用交通卡'},tags:{ko:['필수'],en:['Essential'],ja:['必須'],zh:['必备']}},
+       {ic:'🚄',n:'KTX High-Speed Rail',d:{ko:'서울-부산 2시간 30분 고속철도',en:'Seoul to Busan in 2.5 hours',ja:'ソウル-釜山間2時間30分の高速鉄道',zh:'首尔至釜山仅需2小时30分'},tags:{ko:['장거리'],en:['Long distance'],ja:['長距離'],zh:['长途']},u:'https://www.letskorail.com'},
+       {ic:'📱',n:'Kakao Taxi',d:{ko:'카카오택시 앱으로 호출, 영어 지원',en:'App-based taxi hailing with English support',ja:'カカオタクシーアプリ、英語対応',zh:'Kakao出租车App叫车，支持英语'},tags:{ko:['편리'],en:['Convenient'],ja:['便利'],zh:['方便']}}],
+    tips:[{ko:'네이버맵 필수 (구글맵보다 정확)',en:'Use Naver Maps — more accurate than Google here',ja:'ネイバーマップ必須（グーグルより正確）',zh:'务必使用Naver Maps，比谷歌地图更准确'},
+          {ko:'K-ETA: 미국·EU 시민 전자 여행허가 필요',en:'K-ETA required for US/EU citizens before arrival',ja:'米国・EU市民はK-ETA(電子旅行許可)が必要',zh:'美国/欧盟公民需提前申请K-ETA'},
+          {ko:'편의점 GS25/CU — 24시간, 계좌이체 가능',en:'GS25/CU convenience stores open 24h, accept transfers',ja:'GS25/CU コンビニは24時間、振込可能',zh:'GS25/CU便利店24小时营业，可转账'}]
+  },
+  FR:{
+    a:[{ic:'🗼',n:'Eiffel Tower',d:{ko:'철의 귀부인, 야간 조명쇼 매 정각 운영',en:'Iron Lady with hourly light show at night',ja:'鉄の貴婦人、夜間は毎時ライトアップショー',zh:'铁娘子，夜间整点灯光秀'},tags:{ko:['상징','야경'],en:['Icon','Night view'],ja:['シンボル','夜景'],zh:['地标','夜景']}},
+       {ic:'🖼️',n:'Le Louvre',d:{ko:'모나리자 보유 세계 최대 미술관',en:'World\'s largest museum, home of the Mona Lisa',ja:'モナリザを所蔵する世界最大の美術館',zh:'世界最大博物馆，收藏蒙娜丽莎'},tags:{ko:['세계유산','미술'],en:['World Heritage','Art'],ja:['世界遺産','美術'],zh:['世界遗产','艺术']}},
+       {ic:'🏰',n:'Palace of Versailles',d:{ko:'루이 14세 바로크 궁전, 정원 산책 필수',en:'Louis XIV baroque palace with magnificent gardens',ja:'ルイ14世バロック宮殿、庭園散策は必須',zh:'路易十四巴洛克宫殿，花园漫步必不可少'},tags:{ko:['세계유산','왕궁'],en:['World Heritage','Palace'],ja:['世界遺産','宮殿'],zh:['世界遗产','宫殿']}},
+       {ic:'🏖️',n:"Côte d'Azur",d:{ko:'니스·칸 지중해 해안, 유럽 최고 리조트',en:'Nice & Cannes on the Mediterranean, Europe\'s finest',ja:'ニース・カンヌの地中海沿岸、欧州最高リゾート',zh:'尼斯与戛纳地中海海岸，欧洲顶级度假地'},tags:{ko:['해변','고급'],en:['Beach','Luxury'],ja:['ビーチ','高級'],zh:['海滩','高档']}},
+       {ic:'🏔️',n:'Mont Saint-Michel',d:{ko:'조석에 따라 섬이 되는 중세 수도원',en:'Medieval abbey that becomes an island at high tide',ja:'潮の干満で島になる中世の修道院',zh:'潮涨时变成小岛的中世纪修道院'},tags:{ko:['세계유산','신비'],en:['World Heritage','Unique'],ja:['世界遺産','神秘'],zh:['世界遗产','神秘']}}],
+    f:[{ic:'🥐',n:'Croissant & Café au Lait',d:{ko:'파리 골목 부랑제리의 갓 구운 크루아상',en:'Freshly baked croissant from a Paris boulangerie',ja:'パリの路地のブーランジェリーで焼きたてクロワッサン',zh:'巴黎街头面包房现烤可颂'},tags:{ko:['아침','필수'],en:['Breakfast','Must-try'],ja:['朝食','必食'],zh:['早餐','必试']}},
+       {ic:'🥩',n:'Steak Frites',d:{ko:'파리 비스트로 스타일 스테이크+감자튀김',en:'Classic Parisian bistro steak with crispy fries',ja:'パリのビストロスタイルのステーキ+フライドポテト',zh:'巴黎小馆风格牛排配薯条'},tags:{ko:['점심','비스트로'],en:['Lunch','Bistro'],ja:['ランチ','ビストロ'],zh:['午餐','小馆']}},
+       {ic:'🍷',n:'Bordeaux Wine Tasting',d:{ko:'생테밀리옹·포이약 와이너리 투어 권장',en:'Wine tour through Saint-Émilion & Pauillac',ja:'サンテミリオン・ポイヤックのワイナリーツアー',zh:'圣埃米利永与波亚克酒庄巡游'},tags:{ko:['와인','투어'],en:['Wine','Tour'],ja:['ワイン','ツアー'],zh:['红酒','游览']}},
+       {ic:'🧁',n:'Ladurée Macarons',d:{ko:'파리 오페라 하우스 근처 본점 마카롱',en:'Flagship macarons near Paris Opera House',ja:'パリ・オペラ座近くの本店マカロン',zh:'巴黎歌剧院附近旗舰店马卡龙'},tags:{ko:['디저트','선물'],en:['Dessert','Gift'],ja:['スイーツ','お土産'],zh:['甜点','伴手礼']}},
+       {ic:'🐟',n:'Bouillabaisse',d:{ko:'마르세유 전통 해산물 스튜, 본점 르 미라마르',en:'Marseille\'s traditional seafood stew at Le Miramar',ja:'マルセイユ伝統の魚介シチュー、ル・ミラマールが本場',zh:'马赛传统海鲜炖汤，Le Miramar为正宗'},tags:{ko:['마르세유','해산물'],en:['Marseille','Seafood'],ja:['マルセイユ','シーフード'],zh:['马赛','海鲜']}},
+       {ic:'🥞',n:'Crêpes Bretonnes',d:{ko:'브르타뉴 메밀 갈레트, 버터+시드르 조합',en:'Buckwheat galettes from Brittany with butter & cider',ja:'ブルターニュのそば粉ガレット、バター+シードル',zh:'布列塔尼荞麦可丽饼，配黄油和苹果酒'},tags:{ko:['브르타뉴','전통'],en:['Brittany','Traditional'],ja:['ブルターニュ','伝統'],zh:['布列塔尼','传统']}},
+       {ic:'🧀',n:'French Cheese Plate',d:{ko:'카망베르·브리·로크포르 치즈 플레이트',en:'Camembert, Brie & Roquefort cheese selection',ja:'カマンベール・ブリー・ロックフォールのチーズ盛り合わせ',zh:'卡门贝尔、布里和洛克福奶酪拼盘'},tags:{ko:['치즈','와인안주'],en:['Cheese','Wine pairing'],ja:['チーズ','ワインのお供'],zh:['奶酪','佐酒']}}],
+    t:[{ic:'🚄',n:'TGV High-Speed Train',d:{ko:'파리-리옹 2시간, 파리-마르세유 3시간',en:'Paris-Lyon 2h, Paris-Marseille 3h',ja:'パリ-リヨン2時間、パリ-マルセイユ3時間',zh:'巴黎-里昂2小时，巴黎-马赛3小时'},tags:{ko:['장거리'],en:['Long distance'],ja:['長距離'],zh:['长途']},u:'https://www.sncf-connect.com'},
+       {ic:'💳',n:'Navigo Carte',d:{ko:'파리 지하철·버스·RER 무제한 이용',en:'Unlimited Paris metro, bus & RER',ja:'パリの地下鉄・バス・RER乗り放題',zh:'巴黎地铁、公交和RER无限次乘坐'},tags:{ko:['파리'],en:['Paris'],ja:['パリ'],zh:['巴黎']}},
+       {ic:'🚲',n:"Vélib' Bike Share",d:{ko:'파리 도크리스 자전거 공유 서비스',en:'Paris dockless bike-share service',ja:'パリのドックレス自転車シェアサービス',zh:'巴黎无桩共享单车服务'},tags:{ko:['친환경'],en:['Eco-friendly'],ja:['エコ'],zh:['环保']}}],
+    tips:[{ko:'미술관 매달 첫째 일요일 무료 입장',en:'Museums free on the first Sunday of each month',ja:'毎月第1日曜日は美術館が無料',zh:'每月第一个周日博物馆免费开放'},
+          {ko:'파리 소매치기 주의 — 관광지서 가방 앞으로',en:'Watch for pickpockets — keep bags in front at tourist sites',ja:'スリに注意 — 観光地ではバッグを前に',zh:'当心扒手——在景点时将包背在前面'},
+          {ko:'식당 첫 인사는 반드시 "Bonjour"',en:'Always greet with "Bonjour" when entering a restaurant',ja:'レストランに入ったら必ず「ボンジュール」と挨拶',zh:'进餐厅请先说"Bonjour"'}]
+  },
+  IT:{
+    a:[{ic:'🏟️',n:'Colosseum',d:{ko:'로마 원형경기장, 사전 예약 필수',en:'Rome\'s ancient amphitheatre — pre-book essential',ja:'ローマの円形競技場、事前予約必須',zh:'罗马圆形竞技场，必须提前预订'},tags:{ko:['세계유산','역사'],en:['World Heritage','History'],ja:['世界遺産','歴史'],zh:['世界遗产','历史']}},
+       {ic:'⛵',n:'Venice Canals',d:{ko:'수상버스(바포레토)로 도시 전체 이동',en:'Navigate the city by vaporetto water bus',ja:'ヴァポレット（水上バス）で街全体を移動',zh:'乘坐水上巴士游览全城'},tags:{ko:['낭만','유네스코'],en:['Romantic','UNESCO'],ja:['ロマンチック','ユネスコ'],zh:['浪漫','联合国教科文组织']}},
+       {ic:'🌊',n:'Amalfi Coast',d:{ko:'살레르노에서 버스로 이동, 절벽 해안 절경',en:'Cliffside coastal road from Salerno by bus',ja:'サレルノからバスで行く断崖の海岸線',zh:'从萨勒诺乘巴士前往的悬崖海岸'},tags:{ko:['자연','드라이브'],en:['Nature','Scenic drive'],ja:['自然','ドライブ'],zh:['自然','风景']}},
+       {ic:'⛪',n:'Florence Duomo',d:{ko:'브루넬레스키 돔 전망대 — 사전 예약 필수',en:'Brunelleschi\'s dome panorama — pre-book required',ja:'ブルネレスキのドーム展望台 — 事前予約必須',zh:'布鲁内莱斯基穹顶观景台——必须提前预订'},tags:{ko:['예술','건축'],en:['Art','Architecture'],ja:['芸術','建築'],zh:['艺术','建筑']}},
+       {ic:'🏛️',n:'Vatican Museums & Sistine Chapel',d:{ko:'미켈란젤로 천장화 시스티나 경당, 조기 예약',en:'Michelangelo\'s Sistine ceiling — book months ahead',ja:'ミケランジェロの天井画システィーナ礼拝堂、早めに予約',zh:'米开朗基罗西斯廷礼拜堂，提前数月预订'},tags:{ko:['세계유산','필수'],en:['World Heritage','Must-see'],ja:['世界遺産','必見'],zh:['世界遗产','必看']}}],
+    f:[{ic:'🍕',n:'Pizza Napoletana',d:{ko:'나폴리 원조 마르게리타, 유네스코 등재',en:'Naples-original Margherita, UNESCO-listed craft',ja:'ナポリ発祥のマルゲリータ、ユネスコ登録',zh:'那不勒斯原创玛格丽特披萨，被列入UNESCO'},tags:{ko:['필수','나폴리'],en:['Must-try','Naples'],ja:['必食','ナポリ'],zh:['必试','那不勒斯']}},
+       {ic:'🍝',n:'Cacio e Pepe',d:{ko:'로마 전통 파스타, 치즈+후추 3가지 재료',en:'Roman pasta with just cheese, pepper & pasta water',ja:'ローマ伝統パスタ、チーズと胡椒だけ',zh:'罗马传统意面，仅用奶酪和黑胡椒'},tags:{ko:['로마','전통'],en:['Rome','Traditional'],ja:['ローマ','伝統'],zh:['罗马','传统']}},
+       {ic:'🍦',n:'Gelato Artigianale',d:{ko:'장인 젤라토 — 피렌체 페르케 노 본점 추천',en:'Artisan gelato — try Perché No! in Florence',ja:'職人ジェラート、フィレンツェのPerché No!がおすすめ',zh:'手工冰淇淋——推荐佛罗伦萨Perché No!'},tags:{ko:['디저트','필수'],en:['Dessert','Must-try'],ja:['スイーツ','必食'],zh:['甜点','必试']}},
+       {ic:'☕',n:'Espresso al Banco',d:{ko:'이탈리아 바에서 서서 에스프레소 마시는 문화',en:'Standing espresso at the bar — the Italian way',ja:'イタリアのバールでカウンター立ち飲みエスプレッソ',zh:'在吧台站着喝浓缩咖啡——意式文化'},tags:{ko:['커피','문화'],en:['Coffee','Culture'],ja:['コーヒー','文化'],zh:['咖啡','文化']}},
+       {ic:'🍚',n:'Risotto alla Milanese',d:{ko:'밀라노 사프란 리조또, 오소부코와 페어링',en:'Saffron risotto from Milan, paired with ossobuco',ja:'ミラノのサフランリゾット、オッソブーコと合わせて',zh:'米兰藏红花烩饭，搭配烩牛腱'},tags:{ko:['밀라노','전통'],en:['Milan','Traditional'],ja:['ミラノ','伝統'],zh:['米兰','传统']}},
+       {ic:'🥩',n:'Bistecca Fiorentina',d:{ko:'피렌체 T본 스테이크, 600g 이상 레어로',en:'Florence T-bone steak 600g+, served rare',ja:'フィレンツェのTボーンステーキ600g以上、レアで',zh:'佛罗伦萨T骨牛排600g以上，生吃'},tags:{ko:['스테이크','피렌체'],en:['Steak','Florence'],ja:['ステーキ','フィレンツェ'],zh:['牛排','佛罗伦萨']}},
+       {ic:'🍊',n:'Arancini (Sicilia)',d:{ko:'시칠리아 쌀 고로케, 라구·버터 두 가지 맛',en:'Sicilian fried rice balls with ragù or butter filling',ja:'シチリアの揚げライスボール、ラグー・バターの2種',zh:'西西里炸饭团，有肉酱和黄油两种口味'},tags:{ko:['시칠리아','간식'],en:['Sicily','Snack'],ja:['シチリア','スナック'],zh:['西西里','小吃']}},
+       {ic:'🍰',n:'Tiramisù',d:{ko:'베네치아 발상 진한 마스카르포네 커피 케이크',en:'Venice-origin mascarpone & espresso layered cake',ja:'ベネチア発祥のマスカルポーネとエスプレッソのケーキ',zh:'发源于威尼斯的马斯卡彭咖啡蛋糕'},tags:{ko:['디저트','커피'],en:['Dessert','Coffee'],ja:['スイーツ','コーヒー'],zh:['甜点','咖啡']}}],
+    t:[{ic:'🚄',n:'Trenitalia / Italo',d:{ko:'로마-밀라노 3시간, 플렉시블 티켓 추천',en:'Rome to Milan in 3h — flexible ticket recommended',ja:'ローマ-ミラノ3時間、フレキシブルチケットがおすすめ',zh:'罗马至米兰3小时，推荐灵活票'},tags:{ko:['장거리'],en:['Long distance'],ja:['長距離'],zh:['长途']},u:'https://www.trenitalia.com'},
+       {ic:'⛵',n:'Vaporetto Venice',d:{ko:'수상버스 24/48/72h 패스 이용',en:'Water bus 24/48/72h unlimited pass',ja:'ヴァポレット24/48/72時間パス',zh:'水上巴士24/48/72小时通票'},tags:{ko:['베네치아'],en:['Venice'],ja:['ベネチア'],zh:['威尼斯']}},
+       {ic:'🚌',n:'SITA Bus (Amalfi)',d:{ko:'살레르노/소렌토 출발 아말피 해안도로 버스',en:'Amalfi coast road bus from Salerno/Sorrento',ja:'サレルノ/ソレント発のアマルフィ海岸バス',zh:'从萨勒诺/索伦托出发的阿马尔菲海岸路线巴士'},tags:{ko:['아말피'],en:['Amalfi'],ja:['アマルフィ'],zh:['阿马尔菲']}}],
+    tips:[{ko:'로마 분수·유적 근처 음식값 2~3배',en:'Food near Rome fountains & ruins costs 2-3x more',ja:'ローマの噴水・遺跡近くは飲食代が2〜3倍',zh:'罗马喷泉和遗址附近餐饮价格贵2-3倍'},
+          {ko:'레스토랑 코페르토(자릿세) 별도 청구',en:'Restaurants add a coperto (cover charge) per person',ja:'レストランはコペルト（席料）が別途請求される',zh:'餐厅会额外收取人均座位费（coperto）'},
+          {ko:'추천 앱: Trenitalia, Google Maps 오프라인 저장',en:'Download Google Maps offline — data can be patchy',ja:'Google Mapsをオフラインで保存 — 電波が弱い地域あり',zh:'下载谷歌地图离线版——部分地区信号差'}]
+  },
+  TH:{
+    a:[{ic:'🏛️',n:'Grand Palace & Wat Phra Kaew',d:{ko:'방콕 왕궁, 에메랄드 불상 안치',en:'Bangkok Grand Palace housing the Emerald Buddha',ja:'バンコク王宮、エメラルド仏を安置',zh:'曼谷大皇宫，供奉翡翠佛'},tags:{ko:['필수','복장규정'],en:['Must-see','Dress code'],ja:['必見','服装規定あり'],zh:['必去','着装要求']}},
+       {ic:'⛵',n:'Chao Phraya River Cruise',d:{ko:'방콕 수상버스로 주요 사원 이동',en:'Hop between Bangkok temples by river express',ja:'チャオプラヤー川の水上バスで主要寺院を巡る',zh:'乘坐湄南河快船穿梭各大寺庙'},tags:{ko:['이동','관광'],en:['Transport','Sightseeing'],ja:['移動','観光'],zh:['交通','观光']}},
+       {ic:'🏖️',n:'Phi Phi Islands',d:{ko:'끄라비에서 페리로, 스노클링 성지',en:'Ferry from Krabi — snorkelling paradise',ja:'クラビからフェリーで、シュノーケリングの聖地',zh:'从甲米乘渡轮，浮潜天堂'},tags:{ko:['해변','스노클링'],en:['Beach','Snorkelling'],ja:['ビーチ','シュノーケリング'],zh:['海滩','浮潜']}},
+       {ic:'🕌',n:'Chiang Mai Temples',d:{ko:'도이수텝 포함 300여 사원의 도시',en:'City of 300+ temples including Doi Suthep',ja:'ドイステープを含む300以上の寺院の街',zh:'包含素贴寺在内的300余座寺庙之城'},tags:{ko:['북부','문화'],en:['North','Culture'],ja:['北部','文化'],zh:['北部','文化']}},
+       {ic:'🌴',n:'Railay Beach, Krabi',d:{ko:'보트로만 이동 가능한 비밀 석회암 해변',en:'Secluded limestone beach accessible by boat only',ja:'ボートでのみアクセス可能な秘境石灰岩ビーチ',zh:'只能乘船抵达的石灰岩秘境海滩'},tags:{ko:['비밀해변','크라비'],en:['Hidden beach','Krabi'],ja:['秘境ビーチ','クラビ'],zh:['秘境海滩','甲米']}}],
+    f:[{ic:'🍜',n:'Pad Thai',d:{ko:'카오산로드 팟타이 노점 — 바나나 꽃 고명',en:'Khaosan Road pad thai stall with banana flower garnish',ja:'カオサンロードのパッタイ屋台、バナナの花のトッピング',zh:'考山路炒河粉摊，配香蕉花装饰'},tags:{ko:['길거리','국민음식'],en:['Street food','National dish'],ja:['屋台','国民食'],zh:['街头小吃','国民美食']}},
+       {ic:'🍲',n:'Tom Yum Kung',d:{ko:'새우 매콤새콤 국물 — 진한 버전 추천',en:'Spicy & sour prawn soup — order the rich version',ja:'エビの辛酸っぱいスープ、濃いバージョンがおすすめ',zh:'辣酸虾汤，推荐浓郁版本'},tags:{ko:['스프','자극적'],en:['Soup','Bold flavour'],ja:['スープ','刺激的'],zh:['汤','重口味']}},
+       {ic:'🥭',n:'Mango Sticky Rice',d:{ko:'상큼 망고 + 코코넛 찹쌀밥 디저트',en:'Fresh mango with coconut sticky rice dessert',ja:'新鮮なマンゴー+ココナッツもち米デザート',zh:'新鲜芒果配椰香糯米饭甜点'},tags:{ko:['디저트','계절'],en:['Dessert','Seasonal'],ja:['スイーツ','季節限定'],zh:['甜点','时令']}},
+       {ic:'🌶️',n:'Som Tam (Green Papaya Salad)',d:{ko:'청 파파야 샐러드, 꽤 맵습니다',en:'Shredded green papaya salad — quite spicy',ja:'青パパイヤのサラダ、かなり辛い',zh:'青木瓜沙拉，相当辣'},tags:{ko:['채식가능','매운맛'],en:['Veg-friendly','Spicy'],ja:['ベジ可','辛い'],zh:['素食可','辣']}},
+       {ic:'🍛',n:'Massaman Curry',d:{ko:'무슬림 영향 견과류 커리, 로티와 함께',en:'Muslim-influenced peanut curry, serve with roti',ja:'イスラム系ピーナッツカレー、ロティと一緒に',zh:'受伊斯兰文化影响的花生咖喱，配罗提饼'},tags:{ko:['커리','남부'],en:['Curry','Southern'],ja:['カレー','南部'],zh:['咖喱','南部']}},
+       {ic:'🍗',n:'Khao Man Gai',d:{ko:'태국식 하이난 닭밥, 생강소스 필수',en:'Thai Hainanese chicken rice with ginger dipping sauce',ja:'タイ式海南チキンライス、生姜ダレ必須',zh:'泰式海南鸡饭，必蘸姜汁'},tags:{ko:['국민음식','아침'],en:['National dish','Breakfast'],ja:['国民食','朝食'],zh:['国民美食','早餐']}},
+       {ic:'🫓',n:'Roti Canai (Bangkok)',d:{ko:'방콕 무슬림 구역 버터 파이 로티',en:'Flaky butter roti from Bangkok\'s Muslim quarter',ja:'バンコクのムスリム街のバターロティ',zh:'曼谷穆斯林区酥皮黄油罗提'},tags:{ko:['간식','무슬림'],en:['Snack','Halal'],ja:['スナック','ハラール'],zh:['小吃','清真']}},
+       {ic:'🥗',n:'Yam Nuea (Thai Beef Salad)',d:{ko:'태국식 소고기 샐러드, 라임+칠리 드레싱',en:'Grilled beef salad with lime & chilli dressing',ja:'グリルビーフサラダ、ライムと唐辛子ドレッシング',zh:'泰式烤牛肉沙拉，配青柠辣椒酱'},tags:{ko:['샐러드','저칼로리'],en:['Salad','Light'],ja:['サラダ','ヘルシー'],zh:['沙拉','低卡']}}],
+    t:[{ic:'🚇',n:'BTS Skytrain',d:{ko:'방콕 시내 이동 필수, Rabbit Card 구매',en:'Essential for Bangkok city travel, get Rabbit Card',ja:'バンコク市内移動の必需品、ラビットカードを購入',zh:'曼谷市内出行必备，购买Rabbit Card'},tags:{ko:['방콕','필수'],en:['Bangkok','Essential'],ja:['バンコク','必須'],zh:['曼谷','必备']}},
+       {ic:'📱',n:'Grab App',d:{ko:'동남아 우버 — 택시·푸드 딜리버리',en:'SE Asia\'s Uber for taxi & food delivery',ja:'東南アジアのUber、タクシー・フードデリバリー',zh:'东南亚版Uber，可叫车和送餐'},tags:{ko:['편리'],en:['Convenient'],ja:['便利'],zh:['方便']}},
+       {ic:'🛺',n:'Tuk-Tuk',d:{ko:'흥정 필수 — 미터택시보다 비쌀 수 있음',en:'Negotiate the price — often pricier than meter taxi',ja:'値段交渉必須、メータータクシーより高い場合も',zh:'必须砍价——有时比计价出租车还贵'},tags:{ko:['관광용'],en:['Tourist ride'],ja:['観光用'],zh:['旅游体验']}}],
+    tips:[{ko:'사원 입장: 어깨·무릎 덮는 복장 필수',en:'Temples require covered shoulders and knees',ja:'寺院への入場：肩と膝を覆う服装が必須',zh:'进寺庙需遮住肩膀和膝盖'},
+          {ko:'팁: 레스토랑 20-50밧, 마사지 50-100밧',en:'Tip: 20-50 THB at restaurants, 50-100 THB for massage',ja:'チップ: レストラン20〜50バーツ、マッサージ50〜100バーツ',zh:'小费：餐厅20-50铢，按摩50-100铢'},
+          {ko:'환전: 슈퍼리치 환전소가 최고 환율',en:'Exchange at SuperRich counters for best rates',ja:'両替はスーパーリッチ両替所が最高レート',zh:'在SuperRich兑换处换汇汇率最优'}]
+  },
+  ES:{
+    a:[{ic:'⛪',n:'Sagrada Família',d:{ko:'가우디 미완성 대성당, 사전 예약 필수',en:'Gaudí\'s unfinished masterpiece — pre-book essential',ja:'ガウディの未完の大聖堂、事前予約が必須',zh:'高迪的未竣工大教堂，必须提前预订'},tags:{ko:['바르셀로나','필수'],en:['Barcelona','Must-see'],ja:['バルセロナ','必見'],zh:['巴塞罗那','必去']}},
+       {ic:'🎨',n:'Prado Museum',d:{ko:'고야·벨라스케스·루벤스 걸작 소장',en:'Home to Goya, Velázquez & Rubens masterpieces',ja:'ゴヤ・ベラスケス・ルーベンスの傑作を所蔵',zh:'收藏戈雅、委拉斯凯兹和鲁本斯杰作'},tags:{ko:['마드리드','미술'],en:['Madrid','Art'],ja:['マドリード','美術'],zh:['马德里','艺术']}},
+       {ic:'🏰',n:'Alhambra',d:{ko:'그라나다 이슬람 궁전, 티켓 수주 전 매진',en:'Granada Moorish palace — tickets sell out weeks ahead',ja:'グラナダのイスラム宮殿、チケットは数週間前に完売',zh:'格拉纳达摩尔宫殿，门票数周前售罄'},tags:{ko:['그라나다','세계유산'],en:['Granada','World Heritage'],ja:['グラナダ','世界遺産'],zh:['格拉纳达','世界遗产']}},
+       {ic:'🏖️',n:'Barceloneta Beach',d:{ko:'바르셀로나 도심 해변, 7~8월 성수기',en:'Barcelona city beach, peak season Jul-Aug',ja:'バルセロナ市内のビーチ、7〜8月がピークシーズン',zh:'巴塞罗那市区海滩，旺季7-8月'},tags:{ko:['해변','바르셀로나'],en:['Beach','Barcelona'],ja:['ビーチ','バルセロナ'],zh:['海滩','巴塞罗那']}},
+       {ic:'🌿',n:'Park Güell',d:{ko:'가우디 공원, 유료구역 사전 예약 권장',en:'Gaudí mosaic park — ticketed zone needs pre-booking',ja:'ガウディの公園、有料ゾーンは事前予約推奨',zh:'高迪马赛克公园，收费区建议提前预订'},tags:{ko:['가우디','바르셀로나'],en:['Gaudí','Barcelona'],ja:['ガウディ','バルセロナ'],zh:['高迪','巴塞罗那']}}],
+    f:[{ic:'🥘',n:'Paella Valenciana',d:{ko:'발렌시아 원조 빠에야, 해산물 버전 인기',en:'Valencia-original paella; seafood version most popular',ja:'バレンシア発祥のパエリア、シーフード版が人気',zh:'发源地瓦伦西亚海鲜炖饭最受欢迎'},tags:{ko:['필수','해산물'],en:['Must-try','Seafood'],ja:['必食','シーフード'],zh:['必试','海鲜']}},
+       {ic:'🥩',n:'Jamón Ibérico Bellota',d:{ko:'이베리코 도토리 먹은 돼지 생햄 최고급',en:'Acorn-fed Iberian ham — Bellota is the finest grade',ja:'ドングリ餌育ちのイベリコ豚生ハム、最高グレード',zh:'橡果喂养伊比利亚猪生火腿，Bellota最高级'},tags:{ko:['전통','고급'],en:['Traditional','Premium'],ja:['伝統','高級'],zh:['传统','高档']}},
+       {ic:'🍹',n:'Sangría',d:{ko:'레드와인+과일 스페인 전통 칵테일',en:'Red wine & fruit punch, Spain\'s iconic drink',ja:'赤ワイン+フルーツのスペイン伝統カクテル',zh:'红酒加水果的西班牙传统鸡尾酒'},tags:{ko:['음료'],en:['Drink'],ja:['ドリンク'],zh:['饮品']}},
+       {ic:'🍩',n:'Churros con Chocolate',d:{ko:'진한 초콜라떼에 찍어 먹는 츄러스',en:'Fried dough sticks dipped in thick hot chocolate',ja:'濃いホットチョコレートにつけて食べるチュロス',zh:'蘸浓热巧克力的油条甜点'},tags:{ko:['아침','간식'],en:['Breakfast','Snack'],ja:['朝食','おやつ'],zh:['早餐','小吃']}},
+       {ic:'🥚',n:'Tortilla Española',d:{ko:'감자+달걀 스페인 오믈렛, 바 전통 타파스',en:'Potato & egg Spanish omelette, classic bar tapa',ja:'じゃがいも+卵のスペインオムレツ、バーの定番タパス',zh:'土豆鸡蛋西班牙煎蛋，经典酒吧小食'},tags:{ko:['타파스','전통'],en:['Tapas','Traditional'],ja:['タパス','伝統'],zh:['小吃','传统']}},
+       {ic:'🍅',n:'Gazpacho',d:{ko:'안달루시아 차가운 토마토 수프, 여름 필수',en:'Andalusian cold tomato soup — essential in summer',ja:'アンダルシアの冷製トマトスープ、夏に必食',zh:'安达卢西亚冷番茄汤，夏季必喝'},tags:{ko:['수프','채식'],en:['Soup','Vegan'],ja:['スープ','ビーガン'],zh:['汤','素食']}},
+       {ic:'🦑',n:'Pulpo a la Gallega',d:{ko:'갈리시아 문어 올리브유+파프리카, 산티아고 명물',en:'Galician octopus with olive oil & paprika',ja:'ガリシア風タコのオリーブオイル+パプリカがけ',zh:'加利西亚风格章鱼配橄榄油和辣椒粉'},tags:{ko:['갈리시아','해산물'],en:['Galicia','Seafood'],ja:['ガリシア','シーフード'],zh:['加利西亚','海鲜']}},
+       {ic:'🍢',n:'Pintxos (San Sebastián)',d:{ko:'바스크 핀초스 바 호핑 — 1~2유로 한 점',en:'Basque pinxto bar-hopping — 1-2€ per bite',ja:'バスクのピンチョスバー巡り、1〜2ユーロ/個',zh:'巴斯克地区酒吧爬行品尝小吃，每份1-2欧'},tags:{ko:['바스크','타파스'],en:['Basque','Tapas'],ja:['バスク','タパス'],zh:['巴斯克','小吃']}}],
+    t:[{ic:'🚄',n:'AVE High-Speed Rail',d:{ko:'마드리드-바르셀로나 2시간 30분',en:'Madrid to Barcelona in 2.5 hours',ja:'マドリード-バルセロナ2時間30分',zh:'马德里至巴塞罗那仅需2.5小时'},tags:{ko:['장거리'],en:['Long distance'],ja:['長距離'],zh:['长途']},u:'https://www.renfe.com'},
+       {ic:'🚇',n:'Madrid Metro',d:{ko:'10회권(Metrobús) 이코노미 추천',en:'10-trip Metrobús card is best value',ja:'10回券（メトロバス）がコスパ最高',zh:'10次Metrobús套票性价比最高'},tags:{ko:['마드리드'],en:['Madrid'],ja:['マドリード'],zh:['马德里']}},
+       {ic:'🚌',n:'Alsa Coach',d:{ko:'도시 간 저가 버스, 기차보다 저렴',en:'Inter-city low-cost bus, cheaper than trains',ja:'都市間の格安バス、電車より安い',zh:'城际廉价巴士，比火车便宜'},tags:{ko:['절약'],en:['Budget'],ja:['節約'],zh:['省钱']}}],
+    tips:[{ko:'스페인은 저녁식사가 9~10시',en:'Dinner in Spain is typically at 9-10pm',ja:'スペインのディナーは夜9〜10時が一般的',zh:'西班牙晚餐通常在晚上9-10点'},
+          {ko:'시에스타(오후 2~5시) 상점 문 닫는 곳 있음',en:'Some shops close for siesta from 2-5pm',ja:'シエスタ（午後2〜5時）に閉まる店もあり',zh:'部分商店午后2-5点午休关门'},
+          {ko:'바르셀로나 소매치기 주의 (유럽 최다)',en:'Barcelona has Europe\'s highest pickpocket rate — be vigilant',ja:'バルセロナはスリが欧州最多、注意が必要',zh:'巴塞罗那是欧洲扒手最多的城市，务必警惕'}]
+  },
+  US:{
+    a:[{ic:'🗽',n:'Statue of Liberty',d:{ko:'페리로 접근, 크라운 입장은 수개월 전 예약',en:'Ferry access; crown entry needs months-ahead booking',ja:'フェリーでアクセス、王冠入場は数ヶ月前の予約が必要',zh:'渡轮抵达，皇冠参观需提前数月预订'},tags:{ko:['뉴욕','상징'],en:['New York','Icon'],ja:['ニューヨーク','シンボル'],zh:['纽约','地标']}},
+       {ic:'🏜️',n:'Grand Canyon South Rim',d:{ko:'사우스림 차량 이동, 일몰이 특히 장관',en:'Drive to South Rim — sunset views are spectacular',ja:'サウスリムへ車でアクセス、日没が特に壮観',zh:'驾车前往南缘，日落景色尤为壮观'},tags:{ko:['애리조나','자연'],en:['Arizona','Nature'],ja:['アリゾナ','自然'],zh:['亚利桑那','自然']}},
+       {ic:'🌋',n:'Yellowstone National Park',d:{ko:'올드페이스풀 간헐천·야생 들소 서식',en:'Old Faithful geyser & free-roaming bison herds',ja:'オールドフェイスフル間欠泉と野生のバイソン',zh:'老忠实泉与自由游荡的野牛'},tags:{ko:['자연','국립공원'],en:['Nature','National Park'],ja:['自然','国立公園'],zh:['自然','国家公园']}},
+       {ic:'🎭',n:'Broadway, New York',d:{ko:'TKTS 타임스퀘어 부스에서 당일권 반값',en:'TKTS booth at Times Square for half-price same-day tickets',ja:'タイムズスクエアのTKTSブースで当日券が半額',zh:'时代广场TKTS亭购买当日半价票'},tags:{ko:['뉴욕','문화'],en:['New York','Culture'],ja:['ニューヨーク','文化'],zh:['纽约','文化']}},
+       {ic:'🌉',n:'Golden Gate Bridge, SF',d:{ko:'걸어서 건너기 가능, 자전거 대여도 인기',en:'Walk or cycle across — free and iconic',ja:'徒歩または自転車で渡れる、無料で象徴的',zh:'可步行或骑行穿越，免费且标志性'},tags:{ko:['샌프란시스코','무료'],en:['San Francisco','Free'],ja:['サンフランシスコ','無料'],zh:['旧金山','免费']}}],
+    f:[{ic:'🍔',n:'Smash Burger',d:{ko:'Shake Shack·Five Guys 등 클래식 스매시 버거',en:'Shake Shack or Five Guys classic smash burger',ja:'Shake ShackやFive Guysのクラシックスマッシュバーガー',zh:'Shake Shack或Five Guys经典碾压汉堡'},tags:{ko:['점심','필수'],en:['Lunch','Must-try'],ja:['ランチ','必食'],zh:['午餐','必试']}},
+       {ic:'🦞',n:'New England Clam Chowder',d:{ko:'보스턴 항구 빵볼에 담긴 크리미 조개 스프',en:'Creamy clam soup served in a sourdough bread bowl',ja:'サワードウパンボウルに入ったクリーミーなクラムチャウダー',zh:'浓郁蛤蜊汤盛在酸面包碗中'},tags:{ko:['보스턴','해산물'],en:['Boston','Seafood'],ja:['ボストン','シーフード'],zh:['波士顿','海鲜']}},
+       {ic:'🥩',n:'Texas BBQ (Franklin BBQ)',d:{ko:'오스틴 프랭클린 바베큐 — 새벽부터 줄',en:'Austin\'s Franklin BBQ — queue from dawn for brisket',ja:'オースティンのFranklin BBQ、ブリスケットのために夜明けから行列',zh:'奥斯汀Franklin BBQ——天亮就要排队等煎烤胸肉'},tags:{ko:['텍사스','장인정신'],en:['Texas','Legendary'],ja:['テキサス','職人'],zh:['德克萨斯','传奇']}},
+       {ic:'🍰',n:"NY Cheesecake (Junior's)",d:{ko:"Junior's 브루클린 본점 오리지널 치즈케이크",en:"Junior's Brooklyn original New York cheesecake",ja:'ブルックリンのJuniorのオリジナルNYチーズケーキ',zh:'布鲁克林Junior\'s原创纽约芝士蛋糕'},tags:{ko:['뉴욕','디저트'],en:['New York','Dessert'],ja:['ニューヨーク','スイーツ'],zh:['纽约','甜点']}},
+       {ic:'🍕',n:'Chicago Deep Dish Pizza',d:{ko:'시카고 루 말나티 심층 피자 — 두툼한 치즈',en:"Lou Malnati's deep dish — thick cheese & chunky sauce",ja:"シカゴのLou Malnati'sのディープディッシュ、分厚いチーズ",zh:'芝加哥Lou Malnati\'s深盘披萨，厚奶酪浓酱'},tags:{ko:['시카고','피자'],en:['Chicago','Pizza'],ja:['シカゴ','ピザ'],zh:['芝加哥','披萨']}},
+       {ic:'🍗',n:'Nashville Hot Chicken',d:{ko:'프린스 핫치킨 원조, 매운 카이엔 크러스트 치킨',en:"Prince's Hot Chicken original with fiery cayenne crust",ja:"プリンス・ホットチキンの元祖、カイエンペッパーのクラスト",zh:'辣味炸鸡始祖Prince\'s，辛辣辣椒粉脆皮'},tags:{ko:['내슈빌','매운맛'],en:['Nashville','Spicy'],ja:['ナッシュビル','辛い'],zh:['纳什维尔','辣']}},
+       {ic:'🦐',n:'New Orleans Gumbo',d:{ko:'뉴올리언스 크레올 굼보 — 해산물+안두이 소시지',en:'New Orleans Creole gumbo with seafood & andouille',ja:'ニューオーリンズのクレオールガンボ、海鮮+アンドゥイユ',zh:'新奥尔良克里奥尔浓汤，海鲜配安度伊香肠'},tags:{ko:['뉴올리언스','크레올'],en:['New Orleans','Creole'],ja:['ニューオーリンズ','クレオール'],zh:['新奥尔良','克里奥尔']}}],
+    t:[{ic:'📱',n:'Lyft / Uber',d:{ko:'미국에서 택시보다 앱 호출이 훨씬 편리',en:'App-based rides far more convenient than taxis in the US',ja:'米国ではタクシーよりアプリ配車が圧倒的に便利',zh:'美国打车App比出租车方便得多'},tags:{ko:['필수'],en:['Essential'],ja:['必須'],zh:['必备']}},
+       {ic:'🚆',n:'Amtrak',d:{ko:'도시 간 기차, 뉴욕-워싱턴DC 약 2시간',en:'Intercity rail; New York to DC in ~2 hours',ja:'都市間鉄道、ニューヨーク-ワシントンDC約2時間',zh:'城际火车，纽约至华盛顿约2小时'},tags:{ko:['장거리'],en:['Long distance'],ja:['長距離'],zh:['长途']},u:'https://www.amtrak.com'},
+       {ic:'🚌',n:'Megabus / FlixBus',d:{ko:'도시 간 저가 버스, $1~$20',en:'Inter-city budget bus from $1-$20',ja:'都市間格安バス、1〜20ドル',zh:'城际廉价巴士，票价1-20美元'},tags:{ko:['절약'],en:['Budget'],ja:['節約'],zh:['省钱']}}],
+    tips:[{ko:'레스토랑 팁 18-22%, 택시 15-20%',en:'Tip 18-22% at restaurants, 15-20% for taxis',ja:'レストランは18〜22%、タクシーは15〜20%のチップ',zh:'餐厅小费18-22%，出租车15-20%'},
+          {ko:'세금은 주마다 다르며 가격표에 미포함',en:'Sales tax varies by state and is added at checkout',ja:'売上税は州によって異なり、表示価格に含まれない',zh:'销售税因州而异，且不含在标价中'},
+          {ko:'국제운전면허증으로 렌트카 이용 가능',en:'International driving permit accepted for car rental',ja:'国際運転免許証でレンタカー利用可能',zh:'持国际驾照可租车'}]
+  },
+  GB:{
+    a:[{ic:'🕰️',n:'Big Ben & Parliament',d:{ko:'웨스트민스터역 도보, 외관 무료 관람',en:'Walk from Westminster station — exterior free to view',ja:'ウェストミンスター駅から徒歩、外観は無料',zh:'从威斯敏斯特站步行，外观免费参观'},tags:{ko:['런던','상징'],en:['London','Icon'],ja:['ロンドン','シンボル'],zh:['伦敦','地标']}},
+       {ic:'🏰',n:'Edinburgh Castle',d:{ko:'스코틀랜드 역사의 중심, 도시 전망 최고',en:'Scotland\'s historic heart with city-wide panorama',ja:'スコットランドの歴史の中心、街全体のパノラマ',zh:'苏格兰历史中心，俯瞰全城'},tags:{ko:['에든버러','역사'],en:['Edinburgh','History'],ja:['エジンバラ','歴史'],zh:['爱丁堡','历史']}},
+       {ic:'🗿',n:'Stonehenge',d:{ko:'런던에서 코치 투어로 당일치기 가능',en:'Day trip by coach from London — book a guided tour',ja:'ロンドンからコーチツアーで日帰り可能',zh:'从伦敦乘坐大巴可当日往返'},tags:{ko:['세계유산','신비'],en:['World Heritage','Mysterious'],ja:['世界遺産','神秘'],zh:['世界遗产','神秘']}},
+       {ic:'🏞️',n:'Lake District',d:{ko:'워즈워스의 고향, 트레킹·보트 천국',en:'Wordsworth\'s homeland — trekking & boating paradise',ja:'ワーズワースの故郷、トレッキングとボートの天国',zh:'华兹华斯的故乡，徒步和划船天堂'},tags:{ko:['자연','트레킹'],en:['Nature','Trekking'],ja:['自然','トレッキング'],zh:['自然','徒步']}},
+       {ic:'⚽',n:'Wembley Stadium Tour',d:{ko:'영국 축구 성지 웸블리 스타디움 투어',en:'Tour of England\'s iconic 90,000-seat football cathedral',ja:'イングランドのサッカーの聖地ウェンブリーツアー',zh:'英格兰足球圣地温布利球场9万座席参观'},tags:{ko:['축구','런던'],en:['Football','London'],ja:['サッカー','ロンドン'],zh:['足球','伦敦']}}],
+    f:[{ic:'🐟',n:'Fish & Chips',d:{ko:'런던 The Golden Hind, 맥아식초 필수',en:'The Golden Hind London — malt vinegar is essential',ja:'ロンドンのThe Golden Hind、モルトビネガー必須',zh:'伦敦Golden Hind，麦芽醋必不可少'},tags:{ko:['국민음식','필수'],en:['National dish','Must-try'],ja:['国民食','必食'],zh:['国民美食','必试']}},
+       {ic:'🍳',n:'Full English Breakfast',d:{ko:'달걀·베이컨·소시지·빈스·토마토 한 접시',en:'Eggs, bacon, sausages, baked beans & tomato on one plate',ja:'卵・ベーコン・ソーセージ・ビーンズ・トマトの一皿',zh:'鸡蛋、培根、香肠、焗豆和番茄一盘端'},tags:{ko:['아침'],en:['Breakfast'],ja:['朝食'],zh:['早餐']}},
+       {ic:'☕',n:'Afternoon Tea',d:{ko:'The Ritz·Claridge\'s 애프터눈티 사전 예약 필수',en:'Pre-book at The Ritz or Claridge\'s for the full experience',ja:'ザ・リッツやクラリッジのアフタヌーンティー、事前予約必須',zh:'提前预订The Ritz或Claridge\'s的下午茶体验'},tags:{ko:['고급','런던'],en:['Fine dining','London'],ja:['高級','ロンドン'],zh:['高档','伦敦']}},
+       {ic:'🍮',n:'Sticky Toffee Pudding',d:{ko:'영국 최고 디저트, 바닐라 아이스크림과 함께',en:'Britain\'s best pudding served warm with vanilla ice cream',ja:'英国最高のプディング、バニラアイスと一緒に',zh:'英国最佳布丁，趁热配香草冰淇淋食用'},tags:{ko:['디저트'],en:['Dessert'],ja:['スイーツ'],zh:['甜点']}},
+       {ic:'🥟',n:'Cornish Pasty',d:{ko:'콘월 지방 반달 고기파이, 여행 중 간편 점심',en:'Cornwall\'s crescent meat pastry — ideal travel lunch',ja:'コーンウォールの三日月型肉パイ、旅行中の手軽なランチ',zh:'康沃尔月牙形肉馅饼，旅途中的便捷午餐'},tags:{ko:['콘월','간편식'],en:['Cornwall','Takeaway'],ja:['コーンウォール','テイクアウト'],zh:['康沃尔','外带']}},
+       {ic:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',n:'Haggis (Scotland)',d:{ko:'스코틀랜드 위스키+네입 샷과 함께 먹는 전통 요리',en:'Scotland\'s national dish with neeps, tatties & whisky',ja:'スコットランドの伝統料理、ウイスキーと一緒に',zh:'苏格兰国菜，配萝卜土豆泥和威士忌'},tags:{ko:['스코틀랜드','전통'],en:['Scotland','Traditional'],ja:['スコットランド','伝統'],zh:['苏格兰','传统']}},
+       {ic:'🧀',n:'Welsh Rarebit',d:{ko:'웨일스 치즈 소스 토스트 — 맥주 베이스 소스',en:'Welsh cheese sauce on toast with beer-based roux',ja:'ビールベースのチーズソーストースト、ウェールズ伝統',zh:'威尔士啤酒奶酪酱烤面包'},tags:{ko:['웨일스','전통'],en:['Wales','Traditional'],ja:['ウェールズ','伝統'],zh:['威尔士','传统']}},
+       {ic:'🍖',n:'Sunday Roast',d:{ko:'일요일 펍 로스트 — 요크셔 푸딩 꼭 주문하세요',en:'Sunday pub roast — always order Yorkshire pudding',ja:'日曜日のパブのローストディナー、ヨークシャープディングは必ず',zh:'周日酒吧烤肉套餐——一定要点约克郡布丁'},tags:{ko:['전통','펍'],en:['Traditional','Pub'],ja:['伝統','パブ'],zh:['传统','酒吧']}}],
+    t:[{ic:'💳',n:'Oyster Card',d:{ko:'런던 지하철·버스·오버그라운드 통합 카드',en:'Unified card for London Underground, buses & Overground',ja:'ロンドン地下鉄・バス・オーバーグラウンド統合カード',zh:'伦敦地铁、公交和地上铁统一卡'},tags:{ko:['런던','필수'],en:['London','Essential'],ja:['ロンドン','必須'],zh:['伦敦','必备']}},
+       {ic:'🚄',n:'National Rail',d:{ko:'런던-에든버러 약 4시간 30분',en:'London to Edinburgh in ~4.5 hours',ja:'ロンドン-エジンバラ約4時間30分',zh:'伦敦至爱丁堡约4.5小时'},tags:{ko:['장거리'],en:['Long distance'],ja:['長距離'],zh:['长途']},u:'https://www.nationalrail.co.uk'},
+       {ic:'🚌',n:'National Express Coach',d:{ko:'전국 저가 버스, 런던-버밍엄 등',en:'Nationwide budget coach, London to Birmingham etc.',ja:'全国格安バス、ロンドン-バーミンガムなど',zh:'全国廉价巴士，如伦敦至伯明翰'},tags:{ko:['절약'],en:['Budget'],ja:['節約'],zh:['省钱']}}],
+    tips:[{ko:'지하철을 Underground 또는 Tube라 부름',en:'The metro is called the Underground or Tube',ja:'地下鉄はUndergroundまたはTubeと呼ぶ',zh:'地铁称为Underground或Tube'},
+          {ko:'버스는 현금 불가, 카드/Oyster만 사용',en:'Buses are cashless — card or Oyster only',ja:'バスは現金不可、カードまたはオイスターのみ',zh:'公交车不收现金，只接受银行卡或Oyster卡'},
+          {ko:'날씨 변화 심함, 재킷·우산 항상 지참',en:'Weather changes fast — always carry a jacket and umbrella',ja:'天気が変わりやすい、ジャケットと傘は常に持参',zh:'天气多变，随时携带外套和雨伞'}]
+  },
+  AU:{
+    a:[{ic:'🎭',n:'Sydney Opera House',d:{ko:'외관은 무료, 내부 투어는 사전 예약 권장',en:'Exterior free; guided tours recommended — pre-book',ja:'外観は無料、内部ツアーは事前予約推奨',zh:'外观免费，内部导览推荐提前预订'},tags:{ko:['시드니','상징'],en:['Sydney','Icon'],ja:['シドニー','シンボル'],zh:['悉尼','地标']}},
+       {ic:'🪨',n:'Uluru (Ayers Rock)',d:{ko:'원주민 성지, 해돋이·해넘이 감동적',en:'Sacred Anangu site — sunrise & sunset are breathtaking',ja:'アボリジニの聖地、日の出・日没が感動的',zh:'土著圣地，日出日落震撼人心'},tags:{ko:['자연','원주민'],en:['Nature','Indigenous'],ja:['自然','先住民'],zh:['自然','原住民']}},
+       {ic:'🐠',n:'Great Barrier Reef',d:{ko:'케언즈 출발 스노클링·스쿠버 투어',en:'Snorkelling & scuba tours from Cairns',ja:'ケアンズ発のシュノーケリング・スキューバツアー',zh:'从凯恩斯出发浮潜和潜水游览'},tags:{ko:['자연','스노클링'],en:['Nature','Snorkelling'],ja:['自然','シュノーケリング'],zh:['自然','浮潜']}},
+       {ic:'🦘',n:'Taronga Zoo, Sydney',d:{ko:'시드니 항구뷰 동물원, 코알라 사진 촬영 가능',en:'Harbour-view zoo with koala photo experience',ja:'シドニー湾を望む動物園、コアラ写真撮影可能',zh:'俯瞰悉尼港湾的动物园，可与考拉合影'},tags:{ko:['가족','시드니'],en:['Family','Sydney'],ja:['ファミリー','シドニー'],zh:['亲子','悉尼']}},
+       {ic:'🍷',n:'Barossa Valley Wine Region',d:{ko:'호주 최고 와이너리 지역, 시라즈 포도 산지',en:'Australia\'s premier wine region — famous for Shiraz',ja:'オーストラリア最高のワイナリー地域、シラーズで有名',zh:'澳大利亚顶级葡萄酒产区，以西拉闻名'},tags:{ko:['와인','애들레이드'],en:['Wine','Adelaide'],ja:['ワイン','アデレード'],zh:['葡萄酒','阿德莱德']}}],
+    f:[{ic:'🥩',n:'Aussie Barbie (BBQ)',d:{ko:'주말 공원 바베큐 문화, 고기 질 탁월',en:'Weekend park BBQ culture — top-quality meats',ja:'週末の公園バーベキュー文化、肉の質が抜群',zh:'周末公园烧烤文化，肉质极佳'},tags:{ko:['문화'],en:['Culture'],ja:['文化'],zh:['文化']}},
+       {ic:'🍞',n:'Vegemite Toast',d:{ko:'호주 아침 국민 음식, 처음엔 조금만 바르기',en:'Aussie breakfast staple — spread sparingly your first try',ja:'ホーストラリアの朝食の定番、初めては薄く塗って',zh:'澳大利亚早餐主食，初次尝试请少涂'},tags:{ko:['아침','독특'],en:['Breakfast','Unique'],ja:['朝食','ユニーク'],zh:['早餐','独特']}},
+       {ic:'☕',n:'Flat White Coffee',d:{ko:'호주에서 탄생한 커피, 전세계로 퍼짐',en:'Born in Australia, now loved worldwide',ja:'オーストラリア生まれ、今や世界中で愛されるコーヒー',zh:'诞生于澳大利亚的咖啡，已风靡全球'},tags:{ko:['커피','국민음료'],en:['Coffee','National drink'],ja:['コーヒー','国民的飲み物'],zh:['咖啡','国民饮品']}},
+       {ic:'🍫',n:'Tim Tam Slam',d:{ko:'양끝 물어뜯고 커피 빨아마시는 호주 전통',en:'Bite both ends & sip coffee through the biscuit',ja:'両端を噛み切りコーヒーをストロー代わりに吸う',zh:'咬掉两端，用饼干吸咖啡的澳式传统'},tags:{ko:['디저트','문화'],en:['Dessert','Culture'],ja:['スイーツ','文化'],zh:['甜点','文化']}},
+       {ic:'🎂',n:'Pavlova',d:{ko:'바삭한 머랭+신선과일 호주·뉴질랜드 디저트',en:'Crispy meringue with fresh fruit — Aussie/NZ classic',ja:'サクサクメレンゲ+フレッシュフルーツ、豪・NZの定番デザート',zh:'酥脆蛋白霜配新鲜水果，澳新经典甜点'},tags:{ko:['디저트','여름'],en:['Dessert','Summer'],ja:['スイーツ','夏'],zh:['甜点','夏季']}},
+       {ic:'🥧',n:'Meat Pie',d:{ko:'호주 국민 파이, 세인즈베리 소스 곁들여',en:'Australia\'s national pie with tomato sauce on top',ja:'オーストラリア国民のパイ、トマトソースをかけて',zh:'澳大利亚国民肉馅饼，配番茄酱'},tags:{ko:['간식','국민음식'],en:['Snack','National food'],ja:['スナック','国民食'],zh:['小吃','国民美食']}},
+       {ic:'🍰',n:'Lamington',d:{ko:'초콜릿+코코넛 호주 전통 스폰지 케이크',en:'Chocolate-dipped sponge rolled in coconut — Aussie icon',ja:'チョコレートとコナッツをまとったスポンジケーキ',zh:'裹上巧克力和椰丝的海绵蛋糕，澳洲标志'},tags:{ko:['케이크','전통'],en:['Cake','Traditional'],ja:['ケーキ','伝統'],zh:['蛋糕','传统']}},
+       {ic:'🐟',n:'Barramundi',d:{ko:'호주 원산지 농어, 구이 또는 피시앤칩스로',en:'Australian-origin sea bass — grilled or as fish & chips',ja:'オーストラリア原産のバラマンディ、グリルまたはフィッシュ&チップス',zh:'澳大利亚原产鲈鱼，烤制或做成炸鱼薯条'},tags:{ko:['해산물','호주'],en:['Seafood','Australian'],ja:['シーフード','オーストラリア'],zh:['海鲜','澳大利亚']}}],
+    t:[{ic:'💳',n:'Opal Card (Sydney)',d:{ko:'시드니 기차·버스·페리·경전철 통합',en:'Unified card for Sydney trains, buses, ferries & light rail',ja:'シドニーの電車・バス・フェリー・ライトレール統合カード',zh:'悉尼火车、公交、轮渡和轻轨通用卡'},tags:{ko:['시드니'],en:['Sydney'],ja:['シドニー'],zh:['悉尼']}},
+       {ic:'🚌',n:'Greyhound Australia',d:{ko:'도시 간 버스, 멜번-시드니 약 9시간',en:'Inter-city bus; Melbourne to Sydney ~9 hours',ja:'都市間バス、メルボルン-シドニー約9時間',zh:'城际巴士，墨尔本至悉尼约9小时'},tags:{ko:['장거리'],en:['Long distance'],ja:['長距離'],zh:['长途']}},
+       {ic:'✈️',n:'Jetstar / Virgin Australia',d:{ko:'도시 간 국내선이 버스보다 빠르고 저렴',en:'Domestic flights often faster & cheaper than buses',ja:'国内線は都市間バスより速くてお得な場合も',zh:'国内航班通常比巴士更快更划算'},tags:{ko:['국내선'],en:['Domestic flights'],ja:['国内線'],zh:['国内航班']}}],
+    tips:[{ko:'자외선 매우 강함, SPF50+ 선크림 필수',en:'UV is extreme — SPF 50+ sunscreen is essential',ja:'紫外線が非常に強い、SPF50+の日焼け止め必須',zh:'紫外线极强，防晒系数50+必备'},
+          {ko:'좌측통행 운전, 국제면허 유효',en:'Drive on the left; international licence accepted',ja:'左側通行、国際運転免許証が有効',zh:'靠左行驶，国际驾照有效'},
+          {ko:'Woolworths/Coles 슈퍼마켓 적극 활용',en:'Shop at Woolworths or Coles to manage high living costs',ja:'物価が高いのでWoolworths/Colesを活用',zh:'在Woolworths或Coles超市购物应对高生活成本'}]
+  },
+  SG:{
+    a:[{ic:'🌳',n:'Gardens by the Bay',d:{ko:'슈퍼트리 야간 빛 쇼, 외관 무료',en:'Supertree night light show — exterior is free',ja:'スーパーツリーの夜間ライトショー、外観は無料',zh:'超级树夜间灯光秀，外观免费'},tags:{ko:['야경','무료'],en:['Night view','Free'],ja:['夜景','無料'],zh:['夜景','免费']}},
+       {ic:'🦁',n:'Singapore Zoo & Night Safari',d:{ko:'야간 나이트 사파리 특히 인기',en:'Night Safari after dark is a unique experience',ja:'ナイトサファリは夜ならではのユニークな体験',zh:'夜间野生动物园是独一无二的体验'},tags:{ko:['가족','동물원'],en:['Family','Zoo'],ja:['ファミリー','動物園'],zh:['亲子','动物园']}},
+       {ic:'🏙️',n:'Marina Bay Sands Skypark',d:{ko:'인피니티 풀 전망 — 투숙객 전용',en:'Infinity pool panorama — hotel guests only',ja:'インフィニティプールの眺め、宿泊者専用',zh:'无边泳池全景，仅限入住客人使用'},tags:{ko:['럭셔리','전망'],en:['Luxury','View'],ja:['高級','展望'],zh:['高档','观景']}},
+       {ic:'🎢',n:'Sentosa Island',d:{ko:'유니버셜 스튜디오·해변·카지노',en:'Universal Studios, beaches & casino',ja:'ユニバーサルスタジオ、ビーチ、カジノ',zh:'环球影城、海滩和赌场'},tags:{ko:['테마파크','해변'],en:['Theme park','Beach'],ja:['テーマパーク','ビーチ'],zh:['主题公园','海滩']}},
+       {ic:'🏛️',n:'Chinatown & Little India',d:{ko:'다민족 문화 거리, 무료 산책 코스',en:'Multi-ethnic heritage streets — free to explore',ja:'多民族文化の街並み、散策は無料',zh:'多民族文化街区，免费游览'},tags:{ko:['문화','무료'],en:['Culture','Free'],ja:['文化','無料'],zh:['文化','免费']}}],
+    f:[{ic:'🍛',n:'Hainanese Chicken Rice',d:{ko:'Tian Tian 맥스웰 푸드센터 원조 닭밥',en:'Tian Tian at Maxwell Food Centre — the original',ja:'マクスウェルフードセンターのTian Tianが本場',zh:'Maxwell熟食中心天天海南鸡饭为正宗'},tags:{ko:['국민음식','필수'],en:['National dish','Must-try'],ja:['国民食','必食'],zh:['国民美食','必试']}},
+       {ic:'🦀',n:'Chilli Crab',d:{ko:'점보/롱비치 씨푸드, 만두빵에 소스 찍어',en:'Jumbo or Long Beach — dip mantou bun in the sauce',ja:'JUMBOまたはロングビーチ、マントウをソースにつけて',zh:'Jumbo或Long Beach海鲜，用馒头蘸酱'},tags:{ko:['해산물','고급'],en:['Seafood','Premium'],ja:['シーフード','高級'],zh:['海鲜','高档']}},
+       {ic:'🍜',n:'Hawker Centre Feast',d:{ko:'Lau Pa Sat·Newton 다양한 로컬 음식',en:'Lau Pa Sat or Newton — huge variety of local dishes',ja:'ラウパサットまたはニュートン、多彩なローカル料理',zh:'老巴刹或牛顿熟食中心，各类本地美食'},tags:{ko:['저렴','다양'],en:['Affordable','Variety'],ja:['リーズナブル','多彩'],zh:['实惠','多样']}},
+       {ic:'🥞',n:'Kaya Toast & Kopi',d:{ko:'싱가포르 전통 코피(커피)+카야잼 토스트',en:'Traditional kopi (local coffee) with kaya jam toast',ja:'シンガポール伝統のコピ（ローカルコーヒー）とカヤジャムトースト',zh:'新加坡传统咖啡（Kopi）配椰浆咖喱酱烤面包'},tags:{ko:['아침','로컬'],en:['Breakfast','Local'],ja:['朝食','ローカル'],zh:['早餐','本地']}},
+       {ic:'🍜',n:'Laksa',d:{ko:'코코넛 커리 라이스 누들 — 매콤한 맛',en:'Spicy coconut curry rice noodle soup',ja:'スパイシーなココナッツカレーのライスヌードルスープ',zh:'椰浆咖喱米粉汤，口感香辣'},tags:{ko:['매운맛','국민음식'],en:['Spicy','National dish'],ja:['辛い','国民食'],zh:['辣','国民美食']}},
+       {ic:'🍝',n:'Char Kway Teow',d:{ko:'검은 간장 볶음 쌀 국수 — 숯불 향 필수',en:'Wok-fried flat rice noodles with dark soy & wok hei',ja:'黒醤油炒め平麺、炒め特有の香りが必須',zh:'黑酱油炒宽米粉，镬气（锅气）必不可少'},tags:{ko:['볶음면','필수'],en:['Fried noodles','Must-try'],ja:['炒め麺','必食'],zh:['炒面','必试']}},
+       {ic:'🍡',n:'Satay (Lau Pa Sat)',d:{ko:'라우파삿 야간 사테이 거리, 땅콩소스',en:'Lau Pa Sat night satay street with peanut sauce',ja:'ラウパサットの夜の串焼き通り、ピーナッツソース',zh:'老巴刹夜间沙爹街，花生酱蘸食'},tags:{ko:['길거리','야간'],en:['Street food','Night'],ja:['屋台','夜'],zh:['街头小吃','夜晚']}},
+       {ic:'🧊',n:'Ice Kacang (ABC)',d:{ko:'빙수+팥+젤리+아이스크림 싱가포르 빙과',en:'Shaved ice with red beans, jelly & ice cream',ja:'かき氷+小豆+ゼリー+アイスクリーム',zh:'刨冰配红豆、果冻和冰淇淋'},tags:{ko:['디저트','여름'],en:['Dessert','Summer'],ja:['スイーツ','夏'],zh:['甜点','夏季']}}],
+    t:[{ic:'🚇',n:'MRT',d:{ko:'싱가포르 전역 연결, EZ-link 카드 사용',en:'Covers all of Singapore — use EZ-link card',ja:'シンガポール全域をカバー、EZリンクカードを使用',zh:'覆盖全岛，使用EZ-link卡'},tags:{ko:['필수'],en:['Essential'],ja:['必須'],zh:['必备']}},
+       {ic:'🚌',n:'SimplyGo Bus',d:{ko:'카드 탭 방식, 현금 사용 제한',en:'Tap card only — cash not accepted on buses',ja:'タップカード方式、現金不可',zh:'仅刷卡，公交不收现金'},tags:{ko:['버스'],en:['Bus'],ja:['バス'],zh:['公交']}},
+       {ic:'📱',n:'Grab',d:{ko:'동남아 우버, 일반 택시보다 저렴',en:'SE Asia\'s Uber — cheaper than regular taxis',ja:'東南アジアのUber、通常タクシーより安い',zh:'东南亚版Uber，比普通出租车便宜'},tags:{ko:['택시'],en:['Taxi'],ja:['タクシー'],zh:['出租车']}}],
+    tips:[{ko:'껌 반입 금지, 공공장소 흡연 엄격 단속',en:'Chewing gum is banned; smoking in public is strictly enforced',ja:'ガムの持ち込み禁止、公共の場での喫煙は厳しく取り締まり',zh:'禁带口香糖，公共场所吸烟受严格监管'},
+          {ko:'음주 후 운전 처벌 매우 강함',en:'Drink-driving penalties are extremely severe',ja:'飲酒運転の罰則は非常に厳しい',zh:'酒后驾车处罚极为严厉'},
+          {ko:'영어·중국어·말레이어·타밀어 공용어',en:'Four official languages: English, Mandarin, Malay & Tamil',ja:'英語・中国語・マレー語・タミル語の4公用語',zh:'英语、华语、马来语、泰米尔语四种官方语言'}]
+  },
+  TW:{
+    a:[{ic:'🏙️',n:'Taipei 101',d:{ko:'전망대 입장, 야간 조명 장관',en:'Observatory entry — night skyline is spectacular',ja:'展望台入場、夜の景色が壮観',zh:'观景台，夜间天际线壮观'},tags:{ko:['타이베이','랜드마크'],en:['Taipei','Landmark'],ja:['台北','ランドマーク'],zh:['台北','地标']}},
+       {ic:'🌋',n:'Taroko Gorge',d:{ko:'화련 대리석 협곡, 기차+당일 투어 가능',en:'Hualien marble canyon — train + day tour available',ja:'花蓮の大理石峡谷、電車+日帰りツアー可',zh:'花莲大理石峡谷，火车+一日游可达'},tags:{ko:['자연','트레킹'],en:['Nature','Trekking'],ja:['自然','トレッキング'],zh:['自然','徒步']}},
+       {ic:'♨️',n:'Beitou Hot Springs',d:{ko:'타이베이 근교 온천 마을, 당일치기 완벽',en:'Hot spring village near Taipei — perfect day trip',ja:'台北近郊の温泉町、日帰りに最適',zh:'台北近郊温泉小镇，一日游完美'},tags:{ko:['온천','힐링'],en:['Onsen','Relaxation'],ja:['温泉','癒し'],zh:['温泉','疗愈']}},
+       {ic:'🌸',n:'Jiufen Village',d:{ko:'산 중턱 옛 마을, 지브리 영감 언덕',en:'Hillside old village that inspired Studio Ghibli',ja:'宮崎駿のインスピレーションになった山腹の古い村',zh:'宫崎骏灵感来源的山腰老街'},tags:{ko:['감성','사진명소'],en:['Atmospheric','Photo spot'],ja:['雰囲気','写真スポット'],zh:['氛围','拍照地']}},
+       {ic:'🌃',n:'Shilin Night Market',d:{ko:'대만 최대 야시장, 저녁 6시부터 새벽 2시',en:'Taiwan\'s largest night market, 6pm to 2am',ja:'台湾最大の夜市、夜6時から翌2時まで',zh:'台湾最大夜市，下午6点至凌晨2点'},tags:{ko:['야시장','음식'],en:['Night market','Food'],ja:['夜市','グルメ'],zh:['夜市','美食']}}],
+    f:[{ic:'🍜',n:'Beef Noodle Soup',d:{ko:'린동팡 홍소우육면 — 대만 국민 음식',en:'Lin Dong Fang braised beef noodle — Taiwan\'s national dish',ja:'林東芳の紅焼牛肉麺、台湾の国民食',zh:'林东方红烧牛肉面——台湾国民美食'},tags:{ko:['국민음식','필수'],en:['National dish','Must-try'],ja:['国民食','必食'],zh:['国民美食','必试']}},
+       {ic:'🫓',n:'Scallion Pancakes (Cong You Bing)',d:{ko:'총유빙 — 쫀득한 파 전병, 단연 최고 아침',en:'Flaky scallion flatbread — best breakfast in Taiwan',ja:'葱油餅、台湾で最高の朝食の一つ',zh:'葱油饼——台湾最棒的早餐之一'},tags:{ko:['길거리','아침'],en:['Street food','Breakfast'],ja:['屋台','朝食'],zh:['街头小吃','早餐']}},
+       {ic:'🧋',n:'Bubble Tea — Chun Shui Tang',d:{ko:'버블티 발상지 춘수당 타이중 본점',en:'Birthplace of bubble tea — Chun Shui Tang, Taichung',ja:'バブルティー発祥の地、台中の春水堂本店',zh:'珍珠奶茶发源地，台中春水堂'},tags:{ko:['음료','필수'],en:['Drink','Must-try'],ja:['ドリンク','必飲'],zh:['饮品','必试']}},
+       {ic:'🍢',n:'Stinky Tofu (臭豆腐)',d:{ko:'시린야시장 명물 발효 두부, 용감하게 도전',en:'Fermented tofu at Shilin — brave & rewarding',ja:'士林夜市の名物、発酵豆腐に勇気を出して挑戦',zh:'士林夜市名物臭豆腐，勇于尝试'},tags:{ko:['도전','야시장'],en:['Bold','Night market'],ja:['チャレンジ','夜市'],zh:['挑战','夜市']}},
+       {ic:'🐚',n:'Oyster Vermicelli (蚵仔麵線)',d:{ko:'굴+장 소스 가는 면 — 타이완 길거리의 맛',en:'Oyster & thick sweet-sour sauce noodle soup',ja:'牡蠣+甘辛ソースの細麺スープ',zh:'蚵仔与厚甜酸酱细面条汤'},tags:{ko:['해산물','길거리'],en:['Seafood','Street food'],ja:['シーフード','屋台'],zh:['海鲜','街头小吃']}},
+       {ic:'🍚',n:'Braised Pork Rice (滷肉飯)',d:{ko:'루루판 — 돼지고기 장조림 덮밥, 1끼 100원대',en:'Braised pork over rice — ultimate comfort food under NT$80',ja:'魯肉飯、豚の角煮のせご飯、80元台湾元以下',zh:'卤肉饭——终极安慰食物，不到80新台币'},tags:{ko:['저렴','국민음식'],en:['Budget','National dish'],ja:['リーズナブル','国民食'],zh:['实惠','国民美食']}},
+       {ic:'🍍',n:'Pineapple Cake (鳳梨酥)',d:{ko:'파인애플 케이크 — 대만 최고 선물용 과자',en:'Pineapple shortcake — Taiwan\'s ultimate souvenir',ja:'パイナップルケーキ、台湾最高のお土産菓子',zh:'凤梨酥——台湾最佳伴手礼'},tags:{ko:['선물','디저트'],en:['Souvenir','Dessert'],ja:['お土産','スイーツ'],zh:['伴手礼','甜点']}},
+       {ic:'🥚',n:'Iron Egg (鐵蛋)',d:{ko:'단수이 명물 간장 조림 달걀, 쫀득한 식감',en:'Danshui specialty soy-braised rubbery egg',ja:'淡水名物、醤油で煮込んだもちもちたまご',zh:'淡水名物酱卤铁蛋，口感劲道'},tags:{ko:['단수이','간식'],en:['Danshui','Snack'],ja:['淡水','おやつ'],zh:['淡水','小吃']}}],
+    t:[{ic:'🚇',n:'Taipei MRT',d:{ko:'이지카드(悠遊卡) 충전 후 사용',en:'Load an EasyCard (悠遊卡) before travel',ja:'台北MRT、悠遊カードをチャージして利用',zh:'台北捷运，充值悠游卡使用'},tags:{ko:['타이베이','필수'],en:['Taipei','Essential'],ja:['台北','必須'],zh:['台北','必备']}},
+       {ic:'🚄',n:'Taiwan HSR',d:{ko:'타이베이-가오슝 1시간 35분 고속철',en:'Taipei to Kaohsiung in 1h 35min',ja:'台北-高雄1時間35分の高速鉄道',zh:'台北至高雄仅需1小时35分'},tags:{ko:['장거리'],en:['Long distance'],ja:['長距離'],zh:['长途']},u:'https://www.thsrc.com.tw'},
+       {ic:'🚲',n:'YouBike',d:{ko:'이지카드로 결제 가능한 공유 자전거',en:'Public bike-share paid with EasyCard',ja:'悠遊カードで支払えるシェア自転車',zh:'使用悠游卡支付的公共共享单车'},tags:{ko:['저렴','친환경'],en:['Budget','Eco'],ja:['節約','エコ'],zh:['省钱','环保']}}],
+    tips:[{ko:'야시장은 저녁 필수 코스, 현금 준비',en:'Night markets are a must — bring cash',ja:'夜市は夜の必須コース、現金を持参',zh:'夜市是夜间必选，备好现金'},{ko:'6-9월 태풍 시즌, 우산 상시 지참',en:'Typhoon season Jun-Sep — always carry an umbrella',ja:'台風シーズン6〜9月、常に傘を持参',zh:'6-9月台风季，随时携带雨伞'},{ko:'팁 문화 없음 — 건네면 오히려 당황함',en:'No tipping culture — giving tips causes awkwardness',ja:'チップ文化なし、渡すとむしろ困惑される',zh:'无小费文化，给小费反而令人尴尬'}]
+  },
+  VN:{
+    a:[{ic:'🛶',n:'Ha Long Bay Cruise',d:{ko:'2박3일 크루즈로 에메랄드 섬 탐험',en:'2-night cruise through emerald limestone islands',ja:'2泊3日クルーズでエメラルドの島々を探検',zh:'2晚邮轮穿越翡翠色石灰岩岛屿'},tags:{ko:['세계유산','크루즈'],en:['World Heritage','Cruise'],ja:['世界遺産','クルーズ'],zh:['世界遗产','邮轮']}},
+       {ic:'🏮',n:'Hoi An Ancient Town',d:{ko:'노란 건물 골목, 랜턴 야시장 환상',en:'Yellow lantern-lit alleyways & night market',ja:'黄色い家並みの路地と提灯の夜市',zh:'黄色建筑小巷与彩灯夜市'},tags:{ko:['세계유산','감성'],en:['World Heritage','Atmospheric'],ja:['世界遺産','雰囲気'],zh:['世界遗产','氛围']}},
+       {ic:'🏰',n:'Hue Imperial Citadel',d:{ko:'응우옌 왕조 황궁, 반나절 투어',en:'Nguyen dynasty imperial palace — half-day tour',ja:'グエン朝の皇宮、半日ツアーがおすすめ',zh:'阮朝皇宫，半日游为宜'},tags:{ko:['역사','후에'],en:['History','Hue'],ja:['歴史','フエ'],zh:['历史','顺化']}},
+       {ic:'🏙️',n:'Ho Chi Minh City',d:{ko:'벤탄 시장·전쟁박물관·비텍스코 스카이덱',en:'Ben Thanh Market, War Museum & Bitexco SkyDeck',ja:'ベンタン市場・戦争証跡博物館・スカイデッキ',zh:'滨城市场、战争遗迹博物馆和比德克斯科天空台'},tags:{ko:['호치민','현대'],en:['Ho Chi Minh City','Urban'],ja:['ホーチミン市','現代的'],zh:['胡志明市','现代']}},
+       {ic:'🏔️',n:'Sa Pa Rice Terraces',d:{ko:'사파 계단식 논 트레킹 — 구름 위 마을',en:'Trekking through dramatic hillside rice terraces',ja:'サパの棚田トレッキング、雲の上の村',zh:'沙坝梯田徒步——云端村庄'},tags:{ko:['자연','트레킹'],en:['Nature','Trekking'],ja:['自然','トレッキング'],zh:['自然','徒步']}}],
+    f:[{ic:'🍜',n:'Phở',d:{ko:'하노이 Phở Thìn 원조, 새벽 5시부터 오픈',en:'Phở Thìn Hanoi — original since dawn at 5am',ja:'ハノイのPhở Thìn、夜明け5時からオープンの元祖',zh:'河内Phở Thìn，凌晨5点开门的元祖'},tags:{ko:['국민음식','필수'],en:['National dish','Must-try'],ja:['国民食','必食'],zh:['国民美食','必试']}},
+       {ic:'🥖',n:'Bánh Mì',d:{ko:'프랑스 영향 바게트 샌드위치, 약 25,000동',en:'French-influenced baguette sandwich, ~VND 25,000',ja:'フランスの影響を受けたバゲットサンドウィッチ、約25,000ドン',zh:'受法国影响的法棍三明治，约25000越南盾'},tags:{ko:['길거리','저렴'],en:['Street food','Budget'],ja:['屋台','お手軽'],zh:['街头小吃','实惠']}},
+       {ic:'🍲',n:'Bún Bò Huế',d:{ko:'후에식 매운 소고기 쌀국수 — 레몬그라스 향',en:'Hue-style spicy beef noodle soup with lemongrass',ja:'フエ風の辛い牛肉ライスヌードルスープ、レモングラスの香り',zh:'顺化风味辣牛肉米粉汤，带柠檬草香'},tags:{ko:['후에','매운맛'],en:['Hue','Spicy'],ja:['フエ','辛い'],zh:['顺化','辣']}},
+       {ic:'☕',n:'Cà Phê Trứng (Egg Coffee)',d:{ko:'하노이 달걀 커피 — 진한 커피+달걀크림 폼',en:'Hanoi egg coffee — strong drip + whipped egg cream',ja:'ハノイのエッグコーヒー、濃いドリップ+卵クリームのフォーム',zh:'河内鸡蛋咖啡——浓郁滴滤咖啡配打发蛋黄奶油'},tags:{ko:['커피','독특'],en:['Coffee','Unique'],ja:['コーヒー','ユニーク'],zh:['咖啡','独特']}},
+       {ic:'🥗',n:'Gỏi Cuốn (Fresh Spring Rolls)',d:{ko:'쌀 종이 신선 생춘권, 새우+허브+라이스버미첼리',en:'Rice paper rolls with shrimp, herbs & vermicelli',ja:'ライスペーパーの生春巻き、エビ+ハーブ+春雨',zh:'米纸鲜虾春卷，配虾仁、香草和粉丝'},tags:{ko:['채식가능','건강'],en:['Veg-friendly','Healthy'],ja:['ベジ可','ヘルシー'],zh:['素食可','健康']}},
+       {ic:'🍝',n:'Cao Lầu (Hoi An)',d:{ko:'호이안 특산 숯물 국수 — 돼지+허브+바삭 튀김',en:'Hoi An\'s unique ash-water noodle with pork & herbs',ja:'ホイアン特産の灰汁水麺、豚肉+ハーブ+揚げもの',zh:'会安特色碱水面，配猪肉、香草和脆皮'},tags:{ko:['호이안','특산'],en:['Hoi An','Regional'],ja:['ホイアン','ご当地'],zh:['会安','特产']}},
+       {ic:'🥞',n:'Bánh Xèo (Sizzling Crepe)',d:{ko:'베트남식 바삭 쌀크레페, 새우+돼지+숙주',en:'Crispy Vietnamese rice crepe with shrimp, pork & sprouts',ja:'ベトナム風サクサクライスクレープ、エビ+豚+もやし',zh:'越南香脆米饼，配虾肉、猪肉和豆芽'},tags:{ko:['남부','길거리'],en:['Southern','Street food'],ja:['南部','屋台'],zh:['南部','街头小吃']}},
+       {ic:'🍡',n:'Chè (Sweet Soup Dessert)',d:{ko:'알록달록 달콤한 타피오카+팥+코코넛 디저트',en:'Colourful sweet soup with tapioca, beans & coconut',ja:'カラフルなタピオカ+豆+ココナッツの甘いスープ',zh:'五彩甜汤配木薯、豆子和椰浆'},tags:{ko:['디저트','달콤'],en:['Dessert','Sweet'],ja:['スイーツ','甘い'],zh:['甜点','甜']}}],
+    t:[{ic:'🛵',n:'Grab Bike / GrabCar',d:{ko:'베트남 내 가장 저렴하고 편리한 이동 수단',en:'Cheapest & most convenient way to get around Vietnam',ja:'ベトナム国内で最安値かつ最も便利な移動手段',zh:'越南最便宜、最方便的出行方式'},tags:{ko:['필수'],en:['Essential'],ja:['必須'],zh:['必备']}},
+       {ic:'🚆',n:'Reunification Express Train',d:{ko:'하노이-호치민 30시간 침대 기차',en:'30-hour overnight sleeper train Hanoi to Ho Chi Minh',ja:'ハノイ-ホーチミン30時間の寝台列車',zh:'河内至胡志明市30小时卧铺火车'},tags:{ko:['장거리'],en:['Long distance'],ja:['長距離'],zh:['长途']}},
+       {ic:'✈️',n:'VietJet / Bamboo Airways',d:{ko:'저가항공으로 도시 간 1~2시간 이동',en:'Budget flights between cities in 1-2 hours',ja:'格安航空で都市間を1〜2時間で移動',zh:'廉价航空城际飞行仅需1-2小时'},tags:{ko:['국내선'],en:['Domestic flights'],ja:['国内線'],zh:['国内航班']}}],
+    tips:[{ko:'현지 화폐 동(VND), 만 동 단위 주의',en:'Currency is VND — millions are common, count carefully',ja:'通貨はVND、百万単位が多いので注意',zh:'货币为越南盾(VND)，百万单位常见，仔细计数'},{ko:'오토바이 홍수 — 눈 맞추며 천천히 건너기',en:'Motorbike flood — make eye contact and cross slowly',ja:'バイクの洪水、目線を合わせてゆっくり渡る',zh:'摩托车如潮——与车手眼神交流后缓慢穿行'},{ko:'물은 반드시 생수 구입, 수돗물 금지',en:'Always buy bottled water — tap water is unsafe to drink',ja:'必ずペットボトルの水を購入、水道水は飲用不可',zh:'务必购买瓶装水，自来水不可饮用'}]
+  }
+};
+
+// ============================================
+// APP STATE
+// ============================================
+let S={lang:'ko',view:'home',trip:null,checklist:[],docs:[],discountry:null,discTab:0,clFilter:'all'};
+
+function loadState(){
+  try{
+    const s=localStorage.getItem('tr_state');
+    if(s){const p=JSON.parse(s);Object.assign(S,p);}
+    if(!S.checklist||!S.checklist.length){
+      S.checklist=CL_DEFAULT.map(x=>({...x,done:false,notes:'',userLinks:[]}));
+    }
+    if(!S.docs)S.docs=[];
+  }catch(e){
+    S.checklist=CL_DEFAULT.map(x=>({...x,done:false,notes:'',userLinks:[]}));
+    S.docs=[];
+  }
+}
+
+function saveState(){
+  try{localStorage.setItem('tr_state',JSON.stringify(S));}catch(e){}
+}
+
+function t(k){return (T[S.lang]||T.en)[k]||k}
+
+// ============================================
+// NAVIGATION
+// ============================================
+const NAVS=[
+  {v:'home',icon:'🏠',tk:'home'},
+  {v:'checklist',icon:'✅',tk:'checklist'},
+  {v:'wallet',icon:'💳',tk:'wallet'},
+  {v:'discover',icon:'🗺️',tk:'discover'},
+  {v:'settings',icon:'⚙️',tk:'settings'},
+];
+
+function navigate(v){
+  S.view=v;
+  document.querySelectorAll('.vw').forEach(el=>el.classList.remove('on'));
+  document.getElementById('vw-'+v).classList.add('on');
+  document.querySelectorAll('.nb').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(el=>{if(el.dataset.v===v)el.classList.add('on');});
+  renderView(v);
+}
+
+function renderNav(){
+  const nav=document.getElementById('nav');
+  nav.innerHTML=NAVS.map(n=>`<button class="nb${S.view===n.v?' on':''}" data-v="${n.v}" onclick="navigate('${n.v}')"><span class="ni">${n.icon}</span><span>${t(n.tk)}</span></button>`).join('');
+}
+
+// ============================================
+// RENDER VIEWS
+// ============================================
+function renderView(v){
+  renderNav();
+  if(v==='home')renderHome();
+  else if(v==='checklist')renderChecklist();
+  else if(v==='wallet')renderWallet();
+  else if(v==='discover')renderDiscover();
+  else if(v==='settings')renderSettings();
+}
+
+// --- HOME ---
+function renderHome(){
+  const now=new Date();
+  const opts={year:'numeric',month:'long',day:'numeric',weekday:'short'};
+  document.getElementById('h-date').textContent=now.toLocaleDateString(S.lang==='ko'?'ko-KR':S.lang==='ja'?'ja-JP':S.lang==='zh'?'zh-CN':'en-GB',opts);
+  document.getElementById('h-title').textContent=t('hi');
+  document.getElementById('h-sub').textContent=t('welcome_sub');
+
+  // Trip display
+  const td=document.getElementById('trip-display');
+  if(S.trip&&S.trip.dest){
+    td.innerHTML=`<div class="trip-card"><div class="tc-lbl">${t('next_trip')}</div><div class="tc-dest">✈️ ${S.trip.dest}</div><div class="tc-dates">${S.trip.from||''}${S.trip.to?' → '+S.trip.to:''}</div></div>`;
+  } else {
+    td.innerHTML=`<div class="tc-empty" onclick="openTripModal()">＋ ${t('add_trip')}</div>`;
+  }
+
+  // Stats
+  const done=S.checklist.filter(x=>x.done).length;
+  const total=S.checklist.length;
+  document.getElementById('stats-row').innerHTML=`
+    <div class="sc"><div class="si">✅</div><div class="sv">${done}/${total}</div><div class="sl">${t('stats_check')}</div></div>
+    <div class="sc"><div class="si">📄</div><div class="sv">${S.docs.length}</div><div class="sl">${t('stats_docs')}</div></div>`;
+
+  // Quick actions
+  document.getElementById('qa-title').textContent=t('recent');
+  document.getElementById('qa-row').innerHTML=`
+    <div class="qb" onclick="navigate('checklist')"><span class="qi">📋</span><span>${t('checklist')}</span></div>
+    <div class="qb" onclick="navigate('wallet')"><span class="qi">💳</span><span>${t('wallet')}</span></div>
+    <div class="qb" onclick="navigate('discover')"><span class="qi">🗺️</span><span>${t('discover')}</span></div>
+    <div class="qb" onclick="openAddDoc()"><span class="qi">➕</span><span>${t('add_doc').replace('+ ','')}</span></div>`;
+
+  // Recent docs
+  document.getElementById('recent-title').textContent=t('wallet');
+  const rl=document.getElementById('recent-list');
+  if(S.docs.length===0){
+    rl.innerHTML=`<div style="font-size:13px;color:var(--mu);padding-bottom:8px">${t('wallet_sub')}</div>`;
+  } else {
+    rl.innerHTML=S.docs.slice(0,2).map(d=>`
+      <div class="card" style="margin-bottom:8px;cursor:pointer" onclick="navigate('wallet')">
+        <div class="card-body" style="padding:12px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:22px">${docIcon(d.type)}</span>
+          <div><div style="font-weight:600;font-size:14px">${d.name}</div><div style="font-size:12px;color:var(--mu)">${d.sub||''}</div></div>
+        </div>
+      </div>`).join('');
+  }
+}
+
+// --- CHECKLIST ---
+function renderChecklist(){
+  const done=S.checklist.filter(x=>x.done).length;
+  const total=S.checklist.length;
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('cl-hdr-title').textContent=t('checklist_items');
+  document.getElementById('cl-add-btn').textContent=t('add_item');
+  document.getElementById('cl-pgb').style.width=pct+'%';
+  document.getElementById('cl-cnt').textContent=`${done}/${total} (${pct}%)`;
+
+  // Filters
+  document.getElementById('cl-filters').innerHTML=[
+    {k:'all',lk:'all'},{k:'todo',lk:'todo'},{k:'done',lk:'done_f'},
+    {k:'p1',lk:'p_critical'},{k:'p2',lk:'p_important'}
+  ].map(f=>`<div class="fc${S.clFilter===f.k?' on':''}" onclick="setFilter('${f.k}')">${t(f.lk)}</div>`).join('');
+
+  // List
+  let items=[...S.checklist].sort((a,b)=>a.p-b.p);
+  if(S.clFilter==='todo')items=items.filter(x=>!x.done);
+  else if(S.clFilter==='done')items=items.filter(x=>x.done);
+  else if(S.clFilter==='p1')items=items.filter(x=>x.p===1);
+  else if(S.clFilter==='p2')items=items.filter(x=>x.p===2);
+
+  const pLabels={1:'p1',2:'p2',3:'p3',4:'p4'};
+  const pTexts={1:{ko:'필수',en:'Critical',ja:'必須',zh:'必须'},2:{ko:'중요',en:'Important',ja:'重要',zh:'重要'},3:{ko:'보통',en:'Medium',ja:'普通',zh:'普通'},4:{ko:'선택',en:'Optional',ja:'任意',zh:'可选'}};
+
+  document.getElementById('cl-list').innerHTML=items.map(item=>{
+    const name=item.customName||(item.tk?t(item.tk):item.id);
+    const sub=item.customSub||(item.sk?t(item.sk):'');
+    const allLinks=[...(item.links||[]),...(item.userLinks||[])];
+    return `<div class="ci${item.done?' done':''}" id="ci-${item.id}">
+      <div class="ci-m">
+        <div class="chk${item.done?' on':''}" onclick="toggleItem('${item.id}')"></div>
+        <span class="ci-ic">${item.icon||'📌'}</span>
+        <div class="ci-body">
+          <div class="ci-top">
+            <span class="ci-t">${name}</span>
+            <span class="bdg ${pLabels[item.p]||'p4'}">${(pTexts[item.p]||{})[S.lang]||'P'+item.p}</span>
+          </div>
+          ${sub?`<div class="ci-s">${sub}</div>`:''}
+          ${item.notes?`<div style="font-size:11px;color:var(--ok);margin-top:3px">📝 ${item.notes}</div>`:''}
+        </div>
+      </div>
+      ${allLinks.length?`<div class="ci-links">${allLinks.map(l=>`<a class="cl" href="${l.u}" target="_blank" rel="noopener">🔗 ${l.l}</a>`).join('')}</div>`:''}
+    </div>`;
+  }).join('');
+
+  if(!items.length){
+    document.getElementById('cl-list').innerHTML=`<div class="empty"><div class="empty-ic">✅</div><div class="empty-t">${t('done_f')}!</div><div class="empty-s">${t('completed_txt')}</div></div>`;
+  }
+}
+
+function setFilter(f){S.clFilter=f;renderChecklist();}
+
+function toggleItem(id){
+  const item=S.checklist.find(x=>x.id===id);
+  if(item){item.done=!item.done;saveState();renderChecklist();}
+}
+
+// --- WALLET ---
+function renderWallet(){
+  document.getElementById('wl-title').textContent=t('wallet_title');
+  document.getElementById('wl-sub').textContent=t('wallet_sub');
+  document.getElementById('wadd-btn').querySelector('#wadd-lbl').textContent=t('add_doc');
+
+  const stack=document.getElementById('wl-stack');
+  if(!S.docs.length){
+    stack.innerHTML=`<div class="empty"><div class="empty-ic">💳</div><div class="empty-t">${t('wallet_title')}</div><div class="empty-s">${t('wallet_sub')}</div></div>`;
+    return;
+  }
+  stack.innerHTML=S.docs.map((d,i)=>`
+    <div class="wc ${d.type||'other'}">
+      <div class="wc-bg"></div><div class="wc-bg2"></div>
+      <button class="wc-del" onclick="deleteDoc(${i})">✕</button>
+      <div class="wc-type">${docIcon(d.type)} ${docTypeName(d.type)}</div>
+      <div class="wc-name">${d.name||'—'}</div>
+      <div class="wc-sub">${d.sub||''}</div>
+      ${d.link?`<div style="margin-top:8px"><a href="${d.link}" target="_blank" style="font-size:11px;color:rgba(255,255,255,.7);text-decoration:underline">🔗 View Booking</a></div>`:''}
+      ${d.valid?`<div class="wc-exp"><div class="wc-el">Expiry</div><div class="wc-ev">${d.valid}</div></div>`:''}
+      <div class="wc-icon" style="font-size:32px;opacity:.25">${docIcon(d.type)}</div>
+    </div>
+    ${d.img?`<div style="padding:0 0 0 0;margin-top:-6px"><img src="${d.img}" style="width:100%;border-radius:0 0 16px 16px;max-height:120px;object-fit:cover;border:1px solid var(--bdr)"></div>`:''}
+  `).join('');
+}
+
+function docIcon(t){return {passport:'🛂',flight:'✈️',hotel:'🏨',car:'🚗',insurance:'🛡️',visa:'📋',other:'📄'}[t]||'📄';}
+function docTypeName(tp){return t('type_'+tp)||tp;}
+
+// --- DISCOVER ---
+let _pickerOpen=false;
+
+function renderDiscover(){
+  document.getElementById('dc-title').textContent=t('discover_title');
+  document.getElementById('dc-sub').textContent=t('discover_sub');
+
+  const selected=S.discountry?COUNTRIES.find(c=>c.c===S.discountry):null;
+  const placeholder={ko:'국가를 선택하세요',en:'Select a country',ja:'国を選んでください',zh:'请选择国家'}[S.lang]||'Select a country';
+
+  document.getElementById('cpicker-wrap').innerHTML=`
+    <button class="cpicker-btn${_pickerOpen?' open':''}" onclick="togglePicker()" id="cpicker-btn">
+      ${selected
+        ?`<span class="cpicker-flag">${selected.f}</span><span class="cpicker-name">${selected.n[S.lang]||selected.n.en}</span>`
+        :`<span class="cpicker-flag">🌍</span><span class="cpicker-placeholder">${placeholder}</span>`
+      }
+      <span class="cpicker-arrow">▼</span>
+    </button>
+    <div class="cpicker-list${_pickerOpen?' open':''}" id="cpicker-list">
+      ${COUNTRIES.map(c=>`
+        <div class="cpicker-item${S.discountry===c.c?' on':''}" onclick="selectCountry('${c.c}')">
+          <span class="cpicker-iflag">${c.f}</span>
+          <span class="cpicker-iname">${c.n[S.lang]||c.n.en}</span>
+          ${S.discountry===c.c?'<span class="cpicker-check">✓</span>':''}
+        </div>`).join('')}
+    </div>`;
+
+  const dd=document.getElementById('disc-detail');
+  if(S.discountry&&CD[S.discountry]){
+    dd.style.display='block';
+    renderDiscountryDetail(S.discountry);
+  } else {
+    dd.style.display='none';
+  }
+}
+
+function togglePicker(){
+  _pickerOpen=!_pickerOpen;
+  const btn=document.getElementById('cpicker-btn');
+  const list=document.getElementById('cpicker-list');
+  if(btn)btn.classList.toggle('open',_pickerOpen);
+  if(list)list.classList.toggle('open',_pickerOpen);
+}
+
+function selectCountry(c){
+  S.discountry=c;S.discTab=0;_pickerOpen=false;
+  renderDiscover();
+  setTimeout(()=>{const dd=document.getElementById('disc-detail');if(dd)dd.scrollIntoView({behavior:'smooth',block:'start'});},150);
+}
+
+function renderDiscountryDetail(c){
+  const data=CD[c];const country=COUNTRIES.find(x=>x.c===c);
+  const tabs=[{k:'a',lk:'attractions'},{k:'f',lk:'food'},{k:'t',lk:'transport'}];
+  document.getElementById('dtabs').innerHTML=tabs.map((tab,i)=>`<button class="dtab${S.discTab===i?' on':''}" onclick="setDiscTab(${i})">${t(tab.lk)}</button>`).join('');
+  const keys=['a','f','t'];
+  document.getElementById('dsecs').innerHTML=keys.map((k,i)=>`
+    <div class="dsec${S.discTab===i?' on':''}" id="dsec-${i}">
+      ${(data[k]||[]).map(item=>`<div class="ri">
+        <div class="ric">${item.ic}</div>
+        <div class="riy">
+          <div class="rin">${item.n}</div>
+          <div class="rid">${typeof item.d==='object'?(item.d[S.lang]||item.d.en):item.d}</div>
+          <div class="ritags">${(typeof item.tags==='object'&&!Array.isArray(item.tags)?(item.tags[S.lang]||item.tags.en||[]):item.tags||[]).map(tg=>`<span class="rt">${tg}</span>`).join('')}</div>
+          ${item.u?`<a href="${item.u}" target="_blank" style="font-size:11px;color:var(--pri);margin-top:4px;display:inline-block">🔗 ${t('booking_link')}</a>`:''}
+        </div>
+      </div>`).join('')}
+      ${k==='t'&&data.tips?`<div style="background:var(--warn-l);border-radius:var(--r);padding:12px;margin-top:8px;border:1px solid var(--bdr)"><div style="font-size:12px;font-weight:700;color:var(--warn);margin-bottom:6px">💡 ${t('tips')}</div>${data.tips.map(tp=>`<div style="font-size:13px;color:var(--tx2);margin-bottom:4px">• ${typeof tp==='object'?(tp[S.lang]||tp.en):tp}</div>`).join('')}</div>`:''}
+    </div>`).join('');
+}
+
+function setDiscTab(i){S.discTab=i;renderDiscountryDetail(S.discountry);}
+
+// --- SETTINGS ---
+function renderSettings(){
+  document.getElementById('st-title').textContent=t('settings_title');
+  const langs=[{v:'ko',l:'🇰🇷 한국어'},{v:'en',l:'🇺🇸 English'},{v:'ja',l:'🇯🇵 日本語'},{v:'zh',l:'🇨🇳 中文'}];
+  const themes=[{v:'light',l:()=>t('light')},{v:'system',l:()=>t('system')},{v:'dark',l:()=>t('dark')}];
+  const curTheme=document.documentElement.getAttribute('data-theme')||'system';
+  document.getElementById('slist').innerHTML=`
+    <div class="sit">
+      <div class="sil"><span class="sic">🌐</span><div><div class="silbl">${t('lang_setting')}</div></div></div>
+      <div class="langrow">${langs.map(l=>`<button class="lb${S.lang===l.v?' on':''}" onclick="setLang('${l.v}')">${l.l}</button>`).join('')}</div>
+    </div>
+    <div class="sit">
+      <div class="sil"><span class="sic">🎨</span><div><div class="silbl">${t('theme')}</div></div></div>
+      <div style="display:flex;gap:4px">${themes.map(th=>`<button class="lb${curTheme===th.v?' on':''}" onclick="setTheme('${th.v}')">${th.l()}</button>`).join('')}</div>
+    </div>
+    <div class="sit">
+      <div class="sil"><span class="sic">🔔</span><div><div class="silbl">${t('notification')}</div><div class="sisub">${t('notification_sub')}</div></div></div>
+    </div>
+    <div class="sit" style="cursor:pointer" onclick="shareApp()">
+      <div class="sil"><span class="sic">📤</span><div><div class="silbl">${t('share')}</div></div></div>
+      <span style="color:var(--mu2)">›</span>
+    </div>
+    <div class="sit">
+      <div class="sil"><span class="sic">ℹ️</span><div><div class="silbl">${t('about')}</div><div class="sisub">${t('about_sub')}</div></div></div>
+    </div>`;
+}
+
+function setTheme(t){
+  if(t==='system')document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme',t);
+  try{localStorage.setItem('tr_theme',t);}catch(e){}
+  renderSettings();
+}
+
+function shareApp(){
+  if(navigator.share){navigator.share({title:'TripGO',url:window.location.href});}
+  else{try{navigator.clipboard.writeText(window.location.href);showToast('🔗 '+t('booking_link'));}catch(e){}}
+}
+
+// ============================================
+// MODAL: TRIP
+// ============================================
+function openTripModal(){
+  const mo=document.getElementById('mo-trip');
+  document.getElementById('mo-trip-title').textContent=t('trip_title');
+  document.getElementById('lbl-dest').textContent=t('dest');
+  document.getElementById('lbl-from').textContent=t('from');
+  document.getElementById('lbl-to').textContent=t('to');
+  document.getElementById('lbl-notes').textContent=t('notes');
+  document.getElementById('trip-save-btn').textContent=t('save');
+  if(S.trip){
+    document.getElementById('trip-dest').value=S.trip.dest||'';
+    document.getElementById('trip-from').value=S.trip.from||'';
+    document.getElementById('trip-to').value=S.trip.to||'';
+    document.getElementById('trip-notes').value=S.trip.notes||'';
+  }
+  mo.classList.add('open');
+}
+
+function saveTrip(){
+  S.trip={
+    dest:document.getElementById('trip-dest').value,
+    from:document.getElementById('trip-from').value,
+    to:document.getElementById('trip-to').value,
+    notes:document.getElementById('trip-notes').value
+  };
+  saveState();
+  document.getElementById('mo-trip').classList.remove('open');
+  renderHome();
+  showToast('✈️ '+t('save'));
+}
+
+// ============================================
+// MODAL: DOCUMENT (WALLET)
+// ============================================
+let _editDocIdx=-1;
+let _pendingImg=null;
+
+function openAddDoc(){
+  _editDocIdx=-1;_pendingImg=null;
+  document.getElementById('mo-doc-title').textContent=t('add_doc_title');
+  document.getElementById('lbl-doc-type').textContent=t('doc_type');
+  document.getElementById('lbl-doc-name').textContent=t('doc_name');
+  document.getElementById('lbl-doc-sub').textContent=t('doc_sub');
+  document.getElementById('lbl-doc-valid').textContent=t('doc_valid');
+  document.getElementById('lbl-doc-link').textContent=t('doc_link');
+  document.getElementById('lbl-doc-img').textContent=t('doc_img');
+  document.getElementById('fuz-lbl').textContent=t('photo_lbl');
+  document.getElementById('fuz-sub').textContent=t('photo_sub');
+  document.getElementById('lbl-doc-notes').textContent=t('doc_notes');
+  document.getElementById('doc-save-btn').textContent=t('save');
+  ['doc-type','doc-name','doc-sub','doc-valid','doc-link','doc-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('doc-img-prev').style.display='none';
+  document.getElementById('ocr-res').style.display='none';
+  document.getElementById('mo-doc').classList.add('open');
+}
+
+function triggerFile(){document.getElementById('file-inp').click();}
+
+function handleFile(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    _pendingImg=ev.target.result;
+    const prev=document.getElementById('doc-img-prev');
+    if(file.type.startsWith('image/')){
+      prev.src=_pendingImg;prev.style.display='block';
+      // Mock OCR
+      setTimeout(()=>{
+        document.getElementById('ocr-res').style.display='flex';
+        document.getElementById('ocr-txt').textContent=t('ocr_done');
+        if(!document.getElementById('doc-name').value&&file.name){
+          document.getElementById('doc-name').value=file.name.replace(/\.[^.]+$/,'');
+        }
+      },800);
+    } else {
+      prev.style.display='none';
+      document.getElementById('ocr-res').style.display='flex';
+      document.getElementById('ocr-txt').textContent='PDF '+t('ocr_done');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveDoc(){
+  const doc={
+    type:document.getElementById('doc-type').value,
+    name:document.getElementById('doc-name').value||t('type_other'),
+    sub:document.getElementById('doc-sub').value,
+    valid:document.getElementById('doc-valid').value,
+    link:document.getElementById('doc-link').value,
+    notes:document.getElementById('doc-notes').value,
+    img:_pendingImg,
+    added:new Date().toISOString()
+  };
+  if(_editDocIdx>=0)S.docs[_editDocIdx]=doc;
+  else S.docs.unshift(doc);
+  saveState();
+  document.getElementById('mo-doc').classList.remove('open');
+  _pendingImg=null;
+  if(S.view==='wallet')renderWallet();
+  else navigate('wallet');
+  showToast('💳 '+t('save'));
+}
+
+function deleteDoc(i){
+  if(confirm(t('delete')+'?')){
+    S.docs.splice(i,1);saveState();renderWallet();
+    showToast('🗑️ '+t('delete'));
+  }
+}
+
+// ============================================
+// MODAL: ADD CHECKLIST ITEM
+// ============================================
+function openAddCheckItem(){
+  document.getElementById('mo-cla-title').textContent=t('add_cl');
+  document.getElementById('lbl-cla-n').textContent=t('cl_name');
+  document.getElementById('lbl-cla-s').textContent=t('cl_sub');
+  document.getElementById('lbl-cla-p').textContent=t('cl_priority');
+  document.getElementById('lbl-cla-ic').textContent=t('cl_icon');
+  document.getElementById('lbl-cla-lk').textContent=t('cl_link');
+  document.getElementById('cla-save-btn').textContent=t('save');
+  ['cla-name','cla-sub','cla-icon','cla-link1'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('cla-pri').value='3';
+  document.getElementById('mo-cla').classList.add('open');
+}
+
+function saveCheckItem(){
+  const name=document.getElementById('cla-name').value.trim();
+  if(!name)return;
+  const link=document.getElementById('cla-link1').value.trim();
+  const newItem={
+    id:'custom_'+Date.now(),
+    icon:document.getElementById('cla-icon').value||'📌',
+    p:parseInt(document.getElementById('cla-pri').value)||3,
+    customName:name,
+    customSub:document.getElementById('cla-sub').value,
+    done:false,notes:'',
+    links:link?[{l:link,u:link}]:[],
+    userLinks:[]
+  };
+  S.checklist.push(newItem);
+  saveState();
+  document.getElementById('mo-cla').classList.remove('open');
+  renderChecklist();
+  showToast('✅ '+t('add_item'));
+}
+
+// ============================================
+// CLOSE MODALS + PICKER
+// ============================================
+document.querySelectorAll('.ov').forEach(ov=>{
+  ov.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
+});
+document.addEventListener('click',function(e){
+  if(_pickerOpen&&!e.target.closest('#cpicker-wrap')){
+    _pickerOpen=false;
+    const btn=document.getElementById('cpicker-btn');
+    const list=document.getElementById('cpicker-list');
+    if(btn)btn.classList.remove('open');
+    if(list)list.classList.remove('open');
+  }
+});
+
+// ============================================
+// LANGUAGE
+// ============================================
+function setLang(l){
+  S.lang=l;
+  document.getElementById('lsel').value=l;
+  saveState();
+  renderView(S.view);
+  renderNav();
+}
+
+// ============================================
+// TOAST
+// ============================================
+let _toastT;
+function showToast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('on');
+  clearTimeout(_toastT);
+  _toastT=setTimeout(()=>el.classList.remove('on'),2500);
+}
+
+// ============================================
+// KEYBOARD SHORTCUTS
+// ============================================
+document.addEventListener('keydown',function(e){
+  if((e.altKey||e.metaKey)&&e.key.toLowerCase()==='w'){e.preventDefault();navigate('wallet');}
+  if((e.altKey||e.metaKey)&&e.key.toLowerCase()==='h'){e.preventDefault();navigate('home');}
+});
+
+// Volume button simulation via MediaSession (best-effort)
+try{
+  if('mediaSession' in navigator){
+    navigator.mediaSession.setActionHandler('previoustrack',()=>navigate('wallet'));
+  }
+}catch(e){}
+
+// ============================================
+// INIT
+// ============================================
+function init(){
+  loadState();
+  try{
+    const th=localStorage.getItem('tr_theme');
+    if(th&&th!=='system')document.documentElement.setAttribute('data-theme',th);
+  }catch(e){}
+  document.getElementById('lsel').value=S.lang;
+  renderNav();
+  renderView(S.view);
+}
+
+init();
+</script>

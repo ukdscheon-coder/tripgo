@@ -62,9 +62,9 @@ a{color:inherit;text-decoration:none}
 .main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nh)+env(safe-area-inset-bottom,0px))}
 /* Nav */
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:calc(var(--nh)+env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:var(--surf);border-top:1px solid var(--bdr);display:flex;align-items:flex-start;padding-top:6px;z-index:100}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 1px;color:var(--mu2);font-size:9px;font-weight:600;transition:color .15s;min-width:0}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 1px;color:var(--mu2);font-size:8px;font-weight:600;transition:color .15s;min-width:0}
 .nb.on{color:var(--pri)}
-.nb .ni{font-size:20px;line-height:1}
+.nb .ni{font-size:18px;line-height:1}
 /* Views */
 .vw{display:none}.vw.on{display:block}
 /* Cards */
@@ -1121,10 +1121,11 @@ function t(k){return (T[S.lang]||T.en)[k]||k}
 const NAVS=[
   {v:'home',icon:'🏠',tk:'home'},
   {v:'checklist',icon:'✅',tk:'checklist'},
-  {v:'map',icon:'🗺️',tk:'map'},
-  {v:'journal',icon:'📔',tk:'journal'},
   {v:'wallet',icon:'💳',tk:'wallet'},
   {v:'discover',icon:'🌍',tk:'discover'},
+  {v:'map',icon:'🗺️',tk:'map'},
+  {v:'journal',icon:'📔',tk:'journal'},
+  {v:'settings',icon:'⚙️',tk:'settings'},
 ];
 
 function navigate(v){
@@ -1171,19 +1172,21 @@ function renderHome(){
     td.innerHTML=`<div class="tc-empty" onclick="openTripModal()">＋ ${t('add_trip')}</div>`;
   }
 
-  // Stats
+  // Stats — 4 cards (2×2 grid)
   const done=S.checklist.filter(x=>x.done).length;
   const total=S.checklist.length;
   document.getElementById('stats-row').innerHTML=`
     <div class="sc"><div class="si">✅</div><div class="sv">${done}/${total}</div><div class="sl">${t('stats_check')}</div></div>
-    <div class="sc"><div class="si">📄</div><div class="sv">${S.docs.length}</div><div class="sl">${t('stats_docs')}</div></div>`;
+    <div class="sc"><div class="si">📄</div><div class="sv">${S.docs.length}</div><div class="sl">${t('stats_docs')}</div></div>
+    <div class="sc" onclick="navigate('journal')" style="cursor:pointer"><div class="si">📔</div><div class="sv">${S.journal.length}</div><div class="sl">${t('journal')}</div></div>
+    <div class="sc" onclick="navigate('map')" style="cursor:pointer"><div class="si">🗺️</div><div class="sv">${S.mapMarkers.length}</div><div class="sl">${t('map')}</div></div>`;
 
-  // Quick actions
+  // Quick actions — 4 main shortcuts
   document.getElementById('qa-title').textContent=t('recent');
   document.getElementById('qa-row').innerHTML=`
     <div class="qb" onclick="navigate('checklist')"><span class="qi">📋</span><span>${t('checklist')}</span></div>
     <div class="qb" onclick="navigate('wallet')"><span class="qi">💳</span><span>${t('wallet')}</span></div>
-    <div class="qb" onclick="navigate('discover')"><span class="qi">🗺️</span><span>${t('discover')}</span></div>
+    <div class="qb" onclick="navigate('discover')"><span class="qi">🌍</span><span>${t('discover')}</span></div>
     <div class="qb" onclick="openAddDoc()"><span class="qi">➕</span><span>${t('add_doc').replace('+ ','')}</span></div>`;
 
   // Weather widget
@@ -1220,21 +1223,6 @@ function renderHome(){
   } else {
     vcRow.style.display='none';
   }
-
-  // Stats
-  const done=S.checklist.filter(x=>x.done).length;
-  const total=S.checklist.length;
-  document.getElementById('stats-row').innerHTML=`
-    <div class="sc"><div class="si">✅</div><div class="sv">${done}/${total}</div><div class="sl">${t('stats_check')}</div></div>
-    <div class="sc"><div class="si">📔</div><div class="sv">${S.journal.length}</div><div class="sl">${t('journal')}</div></div>`;
-
-  // Quick actions
-  document.getElementById('qa-title').textContent=t('recent');
-  document.getElementById('qa-row').innerHTML=`
-    <div class="qb" onclick="navigate('checklist')"><span class="qi">📋</span><span>${t('checklist')}</span></div>
-    <div class="qb" onclick="navigate('map')"><span class="qi">🗺️</span><span>${t('map')}</span></div>
-    <div class="qb" onclick="navigate('journal')"><span class="qi">📔</span><span>${t('journal')}</span></div>
-    <div class="qb" onclick="openAddDoc()"><span class="qi">📄</span><span>${t('add_doc').replace('+ ','')}</span></div>`;
 
   // Recent docs
   document.getElementById('recent-title').textContent=t('wallet');

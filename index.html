@@ -1093,9 +1093,9 @@ function loadState(){
   try{
     const s=localStorage.getItem('tr_state');
     if(s){const p=JSON.parse(s);Object.assign(S,p);}
-    if(!S.checklist||!S.checklist.length){
-      S.checklist=CL_DEFAULT.map(x=>({...x,done:false,notes:'',userLinks:[]}));
-    }
+    // Always refresh icon/structure from CL_DEFAULT; only keep user state (done/notes/userLinks)
+    {const savedMap={};(S.checklist||[]).forEach(x=>{if(x.id)savedMap[x.id]={done:x.done||false,notes:x.notes||'',userLinks:x.userLinks||[]};});
+    S.checklist=CL_DEFAULT.map(x=>({...x,done:savedMap[x.id]?.done||false,notes:savedMap[x.id]?.notes||'',userLinks:savedMap[x.id]?.userLinks||[]}));}
     if(!S.docs)S.docs=[];
     if(!S.mapMarkers)S.mapMarkers=[];
     if(!S.journal)S.journal=[];
@@ -1105,7 +1105,7 @@ function loadState(){
     if(!S.mapView)S.mapView='markers';
   }catch(e){
     S.checklist=CL_DEFAULT.map(x=>({...x,done:false,notes:'',userLinks:[]}));
-    S.docs=[];S.mapMarkers=[];S.journal=[];S.visitedCountries=[];S.itinerary=[];
+    S.docs=[];S.mapMarkers=[];S.journal=[];S.visitedCountries=[];S.itinerary=[];S.clCat='all';S.clFilter='all';S.mapView='markers';
   }
 }
 

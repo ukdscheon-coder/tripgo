@@ -7,6 +7,8 @@
 <title>TripGO</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 :root{
   --bg:#EEF3FF;--surf:#fff;--surf2:#F4F8FF;--bdr:#E2E8F4;
@@ -60,9 +62,9 @@ a{color:inherit;text-decoration:none}
 .main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nh)+env(safe-area-inset-bottom,0px))}
 /* Nav */
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:calc(var(--nh)+env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:var(--surf);border-top:1px solid var(--bdr);display:flex;align-items:flex-start;padding-top:6px;z-index:100}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px;color:var(--mu2);font-size:10px;font-weight:600;transition:color .15s}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 1px;color:var(--mu2);font-size:9px;font-weight:600;transition:color .15s;min-width:0}
 .nb.on{color:var(--pri)}
-.nb .ni{font-size:22px;line-height:1}
+.nb .ni{font-size:20px;line-height:1}
 /* Views */
 .vw{display:none}.vw.on{display:block}
 /* Cards */
@@ -225,6 +227,59 @@ a{color:inherit;text-decoration:none}
 .star.on{opacity:1}
 /* OCR indicator */
 .ocr-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;background:var(--ok-l);color:var(--ok);border-radius:100px;font-size:11px;font-weight:700;margin-top:6px}
+/* ===== WEATHER WIDGET ===== */
+.wx{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:var(--r);padding:12px 14px;margin-top:10px}
+.wx-ic{font-size:32px;line-height:1;flex-shrink:0}
+.wx-main{flex:1}
+.wx-temp{font-family:'Poppins',sans-serif;font-size:20px;font-weight:700;color:#fff}
+.wx-desc{font-size:12px;color:rgba(255,255,255,.75);margin-top:1px}
+.wx-forecast{display:flex;gap:6px;overflow-x:auto;padding:10px 14px 2px;scrollbar-width:none}
+.wx-forecast::-webkit-scrollbar{display:none}
+.wx-day{flex:0 0 54px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--r2);padding:7px 4px;text-align:center;font-size:10px;color:rgba(255,255,255,.8)}
+.wx-day-ic{font-size:18px;margin:3px 0}
+.wx-day-t{font-weight:700;font-size:11px;color:#fff}
+/* ===== VISITED COUNTRIES ===== */
+.vc-row{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--surf2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);cursor:pointer}
+.vc-flags{display:flex;gap:2px;flex-wrap:wrap;flex:1}
+.vc-flag{font-size:18px;line-height:1}
+.vc-cnt{font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;color:var(--pri);white-space:nowrap}
+/* ===== MAP VIEW ===== */
+.map-toolbar{display:flex;gap:8px;padding:10px 12px;background:var(--surf);border-bottom:1px solid var(--bdr);overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:20}
+.map-toolbar::-webkit-scrollbar{display:none}
+.mtb{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;border:1.5px solid var(--bdr);background:var(--surf2);color:var(--tx);cursor:pointer;white-space:nowrap;transition:all .15s;font-family:inherit}
+.mtb.on{background:var(--pri);border-color:var(--pri);color:#fff}
+#map-container{height:calc(100dvh - 54px - 64px - 50px);min-height:300px;background:var(--surf2)}
+.map-markers{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.mk{display:flex;align-items:center;gap:10px;padding:12px;background:var(--surf);border-radius:var(--r);border:1px solid var(--bdr);box-shadow:var(--sh);cursor:pointer;transition:transform .1s}
+.mk:active{transform:scale(.98)}
+.mk-ic{font-size:22px;flex-shrink:0}
+.mk-body{flex:1;min-width:0}
+.mk-name{font-weight:600;font-size:14px}
+.mk-coord{font-size:11px;color:var(--mu);margin-top:1px;font-variant-numeric:tabular-nums}
+.mk-del{color:var(--err);font-size:18px;padding:4px;opacity:.6;flex-shrink:0}
+/* ===== JOURNAL VIEW ===== */
+.jnl-add{margin:12px 16px;padding:14px;background:var(--surf);border:2px dashed var(--bdr);border-radius:var(--r);display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--mu);font-size:14px;font-weight:600;transition:all .2s}
+.jnl-add:hover{border-color:var(--pri);color:var(--pri)}
+.je{background:var(--surf);border-radius:var(--r);border:1px solid var(--bdr);box-shadow:var(--sh);margin:0 16px 10px;overflow:hidden}
+.je-hdr{padding:12px 14px 6px;display:flex;align-items:flex-start;gap:8px}
+.je-mood{font-size:24px;flex-shrink:0}
+.je-meta{flex:1}
+.je-date{font-size:11px;color:var(--mu);font-variant-numeric:tabular-nums}
+.je-title{font-weight:700;font-size:14px;margin-top:1px;line-height:1.3}
+.je-body{padding:0 14px 12px;font-size:13px;color:var(--tx2);line-height:1.6}
+.je-img{width:100%;max-height:180px;object-fit:cover}
+.je-del{color:var(--err);font-size:16px;padding:2px 6px;opacity:.5;cursor:pointer}
+.mood-row{display:flex;gap:8px;flex-wrap:wrap}
+.mood-btn{font-size:22px;padding:6px 10px;border-radius:var(--r2);border:2px solid var(--bdr);background:var(--surf2);cursor:pointer;transition:all .15s}
+.mood-btn.on{border-color:var(--pri);background:var(--pri-l);transform:scale(1.1)}
+/* ===== PACKING CATEGORIES ===== */
+.pk-cat{display:flex;gap:6px;padding:10px 16px;overflow-x:auto;scrollbar-width:none}
+.pk-cat::-webkit-scrollbar{display:none}
+.pc{padding:5px 12px;border-radius:100px;font-size:12px;font-weight:600;border:1.5px solid var(--bdr);background:var(--surf);color:var(--mu);cursor:pointer;white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:4px}
+.pc.on{background:var(--pri);border-color:var(--pri);color:#fff}
+/* Gear btn in header */
+.hdr-gear{background:none;border:none;font-size:20px;padding:4px;cursor:pointer;color:var(--mu);border-radius:var(--r2);transition:color .15s}
+.hdr-gear:hover{color:var(--pri)}
 </style>
 
 </head>
@@ -232,12 +287,15 @@ a{color:inherit;text-decoration:none}
 <div id="app">
   <header class="hdr">
     <div class="logo">✈️ TripGO</div>
-    <select class="lang-sel" id="lsel" onchange="setLang(this.value)">
-      <option value="ko">🇰🇷 한국어</option>
-      <option value="en">🇺🇸 EN</option>
-      <option value="ja">🇯🇵 日本語</option>
-      <option value="zh">🇨🇳 中文</option>
-    </select>
+    <div style="display:flex;align-items:center;gap:8px">
+      <select class="lang-sel" id="lsel" onchange="setLang(this.value)">
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="en">🇺🇸 EN</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="zh">🇨🇳 中文</option>
+      </select>
+      <button class="hdr-gear" onclick="navigate('settings')" title="Settings">⚙️</button>
+    </div>
   </header>
 
   <main class="main" id="main">
@@ -248,6 +306,20 @@ a{color:inherit;text-decoration:none}
         <div class="hero-title" id="h-title"></div>
         <div class="hero-sub" id="h-sub"></div>
         <div id="trip-display"></div>
+        <div id="wx-widget" style="display:none">
+          <div class="wx">
+            <div class="wx-ic" id="wx-ic">⛅</div>
+            <div class="wx-main">
+              <div class="wx-temp" id="wx-temp">--°C</div>
+              <div class="wx-desc" id="wx-desc"></div>
+            </div>
+          </div>
+          <div class="wx-forecast" id="wx-forecast"></div>
+        </div>
+      </div>
+      <div class="vc-row" id="vc-row" onclick="navigate('discover')" style="display:none">
+        <div class="vc-flags" id="vc-flags"></div>
+        <div class="vc-cnt" id="vc-cnt"></div>
       </div>
       <div class="stats" id="stats-row"></div>
       <div class="sec"><div class="stl" id="qa-title"></div></div>
@@ -269,8 +341,28 @@ a{color:inherit;text-decoration:none}
           <div class="clpcnt" id="cl-cnt"></div>
         </div>
       </div>
+      <div class="pk-cat" id="pk-cat-row"></div>
       <div class="filter-row" id="cl-filters"></div>
       <div class="cll" id="cl-list"></div>
+    </div>
+
+    <!-- MAP -->
+    <div class="vw" id="vw-map">
+      <div class="map-toolbar" id="map-toolbar"></div>
+      <div id="map-container"></div>
+      <div class="map-markers" id="map-markers-list"></div>
+    </div>
+
+    <!-- JOURNAL -->
+    <div class="vw" id="vw-journal">
+      <div class="sec" style="padding-bottom:6px">
+        <div class="stl" id="jnl-title"></div>
+        <div style="font-size:12px;color:var(--mu)" id="jnl-sub"></div>
+      </div>
+      <div class="jnl-add" id="jnl-add-btn" onclick="openAddJournal()">
+        <span style="font-size:22px">✏️</span><span id="jnl-add-lbl"></span>
+      </div>
+      <div id="jnl-list"></div>
     </div>
 
     <!-- WALLET -->
@@ -361,6 +453,63 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
+<!-- MODAL: Add Journal Entry -->
+<div class="ov" id="mo-jnl">
+  <div class="mo">
+    <div class="mh"></div>
+    <div class="mt" id="mo-jnl-title"></div>
+    <div class="fg"><label class="fl" id="lbl-jnl-mood">Mood</label>
+      <div class="mood-row" id="mood-row">
+        <button class="mood-btn" data-mood="😄" onclick="selectMood('😄')">😄</button>
+        <button class="mood-btn" data-mood="😊" onclick="selectMood('😊')">😊</button>
+        <button class="mood-btn" data-mood="😐" onclick="selectMood('😐')">😐</button>
+        <button class="mood-btn" data-mood="😴" onclick="selectMood('😴')">😴</button>
+        <button class="mood-btn" data-mood="🤩" onclick="selectMood('🤩')">🤩</button>
+        <button class="mood-btn" data-mood="😰" onclick="selectMood('😰')">😰</button>
+      </div>
+    </div>
+    <div class="fg"><label class="fl" id="lbl-jnl-title2"></label><input class="fi" id="jnl-title-inp" type="text"></div>
+    <div class="fg"><label class="fl" id="lbl-jnl-body"></label><textarea class="fta" id="jnl-body" style="min-height:100px"></textarea></div>
+    <div class="fg"><label class="fl" id="lbl-jnl-loc"></label><input class="fi" id="jnl-loc" type="text" placeholder="📍"></div>
+    <div class="fg">
+      <label class="fl" id="lbl-jnl-img">Photo</label>
+      <div class="fuz" onclick="document.getElementById('jnl-file-inp').click()">
+        <div style="font-size:24px;margin-bottom:4px">📷</div>
+        <div id="jnl-fuz-lbl">Add photo</div>
+      </div>
+      <img id="jnl-img-prev" class="img-prev" style="display:none;margin-top:8px">
+      <input type="file" id="jnl-file-inp" accept="image/*" style="display:none" onchange="handleJnlFile(event)">
+    </div>
+    <button class="btn btn-p btn-bl" onclick="saveJournal()" id="jnl-save-btn"></button>
+  </div>
+</div>
+
+<!-- MODAL: Add Map Marker -->
+<div class="ov" id="mo-mk">
+  <div class="mo">
+    <div class="mh"></div>
+    <div class="mt" id="mo-mk-title"></div>
+    <div class="fg"><label class="fl" id="lbl-mk-name">Place Name</label><input class="fi" id="mk-name" type="text"></div>
+    <div class="fg"><label class="fl">Emoji / Icon</label><input class="fi" id="mk-icon" type="text" placeholder="📍" style="font-size:22px;width:80px" value="📍"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg"><label class="fl">Latitude</label><input class="fi" id="mk-lat" type="number" step="any" placeholder="35.6762"></div>
+      <div class="fg"><label class="fl">Longitude</label><input class="fi" id="mk-lng" type="number" step="any" placeholder="139.6503"></div>
+    </div>
+    <div class="fg"><label class="fl">Note</label><textarea class="fta" id="mk-note" style="min-height:60px"></textarea></div>
+    <button class="btn btn-p btn-bl" onclick="saveMarker()" id="mk-save-btn">Save</button>
+  </div>
+</div>
+
+<!-- MODAL: Itinerary Day -->
+<div class="ov" id="mo-itin">
+  <div class="mo">
+    <div class="mh"></div>
+    <div class="mt" id="mo-itin-title">Day Planner</div>
+    <div id="itin-days-form"></div>
+    <button class="btn btn-p btn-bl" onclick="saveItin()" style="margin-top:12px">Save</button>
+  </div>
+</div>
+
 <!-- MODAL: Add Checklist Item -->
 <div class="ov" id="mo-cla">
   <div class="mo">
@@ -414,7 +563,7 @@ const T={
     stats_check:'완료한 항목',stats_docs:'저장 서류',
     recent:'빠른 접근',
     ocr_done:'OCR 자동 인식 완료',
-    about:'앱 정보',about_sub:'TripGO v1.0 — 여행 준비의 모든 것',
+    about:'앱 정보',about_sub:'TripGO v2.0 — 지도·일기·날씨·체크리스트',
     booking_link:'예약/링크',
     share:'공유하기',notification:'알림 설정',notification_sub:'여행 D-day 알림',
     type_passport:'여권',type_flight:'항공권',type_hotel:'호텔',type_car:'렌트카',
@@ -430,6 +579,21 @@ const T={
     c_sim:'로밍 / SIM 카드',c_sim_s:'해외 데이터 사용 준비',
     c_emergency:'긴급 연락처 저장',c_emergency_s:'대사관, 보험사 긴급번호 저장',
     c_luggage:'짐 준비 완료',c_luggage_s:'항공사 수하물 규정 확인',
+    // v2 packing categories
+    cat_all:'전체',cat_docs:'서류',cat_clothes:'의류',cat_tech:'전자기기',cat_health:'건강',cat_misc:'기타',
+    // v2 map
+    map:'지도',map_title:'여행 지도',map_markers:'나의 장소',map_add_marker:'+ 장소 추가',
+    map_route:'루트',map_itinerary:'일정',map_itin_add:'일정 추가',
+    map_empty:'지도에 장소를 추가하세요',
+    // v2 journal
+    journal:'일기',journal_title:'여행 일기',journal_sub:'여행의 순간들을 기록하세요',
+    journal_add:'새 일기 작성',journal_mood:'오늘의 기분',journal_entry_title:'제목',
+    journal_body:'내용',journal_loc:'장소',journal_photo:'사진',
+    journal_empty:'아직 일기가 없습니다. 첫 기록을 남겨보세요!',
+    // v2 weather
+    wx_loading:'날씨 불러오는 중...',wx_err:'날씨 정보 없음',
+    // v2 visited
+    visited_label:'방문한 나라',
   },
   en:{
     home:'Home',checklist:'Checklist',wallet:'Wallet',discover:'Discover',settings:'Settings',
@@ -471,6 +635,16 @@ const T={
     c_sim:'Roaming / SIM Card',c_sim_s:'Set up international data access',
     c_emergency:'Emergency Contacts',c_emergency_s:'Save embassy, insurer emergency numbers',
     c_luggage:'Pack Luggage',c_luggage_s:'Check airline baggage allowance',
+    cat_all:'All',cat_docs:'Documents',cat_clothes:'Clothing',cat_tech:'Tech',cat_health:'Health',cat_misc:'Misc',
+    map:'Map',map_title:'Trip Map',map_markers:'My Places',map_add_marker:'+ Add Place',
+    map_route:'Route',map_itinerary:'Itinerary',map_itin_add:'Plan Day',
+    map_empty:'Add places to your map',
+    journal:'Journal',journal_title:'Travel Journal',journal_sub:'Capture moments from your journey',
+    journal_add:'New Entry',journal_mood:'Today\'s Mood',journal_entry_title:'Title',
+    journal_body:'Entry',journal_loc:'Location',journal_photo:'Photo',
+    journal_empty:'No entries yet. Start capturing memories!',
+    wx_loading:'Loading weather...',wx_err:'Weather unavailable',
+    visited_label:'Countries Visited',
   },
   ja:{
     home:'ホーム',checklist:'チェックリスト',wallet:'ウォレット',discover:'探索',settings:'設定',
@@ -512,6 +686,16 @@ const T={
     c_sim:'ローミング/SIM',c_sim_s:'海外データ通信の準備',
     c_emergency:'緊急連絡先保存',c_emergency_s:'大使館・保険会社の緊急番号',
     c_luggage:'荷造り',c_luggage_s:'航空会社の手荷物規定を確認',
+    cat_all:'全て',cat_docs:'書類',cat_clothes:'衣類',cat_tech:'電子機器',cat_health:'健康',cat_misc:'その他',
+    map:'地図',map_title:'旅行マップ',map_markers:'マイスポット',map_add_marker:'+ スポット追加',
+    map_route:'ルート',map_itinerary:'旅程',map_itin_add:'日程追加',
+    map_empty:'地図にスポットを追加しましょう',
+    journal:'日記',journal_title:'旅行日記',journal_sub:'旅の思い出を記録しましょう',
+    journal_add:'新しい記録',journal_mood:'今日の気分',journal_entry_title:'タイトル',
+    journal_body:'内容',journal_loc:'場所',journal_photo:'写真',
+    journal_empty:'まだ記録がありません。最初の思い出を残しましょう！',
+    wx_loading:'天気情報を取得中...',wx_err:'天気情報なし',
+    visited_label:'訪問した国',
   },
   zh:{
     home:'首页',checklist:'清单',wallet:'钱包',discover:'发现',settings:'设置',
@@ -553,6 +737,16 @@ const T={
     c_sim:'漫游/SIM卡',c_sim_s:'准备海外数据流量',
     c_emergency:'紧急联系人',c_emergency_s:'保存大使馆和保险公司紧急电话',
     c_luggage:'整理行李',c_luggage_s:'确认航空公司行李规定',
+    cat_all:'全部',cat_docs:'证件',cat_clothes:'衣物',cat_tech:'电子设备',cat_health:'健康',cat_misc:'其他',
+    map:'地图',map_title:'旅行地图',map_markers:'我的地点',map_add_marker:'+ 添加地点',
+    map_route:'路线',map_itinerary:'行程',map_itin_add:'添加行程',
+    map_empty:'在地图上添加地点',
+    journal:'日记',journal_title:'旅行日记',journal_sub:'记录旅途中的每一刻',
+    journal_add:'新建日记',journal_mood:'今日心情',journal_entry_title:'标题',
+    journal_body:'内容',journal_loc:'地点',journal_photo:'照片',
+    journal_empty:'还没有日记。开始记录您的回忆吧！',
+    wx_loading:'天气加载中...',wx_err:'天气信息不可用',
+    visited_label:'已访问国家',
   }
 };
 
@@ -880,7 +1074,20 @@ const CD={
 // ============================================
 // APP STATE
 // ============================================
-let S={lang:'ko',view:'home',trip:null,checklist:[],docs:[],discountry:null,discTab:0,clFilter:'all'};
+let S={lang:'ko',view:'home',trip:null,checklist:[],docs:[],discountry:null,discTab:0,
+  clFilter:'all',clCat:'all',
+  mapMarkers:[],itinerary:[],mapView:'markers',
+  journal:[],visitedCountries:[],
+  weather:null,wxCountry:null
+};
+// Country capitals for weather
+const CAPITALS={
+  JP:[35.6762,139.6503],KR:[37.5665,126.9780],FR:[48.8566,2.3522],IT:[41.9028,12.4964],
+  TH:[13.7563,100.5018],ES:[40.4168,-3.7038],US:[38.9072,-77.0369],GB:[51.5074,-0.1278],
+  AU:[-33.8688,151.2093],SG:[1.3521,103.8198],TW:[25.0330,121.5654],VN:[21.0285,105.8542]
+};
+const WX_ICONS={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',77:'🌨️',80:'🌦️',81:'🌧️',82:'⛈️',85:'❄️',86:'❄️',95:'⛈️',96:'⛈️',99:'⛈️'};
+const WX_DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 function loadState(){
   try{
@@ -890,9 +1097,15 @@ function loadState(){
       S.checklist=CL_DEFAULT.map(x=>({...x,done:false,notes:'',userLinks:[]}));
     }
     if(!S.docs)S.docs=[];
+    if(!S.mapMarkers)S.mapMarkers=[];
+    if(!S.journal)S.journal=[];
+    if(!S.visitedCountries)S.visitedCountries=[];
+    if(!S.itinerary)S.itinerary=[];
+    if(!S.clCat)S.clCat='all';
+    if(!S.mapView)S.mapView='markers';
   }catch(e){
     S.checklist=CL_DEFAULT.map(x=>({...x,done:false,notes:'',userLinks:[]}));
-    S.docs=[];
+    S.docs=[];S.mapMarkers=[];S.journal=[];S.visitedCountries=[];S.itinerary=[];
   }
 }
 
@@ -908,9 +1121,10 @@ function t(k){return (T[S.lang]||T.en)[k]||k}
 const NAVS=[
   {v:'home',icon:'🏠',tk:'home'},
   {v:'checklist',icon:'✅',tk:'checklist'},
+  {v:'map',icon:'🗺️',tk:'map'},
+  {v:'journal',icon:'📔',tk:'journal'},
   {v:'wallet',icon:'💳',tk:'wallet'},
-  {v:'discover',icon:'🗺️',tk:'discover'},
-  {v:'settings',icon:'⚙️',tk:'settings'},
+  {v:'discover',icon:'🌍',tk:'discover'},
 ];
 
 function navigate(v){
@@ -937,6 +1151,8 @@ function renderView(v){
   else if(v==='wallet')renderWallet();
   else if(v==='discover')renderDiscover();
   else if(v==='settings')renderSettings();
+  else if(v==='map')renderMap();
+  else if(v==='journal')renderJournal();
 }
 
 // --- HOME ---
@@ -970,6 +1186,56 @@ function renderHome(){
     <div class="qb" onclick="navigate('discover')"><span class="qi">🗺️</span><span>${t('discover')}</span></div>
     <div class="qb" onclick="openAddDoc()"><span class="qi">➕</span><span>${t('add_doc').replace('+ ','')}</span></div>`;
 
+  // Weather widget
+  const wxEl=document.getElementById('wx-widget');
+  if(S.trip&&S.trip.dest&&S.weather){
+    wxEl.style.display='block';
+    const wx=S.weather;
+    document.getElementById('wx-ic').textContent=WX_ICONS[wx.current?.weather_code]||'🌡️';
+    document.getElementById('wx-temp').textContent=(wx.current?.temperature_2m??'--')+'°C';
+    document.getElementById('wx-desc').textContent=S.trip.dest;
+    // 5-day forecast
+    const fc=document.getElementById('wx-forecast');
+    if(wx.daily){
+      fc.innerHTML=wx.daily.time.slice(0,5).map((dt,i)=>{
+        const d=new Date(dt);
+        return `<div class="wx-day"><div>${WX_DN[d.getDay()]}</div><div class="wx-day-ic">${WX_ICONS[wx.daily.weather_code[i]]||'⛅'}</div><div class="wx-day-t">${Math.round(wx.daily.temperature_2m_max[i])}°</div></div>`;
+      }).join('');
+    }
+  } else {
+    wxEl.style.display='none';
+  }
+  // Weather for trip destination country
+  if(S.trip&&S.trip.dest&&S.wxCountry!==S.trip.dest){
+    fetchWeatherForTrip();
+  }
+
+  // Visited countries row
+  const vcRow=document.getElementById('vc-row');
+  if(S.visitedCountries&&S.visitedCountries.length>0){
+    vcRow.style.display='flex';
+    const flags=COUNTRIES.filter(c=>S.visitedCountries.includes(c.c));
+    document.getElementById('vc-flags').innerHTML=flags.map(c=>`<span class="vc-flag">${c.f}</span>`).join('');
+    document.getElementById('vc-cnt').textContent=`${t('visited_label')}: ${S.visitedCountries.length}`;
+  } else {
+    vcRow.style.display='none';
+  }
+
+  // Stats
+  const done=S.checklist.filter(x=>x.done).length;
+  const total=S.checklist.length;
+  document.getElementById('stats-row').innerHTML=`
+    <div class="sc"><div class="si">✅</div><div class="sv">${done}/${total}</div><div class="sl">${t('stats_check')}</div></div>
+    <div class="sc"><div class="si">📔</div><div class="sv">${S.journal.length}</div><div class="sl">${t('journal')}</div></div>`;
+
+  // Quick actions
+  document.getElementById('qa-title').textContent=t('recent');
+  document.getElementById('qa-row').innerHTML=`
+    <div class="qb" onclick="navigate('checklist')"><span class="qi">📋</span><span>${t('checklist')}</span></div>
+    <div class="qb" onclick="navigate('map')"><span class="qi">🗺️</span><span>${t('map')}</span></div>
+    <div class="qb" onclick="navigate('journal')"><span class="qi">📔</span><span>${t('journal')}</span></div>
+    <div class="qb" onclick="openAddDoc()"><span class="qi">📄</span><span>${t('add_doc').replace('+ ','')}</span></div>`;
+
   // Recent docs
   document.getElementById('recent-title').textContent=t('wallet');
   const rl=document.getElementById('recent-list');
@@ -978,12 +1244,41 @@ function renderHome(){
   } else {
     rl.innerHTML=S.docs.slice(0,2).map(d=>`
       <div class="card" style="margin-bottom:8px;cursor:pointer" onclick="navigate('wallet')">
-        <div class="card-body" style="padding:12px;display:flex;align-items:center;gap:10px">
+        <div style="padding:12px;display:flex;align-items:center;gap:10px">
           <span style="font-size:22px">${docIcon(d.type)}</span>
           <div><div style="font-weight:600;font-size:14px">${d.name}</div><div style="font-size:12px;color:var(--mu)">${d.sub||''}</div></div>
         </div>
       </div>`).join('');
   }
+}
+
+// Weather via Open-Meteo (free, no key required)
+async function fetchWeatherForTrip(){
+  if(!S.trip||!S.trip.dest)return;
+  // Try to match destination to a country
+  const matched=COUNTRIES.find(c=>S.trip.dest.toLowerCase().includes(c.n.en.toLowerCase())||S.trip.dest.toLowerCase().includes(c.n.ko)||S.trip.dest.toLowerCase().includes(c.n.ja)||S.trip.dest.toLowerCase().includes(c.n.zh));
+  const coords=matched?CAPITALS[matched.c]:null;
+  if(!coords)return;
+  try{
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords[0]}&longitude=${coords[1]}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&forecast_days=5&timezone=auto`);
+    const d=await r.json();
+    S.weather=d;S.wxCountry=S.trip.dest;
+    saveState();
+    // Re-render weather widget only
+    const wxEl=document.getElementById('wx-widget');
+    if(wxEl&&S.view==='home'){
+      wxEl.style.display='block';
+      document.getElementById('wx-ic').textContent=WX_ICONS[d.current?.weather_code]||'🌡️';
+      document.getElementById('wx-temp').textContent=(d.current?.temperature_2m??'--')+'°C';
+      document.getElementById('wx-desc').textContent=S.trip.dest;
+      if(d.daily){
+        document.getElementById('wx-forecast').innerHTML=d.daily.time.slice(0,5).map((dt,i)=>{
+          const day=new Date(dt);
+          return `<div class="wx-day"><div>${WX_DN[day.getDay()]}</div><div class="wx-day-ic">${WX_ICONS[d.daily.weather_code[i]]||'⛅'}</div><div class="wx-day-t">${Math.round(d.daily.temperature_2m_max[i])}°</div></div>`;
+        }).join('');
+      }
+    }
+  }catch(e){}
 }
 
 // --- CHECKLIST ---
@@ -996,14 +1291,27 @@ function renderChecklist(){
   document.getElementById('cl-pgb').style.width=pct+'%';
   document.getElementById('cl-cnt').textContent=`${done}/${total} (${pct}%)`;
 
+  // Packing categories
+  const CAT_DEF=[
+    {k:'all',ic:'📋'},{k:'docs',ic:'📄'},{k:'clothes',ic:'👕'},{k:'tech',ic:'💻'},{k:'health',ic:'🏥'},{k:'misc',ic:'🎒'}
+  ];
+  document.getElementById('pk-cat-row').innerHTML=CAT_DEF.map(c=>`<button class="pc${S.clCat===c.k?' on':''}" onclick="setClCat('${c.k}')">${c.ic} ${t('cat_'+c.k)}</button>`).join('');
+
   // Filters
   document.getElementById('cl-filters').innerHTML=[
     {k:'all',lk:'all'},{k:'todo',lk:'todo'},{k:'done',lk:'done_f'},
     {k:'p1',lk:'p_critical'},{k:'p2',lk:'p_important'}
   ].map(f=>`<div class="fc${S.clFilter===f.k?' on':''}" onclick="setFilter('${f.k}')">${t(f.lk)}</div>`).join('');
 
+  // Category filter sets
+  const CAT_IDS={docs:['passport','visa','flight','hotel','insurance'],clothes:['luggage'],tech:['sim'],health:['emergency'],misc:['transport','currency']};
+
   // List
   let items=[...S.checklist].sort((a,b)=>a.p-b.p);
+  if(S.clCat!=='all'){
+    const catIds=CAT_IDS[S.clCat]||[];
+    items=items.filter(x=>catIds.includes(x.id)||x.clCat===S.clCat);
+  }
   if(S.clFilter==='todo')items=items.filter(x=>!x.done);
   else if(S.clFilter==='done')items=items.filter(x=>x.done);
   else if(S.clFilter==='p1')items=items.filter(x=>x.p===1);
@@ -1039,6 +1347,7 @@ function renderChecklist(){
 }
 
 function setFilter(f){S.clFilter=f;renderChecklist();}
+function setClCat(c){S.clCat=c;renderChecklist();}
 
 function toggleItem(id){
   const item=S.checklist.find(x=>x.id===id);
@@ -1120,6 +1429,14 @@ function togglePicker(){
 
 function selectCountry(c){
   S.discountry=c;S.discTab=0;_pickerOpen=false;
+  // Track as visited
+  if(!S.visitedCountries.includes(c)){S.visitedCountries.push(c);saveState();}
+  // Fetch weather for selected country capital
+  const coords=CAPITALS[c];
+  if(coords){
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords[0]}&longitude=${coords[1]}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&forecast_days=5&timezone=auto`)
+      .then(r=>r.json()).then(d=>{S.weather=d;saveState();}).catch(()=>{});
+  }
   renderDiscover();
   setTimeout(()=>{const dd=document.getElementById('disc-detail');if(dd)dd.scrollIntoView({behavior:'smooth',block:'start'});},150);
 }
@@ -1173,10 +1490,10 @@ function renderSettings(){
     </div>`;
 }
 
-function setTheme(t){
-  if(t==='system')document.documentElement.removeAttribute('data-theme');
-  else document.documentElement.setAttribute('data-theme',t);
-  try{localStorage.setItem('tr_theme',t);}catch(e){}
+function setTheme(th){
+  if(th==='system')document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme',th);
+  try{localStorage.setItem('tr_theme',th);}catch(e){}
   renderSettings();
 }
 
@@ -1184,6 +1501,249 @@ function shareApp(){
   if(navigator.share){navigator.share({title:'TripGO',url:window.location.href});}
   else{try{navigator.clipboard.writeText(window.location.href);showToast('🔗 '+t('booking_link'));}catch(e){}}
 }
+
+// ============================================
+// MAP VIEW (Leaflet)
+// ============================================
+let _map=null,_mapLayer=null;
+function renderMap(){
+  document.getElementById('map-toolbar').innerHTML=[
+    {k:'markers',lk:'map_markers'},{k:'route',lk:'map_route'},{k:'itinerary',lk:'map_itinerary'}
+  ].map(b=>`<button class="mtb${S.mapView===b.k?' on':''}" onclick="setMapView('${b.k}')">${t(b.lk)}</button>`).join('')
+  +`<button class="mtb" onclick="openAddMarker()" style="margin-left:auto">＋ ${t('map_add_marker').replace('+ ','')}</button>`;
+
+  // Init map once
+  const mc=document.getElementById('map-container');
+  if(!_map){
+    _map=L.map('map-container',{zoomControl:true}).setView([20,0],2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      attribution:'© <a href="https://www.openstreetmap.org">OpenStreetMap</a>',maxZoom:19
+    }).addTo(_map);
+    // Click to get coords
+    _map.on('click',function(e){
+      document.getElementById('mk-lat').value=e.latlng.lat.toFixed(5);
+      document.getElementById('mk-lng').value=e.latlng.lng.toFixed(5);
+    });
+  }
+  setTimeout(()=>_map.invalidateSize(),50);
+
+  // Clear existing layers
+  if(_mapLayer){_map.removeLayer(_mapLayer);}
+  _mapLayer=L.layerGroup().addTo(_map);
+
+  S.mapMarkers.forEach((mk,i)=>{
+    const ic=L.divIcon({html:`<div style="font-size:24px;line-height:1;filter:drop-shadow(0 1px 3px rgba(0,0,0,.4))">${mk.icon||'📍'}</div>`,className:'',iconSize:[30,30],iconAnchor:[15,30]});
+    const m=L.marker([mk.lat,mk.lng],{icon:ic}).addTo(_mapLayer);
+    m.bindPopup(`<b>${mk.name}</b>${mk.note?'<br><small>'+mk.note+'</small>':''}`);
+  });
+
+  // Draw route if markers > 1 and in route view
+  if(S.mapView==='route'&&S.mapMarkers.length>1){
+    const pts=S.mapMarkers.map(mk=>[mk.lat,mk.lng]);
+    L.polyline(pts,{color:'#2563EB',weight:3,opacity:0.7,dashArray:'6,4'}).addTo(_mapLayer);
+    // Fit bounds
+    _map.fitBounds(pts,{padding:[30,30]});
+  } else if(S.mapMarkers.length>0){
+    const pts=S.mapMarkers.map(mk=>[mk.lat,mk.lng]);
+    _map.fitBounds(pts,{padding:[40,40]});
+  }
+
+  // Markers list
+  const ml=document.getElementById('map-markers-list');
+  if(S.mapView==='itinerary'){
+    renderItinerary(ml);
+  } else {
+    if(S.mapMarkers.length===0){
+      ml.innerHTML=`<div class="empty"><div class="empty-ic">🗺️</div><div class="empty-t">${t('map_empty')}</div></div>`;
+    } else {
+      ml.innerHTML=S.mapMarkers.map((mk,i)=>`
+        <div class="mk" onclick="flyToMarker(${i})">
+          <div class="mk-ic">${mk.icon||'📍'}</div>
+          <div class="mk-body">
+            <div class="mk-name">${mk.name}</div>
+            <div class="mk-coord">${mk.lat.toFixed(4)}, ${mk.lng.toFixed(4)}</div>
+            ${mk.note?`<div style="font-size:12px;color:var(--mu);margin-top:2px">${mk.note}</div>`:''}
+          </div>
+          <button class="mk-del" onclick="event.stopPropagation();deleteMarker(${i})">🗑️</button>
+        </div>`).join('');
+    }
+  }
+}
+
+function setMapView(v){S.mapView=v;renderMap();}
+
+function flyToMarker(i){
+  const mk=S.mapMarkers[i];
+  if(_map&&mk)_map.flyTo([mk.lat,mk.lng],14);
+}
+
+function openAddMarker(){
+  document.getElementById('mo-mk-title').textContent=t('map_add_marker');
+  document.getElementById('mk-name').value='';
+  document.getElementById('mk-icon').value='📍';
+  document.getElementById('mk-note').value='';
+  document.getElementById('mo-mk').classList.add('open');
+}
+
+function saveMarker(){
+  const name=document.getElementById('mk-name').value.trim();
+  if(!name)return;
+  const lat=parseFloat(document.getElementById('mk-lat').value);
+  const lng=parseFloat(document.getElementById('mk-lng').value);
+  if(isNaN(lat)||isNaN(lng)){showToast('⚠️ Enter coordinates or tap the map');return;}
+  S.mapMarkers.push({name,icon:document.getElementById('mk-icon').value||'📍',lat,lng,note:document.getElementById('mk-note').value.trim(),id:Date.now()});
+  saveState();
+  document.getElementById('mo-mk').classList.remove('open');
+  renderMap();
+  showToast('📍 '+name);
+}
+
+function deleteMarker(i){
+  S.mapMarkers.splice(i,1);saveState();renderMap();
+}
+
+function renderItinerary(el){
+  if(S.itinerary.length===0){
+    el.innerHTML=`<div class="empty"><div class="empty-ic">📅</div><div class="empty-t">${t('map_itin_add')}</div></div>
+      <div style="padding:0 16px 16px"><button class="btn btn-p btn-bl" onclick="openItinModal()">+ ${t('map_itin_add')}</button></div>`;
+    return;
+  }
+  el.innerHTML=`<div style="padding:0 16px 16px">
+    ${S.itinerary.map((day,i)=>`
+      <div class="card" style="margin-bottom:10px;overflow:visible">
+        <div style="padding:12px 14px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between">
+          <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:14px">Day ${i+1}: ${day.title}</div>
+          <button onclick="deleteItinDay(${i})" style="color:var(--err);font-size:16px;background:none;border:none;cursor:pointer">🗑️</button>
+        </div>
+        ${day.items.map(it=>`<div style="padding:8px 14px;border-bottom:1px solid var(--bdr);font-size:13px;display:flex;gap:8px;align-items:flex-start">
+          <span>${it.icon||'📌'}</span><span>${it.note}</span>
+        </div>`).join('')}
+      </div>`).join('')}
+    <button class="btn btn-p btn-bl" onclick="openItinModal()">+ ${t('map_itin_add')}</button>
+  </div>`;
+}
+
+function openItinModal(){
+  const trip=S.trip;
+  const title=trip?`${t('map_itin_add')} — ${trip.dest||''}`:t('map_itin_add');
+  document.getElementById('mo-itin-title').textContent=title;
+  document.getElementById('itin-days-form').innerHTML=`
+    <div class="fg"><label class="fl">Day Title</label><input class="fi" id="itin-day-title" placeholder="Day 1 — Arrival"></div>
+    <div id="itin-day-items">
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input class="fi" id="itin-item-0" placeholder="9:00 AM — Check in hotel" style="flex:1">
+      </div>
+    </div>
+    <button class="btn btn-o btn-sm" onclick="addItinItem()" style="margin-top:4px">+ Add Activity</button>`;
+  document.getElementById('mo-itin').classList.add('open');
+}
+
+let _itinItemCount=1;
+function addItinItem(){
+  const c=document.getElementById('itin-day-items');
+  const d=document.createElement('div');d.style.cssText='display:flex;gap:8px;margin-bottom:8px';
+  d.innerHTML=`<input class="fi" id="itin-item-${_itinItemCount}" placeholder="Activity..." style="flex:1">`;
+  c.appendChild(d);_itinItemCount++;
+}
+
+function saveItin(){
+  const title=document.getElementById('itin-day-title').value.trim()||'Day';
+  const items=[];
+  let i=0;
+  while(document.getElementById('itin-item-'+i)){
+    const v=document.getElementById('itin-item-'+i).value.trim();
+    if(v)items.push({note:v,icon:'📌'});
+    i++;
+  }
+  S.itinerary.push({title,items,date:new Date().toISOString()});
+  saveState();
+  document.getElementById('mo-itin').classList.remove('open');
+  _itinItemCount=1;
+  renderMap();
+}
+
+function deleteItinDay(i){S.itinerary.splice(i,1);saveState();renderMap();}
+
+// ============================================
+// JOURNAL VIEW
+// ============================================
+let _selectedMood='😊';
+function renderJournal(){
+  document.getElementById('jnl-title').textContent=t('journal_title');
+  document.getElementById('jnl-sub').textContent=t('journal_sub');
+  document.getElementById('jnl-add-lbl').textContent=t('journal_add');
+  const list=document.getElementById('jnl-list');
+  if(S.journal.length===0){
+    list.innerHTML=`<div class="empty"><div class="empty-ic">📔</div><div class="empty-t">${t('journal_empty')}</div></div>`;
+    return;
+  }
+  list.innerHTML=[...S.journal].reverse().map((e,ri)=>{
+    const i=S.journal.length-1-ri;
+    const d=new Date(e.date);
+    return `<div class="je">
+      ${e.img?`<img class="je-img" src="${e.img}" alt="">`:'' }
+      <div class="je-hdr">
+        <div class="je-mood">${e.mood||'😊'}</div>
+        <div class="je-meta">
+          <div class="je-date">${d.toLocaleDateString()} ${e.loc?'📍'+e.loc:''}</div>
+          <div class="je-title">${e.title}</div>
+        </div>
+        <button class="je-del" onclick="deleteJournal(${i})">🗑️</button>
+      </div>
+      <div class="je-body">${e.body}</div>
+    </div>`;
+  }).join('');
+}
+
+function openAddJournal(){
+  _selectedMood='😊';
+  document.getElementById('mo-jnl-title').textContent=t('journal_add');
+  document.getElementById('lbl-jnl-title2').textContent=t('journal_entry_title');
+  document.getElementById('lbl-jnl-body').textContent=t('journal_body');
+  document.getElementById('lbl-jnl-loc').textContent=t('journal_loc');
+  document.getElementById('jnl-title-inp').value='';
+  document.getElementById('jnl-body').value='';
+  document.getElementById('jnl-loc').value='';
+  document.getElementById('jnl-img-prev').style.display='none';
+  document.getElementById('jnl-img-prev').src='';
+  document.getElementById('jnl-save-btn').textContent=t('save');
+  // Reset moods
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelector('.mood-btn[data-mood="😊"]').classList.add('on');
+  document.getElementById('mo-jnl').classList.add('open');
+}
+
+function selectMood(m){
+  _selectedMood=m;
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.toggle('on',b.dataset.mood===m));
+}
+
+function handleJnlFile(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{document.getElementById('jnl-img-prev').src=ev.target.result;document.getElementById('jnl-img-prev').style.display='block';};
+  r.readAsDataURL(f);
+}
+
+function saveJournal(){
+  const title=document.getElementById('jnl-title-inp').value.trim();
+  if(!title)return;
+  S.journal.push({
+    id:Date.now(),
+    mood:_selectedMood,
+    title,
+    body:document.getElementById('jnl-body').value.trim(),
+    loc:document.getElementById('jnl-loc').value.trim(),
+    img:document.getElementById('jnl-img-prev').src||'',
+    date:new Date().toISOString()
+  });
+  saveState();
+  document.getElementById('mo-jnl').classList.remove('open');
+  renderJournal();
+  showToast('📔 '+t('journal_add'));
+}
+
+function deleteJournal(i){S.journal.splice(i,1);saveState();renderJournal();}
 
 // ============================================
 // MODAL: TRIP

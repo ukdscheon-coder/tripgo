@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>TripGO</title>
+<!-- Google AdSense — Publisher ID를 ca-pub-XXXXXXXXXX로 교체하세요 -->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX" crossorigin="anonymous"></script> -->
+<!-- Google Analytics GA4 -->
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script> -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -385,6 +390,7 @@ a{color:inherit;text-decoration:none}
       </div>
       <div class="cpicker-wrap" id="cpicker-wrap"></div>
       <div class="disc-detail" id="disc-detail" style="display:none">
+        <div id="disc-safety"></div>
         <div class="dtabs" id="dtabs"></div>
         <div id="dsecs"></div>
       </div>
@@ -540,7 +546,7 @@ a{color:inherit;text-decoration:none}
 const T={
   ko:{
     home:'홈',checklist:'체크리스트',wallet:'지갑',discover:'탐색',settings:'설정',
-    hi:'안녕하세요, DS님 👋',welcome_sub:'여행을 준비해볼까요?',
+    hi:'안녕하세요',welcome_sub:'여행을 준비해볼까요?',profile_name:'이름',profile_name_ph:'이름을 입력하세요',
     add_trip:'+ 다가오는 여행 추가',next_trip:'다가오는 여행',
     trip_title:'여행 추가',save:'저장',
     dest:'목적지',from:'출발일',to:'귀국일',notes:'메모',
@@ -574,6 +580,8 @@ const T={
     c_flight:'항공권 예매',c_flight_s:'출·귀국 항공편 예약',
     c_hotel:'숙소 예약',c_hotel_s:'체크인/체크아웃 날짜 확인',
     c_insurance:'여행자 보험',c_insurance_s:'의료·분실·지연 포함 종합보험 추천',
+    c_flight_cancel:'항공편 취소 대비',c_flight_cancel_s:'취소·지연 시 보상 청구 방법 확인(AirHelp)',
+    budget_section:'일일 예산 & 현지 관행',daily_budget:'예상 일일 예산',tip_culture:'팁 문화',bargain_ok:'흥정 가능',no_bargain:'흥정 없음',sim_rec:'SIM 추천',safety_level:'안전 등급',
     c_transport:'현지 교통 예약',c_transport_s:'렌트카, 기차, 공항버스 등',
     c_currency:'환전 / 외화',c_currency_s:'목적국 현지 통화로 환전',
     c_sim:'로밍 / SIM 카드',c_sim_s:'해외 데이터 사용 준비',
@@ -597,7 +605,7 @@ const T={
   },
   en:{
     home:'Home',checklist:'Checklist',wallet:'Wallet',discover:'Discover',settings:'Settings',
-    hi:'Hello, DS 👋',welcome_sub:"Let's plan your trip!",
+    hi:'Hello',welcome_sub:"Let's plan your trip!",profile_name:'Name',profile_name_ph:'Enter your name',
     add_trip:'+ Add Upcoming Trip',next_trip:'Upcoming Trip',
     trip_title:'Add Trip',save:'Save',
     dest:'Destination',from:'Departure',to:'Return',notes:'Notes',
@@ -630,6 +638,8 @@ const T={
     c_flight:'Book Flights',c_flight_s:'Reserve outbound and return flights',
     c_hotel:'Book Hotel',c_hotel_s:'Confirm check-in/check-out dates',
     c_insurance:'Travel Insurance',c_insurance_s:'Comprehensive cover: medical, loss, delay',
+    c_flight_cancel:'Flight Cancellation',c_flight_cancel_s:'Know your rights & claim compensation (AirHelp)',
+    budget_section:'Daily Budget & Local Customs',daily_budget:'Estimated Daily Budget',tip_culture:'Tipping Culture',bargain_ok:'Bargaining OK',no_bargain:'No Bargaining',sim_rec:'SIM Recommendation',safety_level:'Safety Level',
     c_transport:'Local Transport',c_transport_s:'Car rental, trains, airport transfers',
     c_currency:'Currency Exchange',c_currency_s:'Get local currency before departure',
     c_sim:'Roaming / SIM Card',c_sim_s:'Set up international data access',
@@ -648,7 +658,7 @@ const T={
   },
   ja:{
     home:'ホーム',checklist:'チェックリスト',wallet:'ウォレット',discover:'探索',settings:'設定',
-    hi:'こんにちは、DS さん 👋',welcome_sub:'旅行を計画しましょう！',
+    hi:'こんにちは',welcome_sub:'旅行を計画しましょう！',profile_name:'お名前',profile_name_ph:'名前を入力してください',
     add_trip:'+ 旅行を追加',next_trip:'次の旅行',
     trip_title:'旅行追加',save:'保存',
     dest:'目的地',from:'出発日',to:'帰国日',notes:'メモ',
@@ -681,6 +691,8 @@ const T={
     c_flight:'航空券予約',c_flight_s:'往復航空便を予約',
     c_hotel:'ホテル予約',c_hotel_s:'チェックイン・アウト日程確認',
     c_insurance:'旅行保険加入',c_insurance_s:'医療・紛失・遅延を含む総合保険',
+    c_flight_cancel:'欠航・遅延対策',c_flight_cancel_s:'キャンセル・遅延時の補償請求方法を確認(AirHelp)',
+    budget_section:'1日予算 & 現地マナー',daily_budget:'1日あたり予算目安',tip_culture:'チップ文化',bargain_ok:'値切り可',no_bargain:'値切り不可',sim_rec:'SIM おすすめ',safety_level:'安全レベル',
     c_transport:'現地交通手配',c_transport_s:'レンタカー・電車・空港送迎など',
     c_currency:'両替',c_currency_s:'現地通貨を出発前に準備',
     c_sim:'ローミング/SIM',c_sim_s:'海外データ通信の準備',
@@ -699,7 +711,7 @@ const T={
   },
   zh:{
     home:'首页',checklist:'清单',wallet:'钱包',discover:'发现',settings:'设置',
-    hi:'您好，DS 👋',welcome_sub:'开始规划您的旅行吧！',
+    hi:'您好',welcome_sub:'开始规划您的旅行吧！',profile_name:'姓名',profile_name_ph:'请输入您的姓名',
     add_trip:'+ 添加即将到来的旅行',next_trip:'即将出行',
     trip_title:'添加旅行',save:'保存',
     dest:'目的地',from:'出发日期',to:'返回日期',notes:'备注',
@@ -732,6 +744,8 @@ const T={
     c_flight:'预订机票',c_flight_s:'预订往返航班',
     c_hotel:'预订酒店',c_hotel_s:'确认入住/退房日期',
     c_insurance:'旅行保险',c_insurance_s:'综合保险含医疗、失物、延误',
+    c_flight_cancel:'航班取消应对',c_flight_cancel_s:'了解取消/延误赔偿申请方法(AirHelp)',
+    budget_section:'日均预算 & 当地习惯',daily_budget:'预计日均费用',tip_culture:'小费文化',bargain_ok:'可讨价还价',no_bargain:'不可议价',sim_rec:'SIM卡推荐',safety_level:'安全等级',
     c_transport:'当地交通',c_transport_s:'租车、火车、机场接送等',
     c_currency:'兑换外币',c_currency_s:'出发前准备目的地货币',
     c_sim:'漫游/SIM卡',c_sim_s:'准备海外数据流量',
@@ -774,10 +788,14 @@ const CL_DEFAULT=[
     {l:'Airbnb',u:'https://www.airbnb.co.uk'},
     {l:'Hotels.com',u:'https://www.hotels.com'}
   ]},
-  {id:'insurance',icon:'🛡️',p:3,tk:'c_insurance',sk:'c_insurance_s',links:[
+  {id:'insurance',icon:'🛡️',p:2,tk:'c_insurance',sk:'c_insurance_s',links:[
     {l:'World Nomads',u:'https://www.worldnomads.com'},
     {l:'삼성화재',u:'https://www.samsungfire.com'},
     {l:'AXA Travel',u:'https://www.axa-travel-insurance.com'}
+  ]},
+  {id:'flight_cancel',icon:'✈️🚫',p:2,tk:'c_flight_cancel',sk:'c_flight_cancel_s',links:[
+    {l:'AirHelp(보상 청구)',u:'https://www.airhelp.com'},
+    {l:'항공 권리 안내',u:'https://www.transportation.gov/airconsumer/fly-rights'}
   ]},
   {id:'transport',icon:'🚌',p:3,tk:'c_transport',sk:'c_transport_s',links:[
     {l:'Rentalcars',u:'https://www.rentalcars.com'},
@@ -819,6 +837,9 @@ const COUNTRIES=[
   {c:'SG',f:'🇸🇬',n:{ko:'싱가포르',en:'Singapore',ja:'シンガポール',zh:'新加坡'}},
   {c:'TW',f:'🇹🇼',n:{ko:'대만',en:'Taiwan',ja:'台湾',zh:'台湾'}},
   {c:'VN',f:'🇻🇳',n:{ko:'베트남',en:'Vietnam',ja:'ベトナム',zh:'越南'}},
+  {c:'DE',f:'🇩🇪',n:{ko:'독일',en:'Germany',ja:'ドイツ',zh:'德国'}},
+  {c:'CH',f:'🇨🇭',n:{ko:'스위스',en:'Switzerland',ja:'スイス',zh:'瑞士'}},
+  {c:'PH',f:'🇵🇭',n:{ko:'필리핀',en:'Philippines',ja:'フィリピン',zh:'菲律宾'}},
 ];
 const CD={
   JP:{
@@ -1068,6 +1089,82 @@ const CD={
        {ic:'🚆',n:'Reunification Express Train',d:{ko:'하노이-호치민 30시간 침대 기차',en:'30-hour overnight sleeper train Hanoi to Ho Chi Minh',ja:'ハノイ-ホーチミン30時間の寝台列車',zh:'河内至胡志明市30小时卧铺火车'},tags:{ko:['장거리'],en:['Long distance'],ja:['長距離'],zh:['长途']}},
        {ic:'✈️',n:'VietJet / Bamboo Airways',d:{ko:'저가항공으로 도시 간 1~2시간 이동',en:'Budget flights between cities in 1-2 hours',ja:'格安航空で都市間を1〜2時間で移動',zh:'廉价航空城际飞行仅需1-2小时'},tags:{ko:['국내선'],en:['Domestic flights'],ja:['国内線'],zh:['国内航班']}}],
     tips:[{ko:'현지 화폐 동(VND), 만 동 단위 주의',en:'Currency is VND — millions are common, count carefully',ja:'通貨はVND、百万単位が多いので注意',zh:'货币为越南盾(VND)，百万单位常见，仔细计数'},{ko:'오토바이 홍수 — 눈 맞추며 천천히 건너기',en:'Motorbike flood — make eye contact and cross slowly',ja:'バイクの洪水、目線を合わせてゆっくり渡る',zh:'摩托车如潮——与车手眼神交流后缓慢穿行'},{ko:'물은 반드시 생수 구입, 수돗물 금지',en:'Always buy bottled water — tap water is unsafe to drink',ja:'必ずペットボトルの水を購入、水道水は飲用不可',zh:'务必购买瓶装水，自来水不可饮用'}]
+  },
+  DE:{
+    a:[
+      {ic:'🏰',n:'Marienplatz & Neues Rathaus',d:{ko:'뮌헨 중심 광장, 정오 글로켄슈필 공연 관람 필수',en:'Munich\'s central square — catch the noon Glockenspiel show',ja:'ミュンヘン中心広場、正午のグロッケンシュピールは必見',zh:'慕尼黑中心广场，务必观看正午报时钟表演'},tags:{ko:['무료','뮌헨'],en:['Free','Munich'],ja:['無料','ミュンヘン'],zh:['免费','慕尼黑']},lat:48.1374,lng:11.5755},
+      {ic:'🌿',n:'English Garden (Englischer Garten)',d:{ko:'센트럴파크보다 큰 뮌헨 공원, 서퍼들이 강에서 파도타기',en:'Larger than Central Park — surfers ride the river wave all year',ja:'セントラルパークより大きい公園、川でサーファーが年中波乗り',zh:'比中央公园还大的公园，全年都有冲浪者在河中冲浪'},tags:{ko:['무료','자연','로컬'],en:['Free','Nature','Local'],ja:['無料','自然','ローカル'],zh:['免费','自然','本地']},lat:48.1642,lng:11.6057},
+      {ic:'🍺',n:'Hofbräuhaus Beer Garden',d:{ko:'1589년 창업 왕립 양조장 맥주홀, 테이블 석에서 1L 맥주',en:'Royal brewery since 1589 — litre steins at long communal tables',ja:'1589年創業の王立醸造所、テーブル席で1Lジョッキ',zh:'1589年皇家啤酒厂，长桌共饮1升啤酒'},tags:{ko:['맥주','역사'],en:['Beer','Historic'],ja:['ビール','歴史'],zh:['啤酒','历史']},lat:48.1376,lng:11.5799},
+      {ic:'🏯',n:'Heidelberg Castle',d:{ko:'라인 강변 언덕 위 붉은 사암 폐허 성, 케이블카로 이동',en:'Ruined red sandstone castle on Rhine hillside — take the Bergbahn',ja:'ライン川沿いの丘の上の赤い砂岩廃城、ケーブルカーで',zh:'莱茵河边山丘上的红色砂岩废弃古堡，乘缆车前往'},tags:{ko:['역사','낭만'],en:['History','Romantic'],ja:['歴史','ロマンチック'],zh:['历史','浪漫']},lat:49.4093,lng:8.7152},
+      {ic:'⭕',n:'Nördlingen Medieval Walls',d:{ko:'완전한 원형 성벽을 걸을 수 있는 중세 도시, 운석 충돌 지형',en:'Walk the complete circular medieval wall of this meteor-crater town',ja:'完全な円形城壁を歩ける中世都市、隕石衝突地形の上に位置',zh:'可沿完整圆形城墙散步的中世纪小城，建于陨石撞击坑上'},tags:{ko:['중세','독특'],en:['Medieval','Unique'],ja:['中世','ユニーク'],zh:['中世纪','独特']},lat:48.8525,lng:10.4907},
+      {ic:'🏙️',n:'Brandenburg Gate & Unter den Linden',d:{ko:'베를린 상징 브란덴부르크문, 린덴 가로수길 산책',en:'Berlin\'s iconic gate on tree-lined boulevard — free & central',ja:'ベルリンの象徴ブランデンブルク門、菩提樹並木を散策',zh:'柏林标志性城门，沿菩提树大道漫步，免费且位于市中心'},tags:{ko:['베를린','무료'],en:['Berlin','Free'],ja:['ベルリン','無料'],zh:['柏林','免费']},lat:52.5163,lng:13.3777}
+    ],
+    f:[
+      {ic:'🥩',n:'Schweinshaxe (Pork Knuckle)',d:{ko:'바삭한 껍질의 돼지 족발 뮌헨 대표 요리, 비어가르텐 필수',en:'Crispy-skinned pork knuckle — Munich\'s signature dish at any Biergarten',ja:'パリパリ皮の豚すね肉、ビアガーデンの定番ミュンヘン料理',zh:'脆皮猪肘，慕尼黑啤酒花园必点招牌菜'},tags:{ko:['필수','독일음식'],en:['Must-try','German food'],ja:['必食','ドイツ料理'],zh:['必试','德国菜']}},
+      {ic:'🌭',n:'Weisswurst & Bretzel',d:{ko:'뮌헨 흰 소시지+달달한 머스타드+프레첼 조합, 오전 11시 전 먹어야 정통',en:'Munich white sausage + sweet mustard + pretzel — tradition says eat before 11am',ja:'ミュンヘンの白ソーセージ+甘いマスタード+ブレーツェル、午前11時前に食べるのが伝統',zh:'慕尼黑白香肠+甜芥末+椒盐饼干，传统上需在上午11点前食用'},tags:{ko:['아침','전통'],en:['Breakfast','Traditional'],ja:['朝食','伝統'],zh:['早餐','传统']}},
+      {ic:'🍺',n:'Biergarten Brotzeit',d:{ko:'야외 비어가르텐에서 치즈·냉육 스낵 플레이트와 맥주',en:'Outdoor beer garden snack platter of cheese & cold cuts with beer',ja:'屋外ビアガーデンでチーズ&コールドカットとビール',zh:'露天啤酒花园的奶酪冷肉拼盘配啤酒'},tags:{ko:['맥주','간식'],en:['Beer','Snack'],ja:['ビール','軽食'],zh:['啤酒','小吃']}},
+      {ic:'🥨',n:'Obatzda & Bread',d:{ko:'바이에른 치즈 스프레드+브레드, 맥주홀 간식',en:'Bavarian spiced cheese spread on rye bread — classic beer hall starter',ja:'バイエルンのスパイスチーズスプレッドとライ麦パン',zh:'巴伐利亚香料奶酪配黑麦面包，啤酒厅经典前菜'},tags:{ko:['치즈','바이에른'],en:['Cheese','Bavarian'],ja:['チーズ','バイエルン'],zh:['奶酪','巴伐利亚']}}
+    ],
+    t:[
+      {ic:'🚄',n:'Deutsche Bahn (DB) Rail',d:{ko:'독일 전국 고속철도, Deutschland-Ticket €49/월 무제한',en:'National rail network — Deutschland-Ticket €49/month unlimited regional',ja:'全国鉄道網、ドイチュランドチケット月€49で地域列車乗り放題',zh:'全国铁路网，德国票每月49欧元无限乘坐地区列车'},tags:{ko:['장거리','가성비'],en:['Long distance','Value'],ja:['長距離','コスパ'],zh:['长途','性价比']},u:'https://www.bahn.de'},
+      {ic:'🚇',n:'MVV Munich U-Bahn',d:{ko:'뮌헨 지하철·버스·트램 통합권, 1일권 €8.90',en:'Munich integrated metro/bus/tram day ticket ~€8.90',ja:'ミュンヘン地下鉄・バス・トラム1日券約€8.90',zh:'慕尼黑地铁/公交/有轨电车一日票约8.90欧元'},tags:{ko:['뮌헨'],en:['Munich'],ja:['ミュンヘン'],zh:['慕尼黑']}},
+      {ic:'🚲',n:'Nextbike / MVG Rad',d:{ko:'뮌헨 공유 자전거, 첫 30분 무료',en:'Munich bike share — first 30 min free',ja:'ミュンヘンのシェアサイクル、最初の30分無料',zh:'慕尼黑共享单车，前30分钟免费'},tags:{ko:['자전거','친환경'],en:['Bike','Eco'],ja:['自転車','エコ'],zh:['自行车','环保']}}
+    ],
+    tips:[
+      {ko:'뮌헨 옥토버페스트: 9월 말 ~ 10월 초 (예약 필수)',en:'Oktoberfest: late Sep–early Oct — book accommodation months ahead',ja:'オクトーバーフェスト: 9月末～10月初め、宿泊は数ヶ月前に予約',zh:'慕尼黑啤酒节：9月底至10月初，需提前数月订房'},
+      {ko:'독일 상점 일요일 대부분 휴무',en:'Most shops closed Sunday — plan grocery runs for weekdays',ja:'日曜日はほとんどの店が休み、食料品は平日に',zh:'大多数商店周日休息，杂货采购安排在工作日'},
+      {ko:'팁 문화: 식당에서 청구액 10% 현금 팁 관행',en:'Tipping: ~10% cash tip at restaurants is customary',ja:'チップ文化: レストランでは請求額の約10%を現金で',zh:'小费文化：餐厅通常给账单10%的现金小费'}
+    ]
+  },
+  CH:{
+    a:[
+      {ic:'🏔️',n:'Jungfraujoch – Top of Europe',d:{ko:'해발 3,454m 유럽 최고 기차역, 알레치 빙하 전망',en:'Europe\'s highest railway station at 3,454m with Aletsch glacier views',ja:'標高3,454m、欧州最高峰の鉄道駅、アレッチ氷河の眺め',zh:'海拔3454米，欧洲最高铁路站，俯瞰阿莱奇冰川'},tags:{ko:['세계유산','눈❄️'],en:['World Heritage','Snow❄️'],ja:['世界遺産','雪❄️'],zh:['世界遗产','雪❄️']},lat:46.5474,lng:7.9856},
+      {ic:'🧗',n:'Grindelwald First Cliff Walk',d:{ko:'해발 2,168m 절벽 보행로+집라인, 아이거 북벽 전망',en:'Cliff walk at 2,168m + zipline with Eiger north face views',ja:'標高2,168mのクリフウォーク+ジップライン、アイガー北壁の眺め',zh:'海拔2168米悬崖步道+滑索，俯瞰艾格尔北壁'},tags:{ko:['하이킹','짜릿'],en:['Hiking','Thrilling'],ja:['ハイキング','スリル'],zh:['远足','刺激']},lat:46.6249,lng:8.0557},
+      {ic:'🏘️',n:'Interlaken Old Town',d:{ko:'융프라우 지역 베이스캠프, 호수 사이 마을',en:'Base camp between two lakes for all Jungfrau activities',ja:'2つの湖に挟まれたユングフラウ地域の拠点',zh:'两湖之间的少女峰地区大本营'},tags:{ko:['베이스캠프','쇼핑'],en:['Base camp','Shopping'],ja:['拠点','ショッピング'],zh:['大本营','购物']},lat:46.6863,lng:7.8632},
+      {ic:'🌉',n:'Chapel Bridge Lucerne',d:{ko:'1333년 목조 유럽 최고(最古) 다리, 루체른 호수 전망',en:'Europe\'s oldest wooden covered bridge from 1333 over Lake Lucerne',ja:'1333年建造、欧州最古の木造橋、ルツェルン湖の景観',zh:'1333年建造的欧洲最古老木质廊桥，横跨琉森湖'},tags:{ko:['무료','역사'],en:['Free','Historic'],ja:['無料','歴史'],zh:['免费','历史']},lat:47.0502,lng:8.3093},
+      {ic:'🐻',n:'Bern Old Town & Bear Park',d:{ko:'유네스코 세계유산 베른 구시가지, 살아있는 곰 공원',en:'UNESCO old town with a real bear park at the riverside',ja:'ユネスコ世界遺産ベルン旧市街と川沿いの本物の熊公園',zh:'联合国教科文组织世界遗产老城区，河边设有真实熊苑'},tags:{ko:['유네스코','무료'],en:['UNESCO','Free'],ja:['ユネスコ','無料'],zh:['联合国教科文组织','免费']},lat:46.9480,lng:7.4474}
+    ],
+    f:[
+      {ic:'🫕',n:'Fondue (Cheese & Chocolate)',d:{ko:'그뤼에르 치즈 퐁뒤 + 스위스 초콜릿 퐁뒤, 인터라켄 레스토랑 추천',en:'Gruyère cheese fondue + Swiss chocolate fondue — Interlaken restaurants',ja:'グリュイエールチーズフォンデュ+スイスチョコレートフォンデュ',zh:'格鲁耶尔奶酪火锅+瑞士巧克力火锅，推荐因特拉肯餐厅'},tags:{ko:['필수','퐁뒤'],en:['Must-try','Fondue'],ja:['必食','フォンデュ'],zh:['必试','火锅']}},
+      {ic:'🍫',n:'Swiss Chocolate (Lindt/Läderach)',d:{ko:'레더라흐 신선 핸드메이드 초콜릿, 린트 공장 방문 가능',en:'Läderach fresh hand-crafted chocs or visit the Lindt Home of Chocolate',ja:'レデラッハの新鮮な手作りチョコ、リンツ本社工場見学も可',zh:'Läderach新鲜手工巧克力，或参观瑞士莲巧克力之家'},tags:{ko:['초콜릿','선물'],en:['Chocolate','Gift'],ja:['チョコ','お土産'],zh:['巧克力','伴手礼']}},
+      {ic:'🥩',n:'Zürcher Geschnetzeltes',d:{ko:'취리히식 송아지 고기 크림 소스 요리, 뢰스티(감자케이크)와 함께',en:'Zurich-style veal in cream sauce served with rösti potato cake',ja:'チューリッヒ風クリームソース仔牛肉、レシュティと一緒に',zh:'苏黎世风味奶油酱小牛肉，搭配土豆饼'},tags:{ko:['취리히','전통'],en:['Zurich','Traditional'],ja:['チューリッヒ','伝統'],zh:['苏黎世','传统']}},
+      {ic:'🧀',n:'Raclette',d:{ko:'녹인 치즈를 감자에 긁어 얹어 먹는 발레 지방 전통 요리',en:'Melted Valais cheese scraped over boiled potatoes — a Swiss staple',ja:'溶かしたヴァレー州のチーズをゆで芋に削りかける伝統料理',zh:'将熔化的瓦莱奶酪刮在水煮土豆上的传统料理'},tags:{ko:['치즈','알프스'],en:['Cheese','Alps'],ja:['チーズ','アルプス'],zh:['奶酪','阿尔卑斯']}}
+    ],
+    t:[
+      {ic:'🚆',n:'Swiss Travel Pass',d:{ko:'기차·버스·보트 무제한+박물관 무료, 3/4/6/8/15일권',en:'Unlimited trains, buses & boats + free museums — 3/4/6/8/15-day passes',ja:'列車・バス・ボート乗り放題+博物館無料、3/4/6/8/15日券',zh:'火车、公交、轮船无限次+免费博物馆，3/4/6/8/15天通票'},tags:{ko:['추천','무제한'],en:['Recommended','Unlimited'],ja:['おすすめ','乗り放題'],zh:['推荐','无限次']},u:'https://www.swisstravelsystem.com'},
+      {ic:'🚠',n:'Cable Cars & Mountain Railways',d:{ko:'융프라우·필라투스·리기 산악열차·케이블카 — 스위스 패스 포함',en:'Jungfrau, Pilatus, Rigi cogwheel trains & cable cars — included in Swiss Pass',ja:'ユングフラウ・ピラトゥス・リギの登山列車&ケーブルカー',zh:'少女峰、皮拉图斯、里吉齿轮列车和缆车，瑞士通票可用'},tags:{ko:['알프스','필수'],en:['Alps','Essential'],ja:['アルプス','必須'],zh:['阿尔卑斯','必备']}},
+      {ic:'🚌',n:'PostBus Network',d:{ko:'산악 마을 연결 노란 버스, 스위스 패스 포함',en:'Yellow postal buses connecting mountain villages — Swiss Pass valid',ja:'山岳集落を結ぶ黄色いポストバス、スイスパス有効',zh:'连接山村的黄色邮政巴士，瑞士通票有效'},tags:{ko:['산악지역'],en:['Rural'],ja:['山岳地域'],zh:['山区']}}
+    ],
+    tips:[
+      {ko:'스위스 물가 최고 수준 — 슈퍼마켓 미그로스/쿠프 활용',en:'Switzerland is pricey — use Migros/Coop supermarkets for budget meals',ja:'スイスは物価が高い、Migros/Coopスーパーでコスパ良く',zh:'瑞士物价极高，利用Migros/Coop超市解决平价餐食'},
+      {ko:'산악 날씨 변화 무쌍 — 방수 재킷·레이어링 필수',en:'Mountain weather changes fast — waterproof jacket & layering essential',ja:'山岳の天気は変わりやすい、防水ジャケットと重ね着必須',zh:'山区天气变化无常，防水夹克和多层穿搭必不可少'},
+      {ko:'그린델발트 퍼스트: 케이블카 첫차 전 일찍 줄 서기',en:'Grindelwald First: arrive early before cable car opens to beat crowds',ja:'グリンデルワルト・ファースト: ロープウェイ開始前に早めに並ぶ',zh:'格林德瓦尔德First：缆车开放前提早排队以避开人群'}
+    ]
+  },
+  PH:{
+    a:[
+      {ic:'🦈',n:'Oslob Whale Shark Watching',d:{ko:'세부 오슬롭 고래상어 수영, 일출 전 출발 권장',en:'Swim with whale sharks in Oslob Cebu — depart before sunrise',ja:'セブ島オスロブでジンベエザメと泳ぐ、日の出前の出発を推奨',zh:'宿务岛Oslob与鲸鲨共游，建议日出前出发'},tags:{ko:['세부','체험'],en:['Cebu','Experience'],ja:['セブ','体験'],zh:['宿务','体验']},lat:9.4969,lng:123.3908},
+      {ic:'🏝️',n:'Sumilon Island Sandbar',d:{ko:'세부 남부 모래사장 섬, 스노클링 명소',en:'Floating sandbar south of Cebu — great for snorkelling',ja:'セブ南部の砂州の島、シュノーケリングの名所',zh:'宿务南部沙洲岛，浮潜胜地'},tags:{ko:['해변','스노클링'],en:['Beach','Snorkel'],ja:['ビーチ','シュノーケリング'],zh:['海滩','浮潜']},lat:9.8693,lng:123.3988},
+      {ic:'💧',n:'Kawasan Falls Canyoneering',d:{ko:'바디안 청록색 폭포 캐녀닝 투어, 일일 투어 추천',en:'Turquoise waterfalls in Badian with canyoneering day tour',ja:'バディアンのターコイズ色の滝とキャニオニングデイツアー',zh:'巴迪扬青绿色瀑布峡谷探险一日游'},tags:{ko:['액티비티','폭포'],en:['Activity','Waterfall'],ja:['アクティビティ','滝'],zh:['活动','瀑布']},lat:9.8067,lng:123.3783},
+      {ic:'⛪',n:'Magellan\'s Cross & Basilica',d:{ko:'세부 역사 중심지 마젤란 십자가 + 산토니뇨 성당',en:'Cebu\'s historic centre: Magellan\'s Cross + Basilica del Santo Niño',ja:'セブ歴史の中心、マゼランのクロス+サントニーニョ大聖堂',zh:'宿务历史中心：麦哲伦十字架+圣婴圣殿'},tags:{ko:['역사','무료'],en:['History','Free'],ja:['歴史','無料'],zh:['历史','免费']},lat:10.2925,lng:123.9021},
+      {ic:'🌊',n:'Boracay White Beach',d:{ko:'보라카이 화이트비치 — 동남아 최고 해변 중 하나',en:'One of Southeast Asia\'s finest beaches on Boracay island',ja:'ボラカイ島、東南アジア最高のビーチのひとつ',zh:'长滩岛白滩，东南亚最美海滩之一'},tags:{ko:['해변','석양'],en:['Beach','Sunset'],ja:['ビーチ','夕陽'],zh:['海滩','日落']},lat:11.9674,lng:121.9248}
+    ],
+    f:[
+      {ic:'🐷',n:'Lechon Cebu',d:{ko:'세부 통돼지 바비큐 — 필리핀 최고 음식, 라사 레스토랑 추천',en:'Whole roasted pig — Philippines\' finest dish, try Casa Rosal or Zubuchon',ja:'セブの豚の丸焼き、フィリピン最高の料理',zh:'宿务烤全猪，菲律宾最佳美食，推荐Casa Rosal或Zubuchon'},tags:{ko:['필수','세부'],en:['Must-try','Cebu'],ja:['必食','セブ'],zh:['必试','宿务']}},
+      {ic:'🍖',n:'Sisig',d:{ko:'돼지 귀·볼살 철판 볶음, 맥주 안주 최고',en:'Sizzling pork cheek & ear on iron plate — perfect beer pairing',ja:'豚の頬肉と耳の鉄板炒め、ビールのお供に最高',zh:'铁板炒猪脸颊和猪耳，搭配啤酒绝佳'},tags:{ko:['술안주','필리핀'],en:['Bar food','Filipino'],ja:['おつまみ','フィリピン'],zh:['下酒菜','菲律宾']}},
+      {ic:'🥭',n:'Philippine Mangoes',d:{ko:'세계 최고 품질 세부산 망고, 생망고+망고 셰이크',en:'World-class Cebu mangoes — fresh or as mango shake',ja:'世界最高品質のセブ産マンゴー、生orマンゴーシェイク',zh:'世界顶级宿务芒果，新鲜或芒果奶昔'},tags:{ko:['과일','간식'],en:['Fruit','Snack'],ja:['フルーツ','おやつ'],zh:['水果','小吃']}},
+      {ic:'🍲',n:'Sinigang (Tamarind Soup)',d:{ko:'타마린드 신맛 돼지/새우 수프, 필리핀 소울 푸드',en:'Sour tamarind broth with pork or shrimp — Filipino soul food',ja:'タマリンドの酸味スープ、豚肉orエビ入り、フィリピンの魂の料理',zh:'酸罗望子汤底加猪肉或虾，菲律宾灵魂料理'},tags:{ko:['전통','국물'],en:['Traditional','Soup'],ja:['伝統','スープ'],zh:['传统','汤']}}
+    ],
+    t:[
+      {ic:'🛺',n:'Jeepney & Modern Jeepney',d:{ko:'필리핀 상징 지프니, 현대식 E-jeepney로 전환 중',en:'Iconic Philippine jeepney — modern E-jeepney versions now running',ja:'フィリピンの象徴ジープニー、現代のE-jeepneyに移行中',zh:'菲律宾标志性吉普尼，现已推广现代E-吉普尼'},tags:{ko:['로컬','저렴'],en:['Local','Cheap'],ja:['ローカル','安い'],zh:['本地','便宜']}},
+      {ic:'🚌',n:'Bus (V-Hire) to Oslob',d:{ko:'세부 남부 터미널 → 오슬롭 버스 3~4시간, 새벽 4시 출발',en:'South Bus Terminal to Oslob 3-4h — take 4am bus for whale sharks',ja:'南バスターミナルからオスロブまで3〜4時間、午前4時発',zh:'南部巴士站到Oslob 3-4小时，凌晨4点发车看鲸鲨'},tags:{ko:['저렴','세부'],en:['Budget','Cebu'],ja:['格安','セブ'],zh:['实惠','宿务']}},
+      {ic:'📱',n:'Grab (Ride-hailing)',d:{ko:'그랩 앱으로 택시/차량 호출, 세부·마닐라에서 필수',en:'Grab app for taxis in Cebu & Manila — safer & fixed price',ja:'GrabアプリでセブとマニラでタクシーをGO',zh:'Grab打车App在宿务和马尼拉使用，更安全且价格固定'},tags:{ko:['편리','안전'],en:['Convenient','Safe'],ja:['便利','安全'],zh:['方便','安全']},u:'https://www.grab.com'}
+    ],
+    tips:[
+      {ko:'세부: 공항→시내 그랩 앱 사용 (택시 바가지 주의)',en:'Cebu: use Grab from airport — metered taxis may overcharge tourists',ja:'セブ: 空港からGrab使用、メーター制タクシーは観光客に高額請求の恐れ',zh:'宿务：从机场使用Grab，计价器出租车可能对游客多收费'},
+      {ko:'오슬롭 고래상어: 이른 아침 도착 필수, 조류에 따라 변동',en:'Whale sharks: arrive very early — numbers limited by tides and permits',ja:'ジンベエザメ: 早朝到着必須、潮流と許可証で頭数制限あり',zh:'鲸鲨观赏：务必早到，数量受潮汐和许可证限制'},
+      {ko:'필리핀 물 음용 금지, 생수 구입 필수',en:'Do not drink tap water — always buy bottled water',ja:'水道水は飲用不可、必ずペットボトルの水を購入',zh:'不得饮用自来水，必须购买瓶装水'}
+    ]
   }
 };
 
@@ -1077,15 +1174,164 @@ const CD={
 let S={lang:'ko',view:'home',trip:null,checklist:[],docs:[],discountry:null,discTab:0,
   clFilter:'all',clCat:'all',
   mapMarkers:[],itinerary:[],mapView:'markers',
-  journal:[],visitedCountries:[],
+  journal:[],visitedCountries:[],userName:'',
   weather:null,wxCountry:null
 };
 // Country capitals for weather
 const CAPITALS={
   JP:[35.6762,139.6503],KR:[37.5665,126.9780],FR:[48.8566,2.3522],IT:[41.9028,12.4964],
   TH:[13.7563,100.5018],ES:[40.4168,-3.7038],US:[38.9072,-77.0369],GB:[51.5074,-0.1278],
-  AU:[-33.8688,151.2093],SG:[1.3521,103.8198],TW:[25.0330,121.5654],VN:[21.0285,105.8542]
+  AU:[-33.8688,151.2093],SG:[1.3521,103.8198],TW:[25.0330,121.5654],VN:[21.0285,105.8542],
+  DE:[52.5200,13.4050],CH:[46.9481,7.4474],PH:[14.5995,120.9842]
 };
+// Taxi rates: {base (local currency), perKm, currency symbol, note}
+const TAXI_RATES={
+  JP:{base:410,perKm:286,sym:'¥',note:{ko:'280m당 ¥80 가산',en:'¥80 per 280m after 1km',ja:'280m毎に¥80加算',zh:'每280米加¥80'}},
+  KR:{base:4800,perKm:758,sym:'₩',note:{ko:'132m당 ₩100 가산',en:'₩100 per 132m',ja:'132m毎に₩100加算',zh:'每132米加₩100'}},
+  FR:{base:2.60,perKm:1.06,sym:'€',note:{ko:'기본요금 €2.60',en:'Base €2.60',ja:'初乗り€2.60',zh:'起步价€2.60'}},
+  IT:{base:3.50,perKm:1.10,sym:'€',note:{ko:'기본요금 €3.50',en:'Base €3.50',ja:'初乗り€3.50',zh:'起步价€3.50'}},
+  TH:{base:35,perKm:6.5,sym:'฿',note:{ko:'기본요금 ฿35',en:'Base ฿35',ja:'初乗り฿35',zh:'起步价฿35'}},
+  ES:{base:2.40,perKm:1.07,sym:'€',note:{ko:'기본요금 €2.40',en:'Base €2.40',ja:'初乗り€2.40',zh:'起步价€2.40'}},
+  US:{base:2.50,perKm:1.75,sym:'$',note:{ko:'기본요금 $2.50',en:'Base $2.50',ja:'初乗り$2.50',zh:'起步价$2.50'}},
+  GB:{base:3.80,perKm:2.20,sym:'£',note:{ko:'기본요금 £3.80',en:'Base £3.80',ja:'初乗り£3.80',zh:'起步价£3.80'}},
+  AU:{base:4.20,perKm:2.19,sym:'A$',note:{ko:'기본요금 A$4.20',en:'Base A$4.20',ja:'初乗りA$4.20',zh:'起步价A$4.20'}},
+  SG:{base:3.90,perKm:0.55,sym:'S$',note:{ko:'기본요금 S$3.90',en:'Base S$3.90',ja:'初乗りS$3.90',zh:'起步价S$3.90'}},
+  TW:{base:85,perKm:25,sym:'NT$',note:{ko:'기본요금 NT$85',en:'Base NT$85',ja:'初乗りNT$85',zh:'起步价NT$85'}},
+  VN:{base:15000,perKm:12000,sym:'₫',note:{ko:'기본요금 ₫15,000',en:'Base ₫15,000',ja:'初乗り₫15,000',zh:'起步价₫15,000'}},
+  DE:{base:3.90,perKm:1.65,sym:'€',note:{ko:'기본요금 €3.90',en:'Base €3.90',ja:'初乗り€3.90',zh:'起步价€3.90'}},
+  CH:{base:6.50,perKm:3.80,sym:'CHF',note:{ko:'기본요금 CHF 6.50',en:'Base CHF 6.50',ja:'初乗りCHF 6.50',zh:'起步价CHF 6.50'}},
+  PH:{base:40,perKm:13.50,sym:'₱',note:{ko:'기본요금 ₱40',en:'Base ₱40',ja:'初乗り₱40',zh:'起步价₱40'}}
+};
+
+// Safety data per country
+const SAFETY_DATA={
+  JP:{lvl:'🟢',note:{ko:'매우 안전. 소매치기 드묾',en:'Very safe. Pickpockets rare',ja:'非常に安全、スリはまれ',zh:'非常安全，扒手少见'}},
+  KR:{lvl:'🟢',note:{ko:'안전한 편. 야간 이동도 무방',en:'Generally safe, fine at night',ja:'比較的安全、夜間移動も問題なし',zh:'较为安全，夜间出行无妨'}},
+  FR:{lvl:'🟡',note:{ko:'관광지 소매치기 주의. 가방 앞으로',en:'Watch pickpockets at tourist sites, keep bag in front',ja:'観光地ではスリに注意、バッグは前に',zh:'当心旅游景点扒手，包包放前面'}},
+  IT:{lvl:'🟡',note:{ko:'로마·나폴리 소매치기 주의',en:'Watch pickpockets in Rome & Naples',ja:'ローマ・ナポリのスリに注意',zh:'当心罗马和那不勒斯的扒手'}},
+  TH:{lvl:'🟡',note:{ko:'툭툭 바가지 주의. 야간 음주 조심',en:'Beware tuk-tuk overcharging. Careful with drinks at night',ja:'トゥクトゥクぼったくり注意、夜間の飲酒に注意',zh:'当心嘟嘟车宰客，夜间饮酒要小心'}},
+  ES:{lvl:'🟡',note:{ko:'바르셀로나 소매치기 유럽 최다',en:"Barcelona has Europe's highest pickpocket rate",ja:'バルセロナはヨーロッパ最多スリ注意',zh:'巴塞罗那是欧洲扒手最多的城市'}},
+  US:{lvl:'🟡',note:{ko:'지역차 큼. 야간 특정 구역 주의',en:'Varies by area. Avoid certain areas at night',ja:'地域差が大きい、夜間特定エリアに注意',zh:'地区差异大，夜间避开某些区域'}},
+  GB:{lvl:'🟡',note:{ko:'런던 관광지 소매치기 주의',en:'Watch for pickpockets in London tourist areas',ja:'ロンドン観光地のスリに注意',zh:'注意伦敦旅游区的扒手'}},
+  AU:{lvl:'🟢',note:{ko:'전반적으로 안전',en:'Generally safe country',ja:'全体的に安全',zh:'整体安全'}},
+  SG:{lvl:'🟢',note:{ko:'아시아 최안전국',en:'Safest country in Asia',ja:'アジア最安全国',zh:'亚洲最安全的国家'}},
+  TW:{lvl:'🟢',note:{ko:'매우 안전. 혼자 여행 적합',en:'Very safe, suitable for solo travel',ja:'非常に安全、一人旅に適している',zh:'非常安全，适合独自旅行'}},
+  VN:{lvl:'🟡',note:{ko:'오토바이 날치기 주의. 가방 옆으로 들지 말것',en:"Watch for motorbike snatching. Don't hold bags to the side",ja:'バイクひったくりに注意、バッグを横に持たない',zh:'当心摩托车抢包，不要侧挎包'}},
+  DE:{lvl:'🟢',note:{ko:'전반적으로 안전. 대도시 역 주변 주의',en:'Generally safe. Watch around major train stations',ja:'全体的に安全、大都市の駅周辺に注意',zh:'整体安全，注意大城市火车站周围'}},
+  CH:{lvl:'🟢',note:{ko:'유럽 최안전국 중 하나',en:"One of Europe's safest countries",ja:'ヨーロッパで最も安全な国の一つ',zh:'欧洲最安全的国家之一'}},
+  PH:{lvl:'🟡',note:{ko:'일부 지역 치안 취약. 핸드폰 날치기 주의',en:'Some areas unsafe. Watch for phone snatching',ja:'一部地域の治安が脆弱、スマホひったくりに注意',zh:'部分地区治安较差，小心手机被抢'}}
+};
+
+// Budget & local customs data per country
+const BUDGET_DATA={
+  JP:{budget:{ko:'숙소 6-15만원, 식비 2-4만원, 교통 1-3만원',en:'Hotel 60-150k KRW, food 20-40k, transport 10-30k/day'},bargain:false,tip:{ko:'없음 — 팁 제공은 실례',en:'No tipping — offering tips is considered rude'},sim:{ko:'IIJmio/楽天 eSIM 추천',en:'IIJmio or Rakuten eSIM recommended'}},
+  KR:{budget:{ko:'숙소 4-10만원, 식비 1-3만원, 교통 0.5-1만원',en:'Hotel 40-100k KRW, food 10-30k, transport 5-10k/day'},bargain:false,tip:{ko:'없음',en:'No tipping culture'},sim:{ko:'공항 유심 또는 로밍',en:'Buy SIM at airport or use roaming'}},
+  FR:{budget:{ko:'숙소 10-25만원, 식비 4-8만원, 교통 2-5만원',en:'Hotel 100-250k KRW, food 40-80k, transport 20-50k/day'},bargain:false,tip:{ko:'레스토랑 5-10% 선택적',en:'Optional 5-10% at restaurants'},sim:{ko:'EU 유심 사용 가능, Airalo 추천',en:'EU SIM works; Airalo eSIM recommended'}},
+  IT:{budget:{ko:'숙소 8-20만원, 식비 3-7만원, 교통 1-4만원',en:'Hotel 80-200k KRW, food 30-70k, transport 10-40k/day'},bargain:false,tip:{ko:'코페르토(자릿세) 별도, 팁 선택적',en:'Coperto cover charge separate; tips optional'},sim:{ko:'EU 유심 사용 가능, TIM 추천',en:'EU SIM works; TIM recommended'}},
+  TH:{budget:{ko:'숙소 2-8만원, 식비 0.5-2만원, 교통 0.5-1만원',en:'Hotel 20-80k KRW, food 5-20k, transport 5-10k/day'},bargain:true,tip:{ko:'레스토랑 20-50밧, 마사지 50-100밧',en:'20-50 THB at restaurants, 50-100 THB for massage'},sim:{ko:'공항 TrueMove/DTAC 유심 추천',en:'Buy TrueMove or DTAC SIM at airport'}},
+  ES:{budget:{ko:'숙소 8-18만원, 식비 3-7만원, 교통 1-3만원',en:'Hotel 80-180k KRW, food 30-70k, transport 10-30k/day'},bargain:false,tip:{ko:'타파스바 선택적, 레스토랑 10%',en:'Optional at tapas bars; ~10% at restaurants'},sim:{ko:'EU 유심 사용 가능, Airalo 추천',en:'EU SIM works; Airalo recommended'}},
+  US:{budget:{ko:'숙소 12-30만원, 식비 4-10만원, 교통 3-8만원',en:'Hotel 120-300k KRW, food 40-100k, transport 30-80k/day'},bargain:false,tip:{ko:'레스토랑 18-22%, 택시 15-20% (필수)',en:'18-22% at restaurants, 15-20% for taxis — mandatory'},sim:{ko:'T-Mobile eSIM 추천, 공항 유심 비쌈',en:'T-Mobile eSIM recommended — airport SIMs overpriced'}},
+  GB:{budget:{ko:'숙소 12-30만원, 식비 4-10만원, 교통 3-8만원',en:'Hotel 120-300k KRW, food 40-100k, transport 30-80k/day'},bargain:false,tip:{ko:'레스토랑 10-15%, 택시 10%',en:'10-15% at restaurants; 10% for taxis'},sim:{ko:'EE/O2 선불 유심 추천',en:'EE or O2 prepaid SIM recommended'}},
+  AU:{budget:{ko:'숙소 10-25만원, 식비 4-9만원, 교통 2-5만원',en:'Hotel 100-250k KRW, food 40-90k, transport 20-50k/day'},bargain:false,tip:{ko:'선택적 10%, 강요 없음',en:'Optional ~10%; not expected'},sim:{ko:'Telstra/Optus 선불 유심 추천',en:'Telstra or Optus prepaid SIM recommended'}},
+  SG:{budget:{ko:'숙소 10-25만원, 식비 1-5만원, 교통 0.5-2만원',en:'Hotel 100-250k KRW, food 10-50k, transport 5-20k/day'},bargain:false,tip:{ko:'없음 — 호커센터 팁 금지',en:'No tipping — forbidden at hawker centres'},sim:{ko:'Singtel/StarHub 공항 유심 추천',en:'Singtel or StarHub SIM at airport'}},
+  TW:{budget:{ko:'숙소 4-10만원, 식비 0.5-2만원, 교통 0.5-1만원',en:'Hotel 40-100k KRW, food 5-20k, transport 5-10k/day'},bargain:false,tip:{ko:'없음 — 팁 주면 오히려 당황함',en:'No tipping — causes awkwardness'},sim:{ko:'공항 Taiwan Mobile/Far EasTone 유심',en:'Buy Taiwan Mobile or Far EasTone SIM at airport'}},
+  VN:{budget:{ko:'숙소 1-5만원, 식비 0.3-1만원, 교통 0.3-1만원',en:'Hotel 10-50k KRW, food 3-10k, transport 3-10k/day'},bargain:true,tip:{ko:'고급 레스토랑 5-10%, 일반은 없음',en:'5-10% at upscale restaurants; not expected elsewhere'},sim:{ko:'Viettel/Vietnamobile 유심 1달러대',en:'Viettel or Vietnamobile SIM from ~$1'}},
+  DE:{budget:{ko:'숙소 8-20만원, 식비 3-8만원, 교통 2-5만원',en:'Hotel 80-200k KRW, food 30-80k, transport 20-50k/day'},bargain:false,tip:{ko:'청구액의 10% 현금 관행',en:'~10% cash tip at restaurants is customary'},sim:{ko:'Congstar/Aldi Talk 선불 추천',en:'Congstar or Aldi Talk prepaid SIM recommended'}},
+  CH:{budget:{ko:'숙소 20-40만원, 식비 5-10만원, 교통 3-8만원',en:'Hotel 200-400k KRW, food 50-100k, transport 30-80k/day'},bargain:false,tip:{ko:'5-10% 선택적',en:'Optional 5-10%'},sim:{ko:'EU유심 불가. CH전용 eSIM 필요 (Airalo 추천)',en:'EU SIM not valid. Need CH-specific eSIM (Airalo recommended)'}},
+  PH:{budget:{ko:'숙소 2-8만원, 식비 0.5-2만원, 교통 0.3-1만원',en:'Hotel 20-80k KRW, food 5-20k, transport 3-10k/day'},bargain:true,tip:{ko:'레스토랑 10% (서비스차지 포함 여부 확인)',en:'10% at restaurants (check if service charge already included)'},sim:{ko:'Globe/Smart 공항 유심 추천',en:'Globe or Smart SIM at airport recommended'}}
+};
+
+// TTS language codes
+const TTS_LANG={JP:'ja-JP',KR:'ko-KR',FR:'fr-FR',IT:'it-IT',TH:'th-TH',ES:'es-ES',US:'en-US',GB:'en-GB',AU:'en-AU',SG:'zh-SG',TW:'zh-TW',VN:'vi-VN',DE:'de-DE',CH:'de-CH',PH:'fil-PH'};
+
+// Haversine distance in km
+function haversineKm(lat1,lng1,lat2,lng2){
+  const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function estimateTaxi(countryCode,destLat,destLng){
+  const rate=TAXI_RATES[countryCode];
+  if(!rate||!destLat){return;}
+  if(!navigator.geolocation){alert('위치 서비스를 지원하지 않습니다.');return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const km=haversineKm(pos.coords.latitude,pos.coords.longitude,destLat,destLng);
+    const fare=rate.base+km*rate.perKm;
+    const fareStr=fare>=1000?fare.toLocaleString():(Math.round(fare*10)/10).toString();
+    const msg={
+      ko:`📍 현재 위치 → 목적지\n거리: ${km.toFixed(1)}km\n🚕 예상 택시 요금: ${rate.sym}${fareStr}\n(${rate.note.ko})`,
+      en:`📍 Your location → Destination\nDistance: ${km.toFixed(1)}km\n🚕 Estimated taxi: ${rate.sym}${fareStr}\n(${rate.note.en})`,
+      ja:`📍 現在地 → 目的地\n距離: ${km.toFixed(1)}km\n🚕 タクシー概算: ${rate.sym}${fareStr}\n(${rate.note.ja})`,
+      zh:`📍 当前位置 → 目的地\n距离: ${km.toFixed(1)}km\n🚕 打车估价: ${rate.sym}${fareStr}\n(${rate.note.zh})`
+    };
+    alert(msg[S.lang]||msg.en);
+  },err=>{
+    const m={ko:'위치를 가져올 수 없습니다. 위치 권한을 허용해주세요.',en:'Cannot get location. Please allow location access.',ja:'位置情報を取得できません。許可してください。',zh:'无法获取位置，请允许位置权限。'};
+    alert(m[S.lang]||m.en);
+  });
+}
+
+function speakTTS(text,countryCode){
+  if(!window.speechSynthesis){alert('TTS를 지원하지 않는 브라우저입니다.');return;}
+  const lang=TTS_LANG[countryCode]||'en-US';
+  const utt=new SpeechSynthesisUtterance(text);
+  utt.lang=lang;utt.rate=0.9;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utt);
+}
+
+// Travel phrases for TTS
+const TRAVEL_PHRASES={
+  go:{ko:'...에 어떻게 가나요?',en:'How do I get to ...?',ja:'...にはどうやって行けますか？',zh:'...怎么去？',fr:'Comment aller à ...?',de:'Wie komme ich zu ...?',it:'Come si va a ...?',th:'ไปที่...อย่างไรครับ/ค่ะ?',es:'¿Cómo llego a ...?',vi:'Đi đến ... như thế nào?',ja:'...にはどうやって行けますか？',tl:'Paano pumunta sa ...?'},
+  cost:{ko:'...은 얼마인가요?',en:'How much is ...?',ja:'...はいくらですか？',zh:'...多少钱？',fr:'Combien coûte ...?',de:'Was kostet ...?',it:'Quanto costa ...?',th:'...ราคาเท่าไหร่ครับ/ค่ะ?',es:'¿Cuánto cuesta ...?',vi:'...giá bao nhiêu?',tl:'Magkano ang ...?'},
+  one:{ko:'...하나 주세요',en:'One ... please',ja:'...を一つください',zh:'来一份...',fr:'Un(e) ..., s\'il vous plaît',de:'Einmal ... bitte',it:'Un ... per favore',th:'ขอ...หนึ่งอย่างครับ/ค่ะ',es:'Un ... por favor',vi:'Cho tôi một ...',tl:'Isa pong ...'},
+  taxi:{ko:'택시 어디서 탈 수 있나요?',en:'Where can I get a taxi?',ja:'タクシーはどこで乗れますか？',zh:'哪里可以打车？',fr:'Où puis-je prendre un taxi?',de:'Wo bekomme ich ein Taxi?',it:'Dove posso prendere un taxi?',th:'นั่งแท็กซี่ที่ไหนครับ/ค่ะ?',es:'¿Dónde puedo tomar un taxi?',vi:'Tôi có thể đón taxi ở đâu?',tl:'Saan ako makakakuha ng taxi?'},
+  emergency_flight:{ko:'비행기가 취소됐어요. 어떻게 해야 하나요?',en:'My flight was cancelled. What should I do?',ja:'フライトがキャンセルされました。どうすればいいですか？',zh:'我的航班取消了，我该怎么办？',fr:'Mon vol a été annulé. Que dois-je faire?',de:'Mein Flug wurde storniert. Was soll ich tun?',it:'Il mio volo è stato cancellato. Cosa devo fare?',th:'เที่ยวบินของฉันถูกยกเลิก ฉันควรทำอย่างไร?',es:'Mi vuelo fue cancelado. ¿Qué debo hacer?',vi:'Chuyến bay của tôi bị hủy. Tôi phải làm gì?',tl:'Na-cancel ang aking flight. Ano ang dapat kong gawin?'},
+  passport_lost:{ko:'여권을 잃어버렸어요. 한국 대사관이 어디예요?',en:'I lost my passport. Where is the Korean embassy?',ja:'パスポートを紛失しました。韓国大使館はどこですか？',zh:'我的护照丢了。韩国大使馆在哪里？',fr:"J'ai perdu mon passeport. Où est l'ambassade de Corée?",de:'Ich habe meinen Pass verloren. Wo ist die koreanische Botschaft?',it:"Ho perso il mio passaporto. Dov'è l'ambasciata coreana?",th:'ฉันทำหนังสือเดินทางหาย สถานทูตเกาหลีอยู่ที่ไหน?',es:'Perdí mi pasaporte. ¿Dónde está la embajada coreana?',vi:'Tôi bị mất hộ chiếu. Đại sứ quán Hàn Quốc ở đâu?',tl:'Nawala ang aking pasaporte. Nasaan ang Korean embassy?'},
+  police:{ko:'소매치기를 당했어요. 경찰서가 어디예요?',en:'I was pickpocketed. Where is the police station?',ja:'スリにあいました。警察署はどこですか？',zh:'我被扒手偷了东西，警察局在哪里？',fr:"J'ai été victime d'un pickpocket. Où est le commissariat?",de:'Ich wurde bestohlen. Wo ist die Polizeiwache?',it:'Sono stato borseggiato. Dove è il commissariato?',th:'ฉันโดนล้วงกระเป๋า สถานีตำรวจอยู่ที่ไหน?',es:'Me robaron la cartera. ¿Dónde está la comisaría?',vi:'Tôi bị móc túi. Đồn cảnh sát ở đâu?',tl:'Ninakawan ako. Nasaan ang police station?'},
+  doctor:{ko:'의사가 필요해요. 가장 가까운 병원이 어디예요?',en:'I need a doctor. Where is the nearest hospital?',ja:'医者が必要です。一番近い病院はどこですか？',zh:'我需要看医生，最近的医院在哪里？',fr:"J'ai besoin d'un médecin. Où est l'hôpital le plus proche?",de:'Ich brauche einen Arzt. Wo ist das nächste Krankenhaus?',it:"Ho bisogno di un medico. Dov'è l'ospedale più vicino?",th:'ฉันต้องการหมอ โรงพยาบาลที่ใกล้ที่สุดอยู่ที่ไหน?',es:'Necesito un médico. ¿Dónde está el hospital más cercano?',vi:'Tôi cần bác sĩ. Bệnh viện gần nhất ở đâu?',tl:'Kailangan ko ng doktor. Nasaan ang pinakamalapit na ospital?'},
+  menu:{ko:'이 음식이 무엇인가요? 재료가 뭐예요?',en:'What is this dish? What are the ingredients?',ja:'この料理は何ですか？材料は何ですか？',zh:'这道菜是什么？食材是什么？',fr:'Qu\'est-ce que ce plat? Quels sont les ingrédients?',de:'Was ist dieses Gericht? Was sind die Zutaten?',it:"Cos'è questo piatto? Quali sono gli ingredienti?",th:'อาหารจานนี้คืออะไร? มีส่วนผสมอะไรบ้าง?',es:'¿Qué es este plato? ¿Cuáles son los ingredientes?',vi:'Món này là gì? Nguyên liệu gồm những gì?',tl:'Ano ang pagkain na ito? Ano ang mga sangkap?'},
+  receipt:{ko:'영수증 주세요',en:'Receipt please',ja:'レシートをください',zh:'请给我收据',fr:"Un reçu s'il vous plaît",de:'Eine Quittung bitte',it:'Una ricevuta per favore',th:'ขอใบเสร็จด้วยครับ/ค่ะ',es:'Un recibo por favor',vi:'Cho tôi hóa đơn',tl:'Resibo po'}
+};
+
+const LANG_BY_COUNTRY={JP:'ja',KR:'ko',FR:'fr',IT:'it',TH:'th',ES:'es',US:'en',GB:'en',AU:'en',SG:'zh',TW:'zh',VN:'vi',DE:'de',CH:'de',PH:'tl'};
+
+function showPhraseModal(name,countryCode,type){
+  const lc=LANG_BY_COUNTRY[countryCode]||'en';
+  const ttsLang=TTS_LANG[countryCode]||'en-US';
+  const phrases=[
+    {label:{ko:'가는 방법',en:'How to get there',ja:'行き方',zh:'如何前往'},text:(TRAVEL_PHRASES.go[lc]||TRAVEL_PHRASES.go.en).replace('...',name)},
+    {label:{ko:'가격 문의',en:'Ask price',ja:'値段を聞く',zh:'询问价格'},text:(TRAVEL_PHRASES.cost[lc]||TRAVEL_PHRASES.cost.en).replace('...',name)},
+    {label:{ko:'하나 주문',en:'Order one',ja:'一つ注文',zh:'点一份'},text:(TRAVEL_PHRASES.one[lc]||TRAVEL_PHRASES.one.en).replace('...',name)},
+    {label:{ko:'택시 위치',en:'Taxi location',ja:'タクシー場所',zh:'叫车位置'},text:TRAVEL_PHRASES.taxi[lc]||TRAVEL_PHRASES.taxi.en},
+    {label:{ko:'항공편 취소',en:'Flight cancelled',ja:'フライトキャンセル',zh:'航班取消'},text:TRAVEL_PHRASES.emergency_flight[lc]||TRAVEL_PHRASES.emergency_flight.en},
+    {label:{ko:'여권 분실',en:'Passport lost',ja:'パスポート紛失',zh:'护照丢失'},text:TRAVEL_PHRASES.passport_lost[lc]||TRAVEL_PHRASES.passport_lost.en},
+    {label:{ko:'소매치기 신고',en:'Report theft',ja:'スリ被害報告',zh:'报警'},text:TRAVEL_PHRASES.police[lc]||TRAVEL_PHRASES.police.en},
+    {label:{ko:'병원 찾기',en:'Find hospital',ja:'病院を探す',zh:'找医院'},text:TRAVEL_PHRASES.doctor[lc]||TRAVEL_PHRASES.doctor.en},
+    {label:{ko:'메뉴 질문',en:'Ask about dish',ja:'料理について聞く',zh:'询问菜品'},text:TRAVEL_PHRASES.menu[lc]||TRAVEL_PHRASES.menu.en},
+    {label:{ko:'영수증 요청',en:'Ask for receipt',ja:'領収書を求める',zh:'要收据'},text:TRAVEL_PHRASES.receipt[lc]||TRAVEL_PHRASES.receipt.en}
+  ];
+  const existing=document.getElementById('phrase-modal');
+  if(existing)existing.remove();
+  const modal=document.createElement('div');
+  modal.id='phrase-modal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:flex-end;';
+  modal.innerHTML=`<div style="background:var(--bg);border-radius:16px 16px 0 0;width:100%;max-height:80vh;overflow-y:auto;padding:20px 16px 32px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-size:15px;font-weight:700;color:var(--tx)">🔊 ${name}</div>
+      <button onclick="document.getElementById('phrase-modal').remove()" style="border:none;background:none;font-size:20px;cursor:pointer;color:var(--mu2)">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--mu2);margin-bottom:12px">${{ko:'아래 문장을 눌러 현지 언어로 말하기',en:'Tap a phrase to speak in the local language',ja:'フレーズをタップして現地語で読み上げ',zh:'点击短语以当地语言朗读'}[S.lang]||'Tap to speak'} (${ttsLang})</div>
+    ${phrases.map(p=>`<div style="border:1px solid var(--bdr);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:10px" onclick="speakTTS('${p.text.replace(/'/g,"\\'")}','${countryCode}')">
+      <div style="flex:1"><div style="font-size:12px;color:var(--mu2);margin-bottom:2px">${p.label[S.lang]||p.label.en}</div><div style="font-size:14px;color:var(--tx);font-weight:500">${p.text}</div></div>
+      <span style="font-size:20px">▶️</span>
+    </div>`).join('')}
+  </div>`;
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+  document.body.appendChild(modal);
+}
+
 const WX_ICONS={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',77:'🌨️',80:'🌦️',81:'🌧️',82:'⛈️',85:'❄️',86:'❄️',95:'⛈️',96:'⛈️',99:'⛈️'};
 const WX_DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
@@ -1103,6 +1349,7 @@ function loadState(){
     if(!S.itinerary)S.itinerary=[];
     if(!S.clCat)S.clCat='all';
     if(!S.mapView)S.mapView='markers';
+    if(!S.userName)S.userName='';
   }catch(e){
     S.checklist=CL_DEFAULT.map(x=>({...x,done:false,notes:'',userLinks:[]}));
     S.docs=[];S.mapMarkers=[];S.journal=[];S.visitedCountries=[];S.itinerary=[];S.clCat='all';S.clFilter='all';S.mapView='markers';
@@ -1161,7 +1408,9 @@ function renderHome(){
   const now=new Date();
   const opts={year:'numeric',month:'long',day:'numeric',weekday:'short'};
   document.getElementById('h-date').textContent=now.toLocaleDateString(S.lang==='ko'?'ko-KR':S.lang==='ja'?'ja-JP':S.lang==='zh'?'zh-CN':'en-GB',opts);
-  document.getElementById('h-title').textContent=t('hi');
+  const _sfx=S.lang==='ko'?'님 👋':S.lang==='ja'?'さん 👋':' 👋';
+  const nameGreet=S.userName?`, ${S.userName} ${_sfx}`:(` 👋`);
+  document.getElementById('h-title').textContent=t('hi')+nameGreet;
   document.getElementById('h-sub').textContent=t('welcome_sub');
 
   // Trip display
@@ -1431,21 +1680,50 @@ function selectCountry(c){
 
 function renderDiscountryDetail(c){
   const data=CD[c];const country=COUNTRIES.find(x=>x.c===c);
+  const safety=SAFETY_DATA[c];
+  const budget=BUDGET_DATA[c];
+  // Safety badge
+  const safetyBadge=safety?`<div style="background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+    <span style="font-size:20px">${safety.lvl}</span>
+    <div><div style="font-size:11px;font-weight:700;color:var(--mu2);margin-bottom:2px">${t('safety_level')}</div>
+    <div style="font-size:13px;color:var(--tx2)">${safety.note[S.lang]||safety.note.en}</div></div>
+  </div>`:'';
+  const safetyEl=document.getElementById('disc-safety');
+  if(safetyEl)safetyEl.innerHTML=safetyBadge;
   const tabs=[{k:'a',lk:'attractions'},{k:'f',lk:'food'},{k:'t',lk:'transport'}];
   document.getElementById('dtabs').innerHTML=tabs.map((tab,i)=>`<button class="dtab${S.discTab===i?' on':''}" onclick="setDiscTab(${i})">${t(tab.lk)}</button>`).join('');
   const keys=['a','f','t'];
+  const hasTaxi=!!TAXI_RATES[c];
   document.getElementById('dsecs').innerHTML=keys.map((k,i)=>`
     <div class="dsec${S.discTab===i?' on':''}" id="dsec-${i}">
-      ${(data[k]||[]).map(item=>`<div class="ri">
-        <div class="ric">${item.ic}</div>
-        <div class="riy">
-          <div class="rin">${item.n}</div>
-          <div class="rid">${typeof item.d==='object'?(item.d[S.lang]||item.d.en):item.d}</div>
-          <div class="ritags">${(typeof item.tags==='object'&&!Array.isArray(item.tags)?(item.tags[S.lang]||item.tags.en||[]):item.tags||[]).map(tg=>`<span class="rt">${tg}</span>`).join('')}</div>
-          ${item.u?`<a href="${item.u}" target="_blank" style="font-size:11px;color:var(--pri);margin-top:4px;display:inline-block">🔗 ${t('booking_link')}</a>`:''}
-        </div>
-      </div>`).join('')}
+      ${(data[k]||[]).map(item=>{
+        const iname=item.n.replace(/'/g,"&#39;");
+        const taxiBtn=(k==='a'&&hasTaxi&&(item.lat||item.lng))?`<button onclick="estimateTaxi('${c}',${item.lat||0},${item.lng||0})" style="font-size:11px;background:var(--pri);color:#fff;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;margin-top:5px;margin-right:4px">🚕 ${{ko:'택시 요금',en:'Taxi fare',ja:'タクシー料金',zh:'打车费用'}[S.lang]||'Taxi fare'}</button>`:'';
+        const ttsBtn=(k==='a'||k==='f')?`<button onclick="showPhraseModal('${iname}','${c}','${k}')" style="font-size:11px;background:var(--sec,#6c63ff);color:#fff;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;margin-top:5px">🔊 ${{ko:'말하기',en:'Speak',ja:'読み上げ',zh:'朗读'}[S.lang]||'Speak'}</button>`:'';
+        return `<div class="ri">
+          <div class="ric">${item.ic}</div>
+          <div class="riy">
+            <div class="rin">${item.n}</div>
+            <div class="rid">${typeof item.d==='object'?(item.d[S.lang]||item.d.en):item.d}</div>
+            <div class="ritags">${(typeof item.tags==='object'&&!Array.isArray(item.tags)?(item.tags[S.lang]||item.tags.en||[]):item.tags||[]).map(tg=>`<span class="rt">${tg}</span>`).join('')}</div>
+            ${item.u?`<a href="${item.u}" target="_blank" style="font-size:11px;color:var(--pri);margin-top:4px;display:inline-block">🔗 ${t('booking_link')}</a>`:''}
+            <div style="display:flex;flex-wrap:wrap;gap:4px">${taxiBtn}${ttsBtn}</div>
+          </div>
+        </div>`;
+      }).join('')}
       ${k==='t'&&data.tips?`<div style="background:var(--warn-l);border-radius:var(--r);padding:12px;margin-top:8px;border:1px solid var(--bdr)"><div style="font-size:12px;font-weight:700;color:var(--warn);margin-bottom:6px">💡 ${t('tips')}</div>${data.tips.map(tp=>`<div style="font-size:13px;color:var(--tx2);margin-bottom:4px">• ${typeof tp==='object'?(tp[S.lang]||tp.en):tp}</div>`).join('')}</div>`:''}
+      ${k==='t'&&budget?`<div style="background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:12px;margin-top:8px">
+        <div style="font-size:12px;font-weight:700;color:var(--pri);margin-bottom:8px">💰 ${t('budget_section')}</div>
+        <div style="font-size:12px;color:var(--mu2);margin-bottom:2px">${t('daily_budget')}</div>
+        <div style="font-size:13px;color:var(--tx2);margin-bottom:8px">${budget.budget[S.lang]||budget.budget.en}</div>
+        <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+          <span style="background:${budget.bargain?'var(--ok)':'var(--err)'};color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px">${budget.bargain?t('bargain_ok'):t('no_bargain')}</span>
+        </div>
+        <div style="font-size:12px;color:var(--mu2);margin-bottom:2px">${t('tip_culture')}</div>
+        <div style="font-size:13px;color:var(--tx2);margin-bottom:8px">${budget.tip[S.lang]||budget.tip.en}</div>
+        <div style="font-size:12px;color:var(--mu2);margin-bottom:2px">📶 ${t('sim_rec')}</div>
+        <div style="font-size:13px;color:var(--tx2)">${budget.sim[S.lang]||budget.sim.en}</div>
+      </div>`:''}
     </div>`).join('');
 }
 
@@ -1458,6 +1736,14 @@ function renderSettings(){
   const themes=[{v:'light',l:()=>t('light')},{v:'system',l:()=>t('system')},{v:'dark',l:()=>t('dark')}];
   const curTheme=document.documentElement.getAttribute('data-theme')||'system';
   document.getElementById('slist').innerHTML=`
+    <div class="sit" style="flex-direction:column;align-items:flex-start;gap:8px">
+      <div class="sil"><span class="sic">👤</span><div><div class="silbl">${t('profile_name')}</div></div></div>
+      <div style="display:flex;gap:8px;width:100%">
+        <input id="setting-name" type="text" value="${S.userName||''}" placeholder="${t('profile_name_ph')}"
+          style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid var(--bdr);background:var(--surf2);color:var(--tx);font-size:14px;outline:none"
+          oninput="updateUserName(this.value)">
+      </div>
+    </div>
     <div class="sit">
       <div class="sil"><span class="sic">🌐</span><div><div class="silbl">${t('lang_setting')}</div></div></div>
       <div class="langrow">${langs.map(l=>`<button class="lb${S.lang===l.v?' on':''}" onclick="setLang('${l.v}')">${l.l}</button>`).join('')}</div>
@@ -1474,8 +1760,37 @@ function renderSettings(){
       <span style="color:var(--mu2)">›</span>
     </div>
     <div class="sit">
-      <div class="sil"><span class="sic">ℹ️</span><div><div class="silbl">${t('about')}</div><div class="sisub">${t('about_sub')}</div></div></div>
+      <div class="sil"><span class="sic">ℹ️</span><div><div class="silbl">${t('about')}</div><div class="sisub">TripGO v2.1 — trip2go.app</div></div></div>
+    </div>
+    <div style="margin-top:8px;padding:14px;background:linear-gradient(135deg,#1D4ED8,#7C3AED);border-radius:12px;color:#fff">
+      <div style="font-size:11px;opacity:.75;margin-bottom:4px">${{ko:'파트너 혜택',en:'Partner Deals',ja:'パートナー特典',zh:'合作优惠'}[S.lang]||'Partner Deals'}</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <a href="https://www.booking.com" target="_blank" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.15);padding:10px 12px;border-radius:8px;text-decoration:none;color:#fff">
+          <span style="font-size:13px;font-weight:600">🏨 Booking.com</span>
+          <span style="font-size:11px;opacity:.8">${{ko:'숙소 예약 →',en:'Hotels →',ja:'ホテル →',zh:'酒店 →'}[S.lang]||'Hotels →'}</span>
+        </a>
+        <a href="https://www.skyscanner.net" target="_blank" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.15);padding:10px 12px;border-radius:8px;text-decoration:none;color:#fff">
+          <span style="font-size:13px;font-weight:600">✈️ Skyscanner</span>
+          <span style="font-size:11px;opacity:.8">${{ko:'항공권 비교 →',en:'Flights →',ja:'航空券 →',zh:'机票 →'}[S.lang]||'Flights →'}</span>
+        </a>
+        <a href="https://www.airhelp.com" target="_blank" style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.15);padding:10px 12px;border-radius:8px;text-decoration:none;color:#fff">
+          <span style="font-size:13px;font-weight:600">🛡️ AirHelp</span>
+          <span style="font-size:11px;opacity:.8">${{ko:'항공 보상 청구 →',en:'Flight Claims →',ja:'航空補償 →',zh:'理赔 →'}[S.lang]||'Claims →'}</span>
+        </a>
+      </div>
     </div>`;
+}
+
+function updateUserName(v){
+  S.userName=v.trim();
+  saveState();
+  // Refresh home greeting if visible
+  const htitle=document.getElementById('h-title');
+  if(htitle){
+    const _sfx2=S.lang==='ko'?'님 👋':S.lang==='ja'?'さん 👋':' 👋';
+    const nameGreet=S.userName?`, ${S.userName} ${_sfx2}`:(` 👋`);
+    htitle.textContent=t('hi')+nameGreet;
+  }
 }
 
 function setTheme(th){
@@ -1493,11 +1808,70 @@ function shareApp(){
 // ============================================
 // MAP VIEW (Leaflet)
 // ============================================
-let _map=null,_mapLayer=null;
+let _map=null,_mapLayer=null,_myLocMarker=null,_myLat=null,_myLng=null;
+
+function showMyLocation(){
+  if(!navigator.geolocation){
+    showToast({ko:'위치 서비스를 지원하지 않습니다',en:'Geolocation not supported',ja:'位置情報非対応',zh:'不支持定位'}[S.lang]||'Not supported');
+    return;
+  }
+  showToast({ko:'📍 위치 확인 중...',en:'📍 Getting location...',ja:'📍 位置取得中...',zh:'📍 获取位置中...'}[S.lang]||'Getting location...');
+  navigator.geolocation.getCurrentPosition(pos=>{
+    _myLat=pos.coords.latitude;
+    _myLng=pos.coords.longitude;
+    if(!_map)return;
+    if(_myLocMarker)_map.removeLayer(_myLocMarker);
+    const myIc=L.divIcon({html:`<div style="width:16px;height:16px;background:#2563EB;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 4px rgba(37,99,235,0.3)"></div>`,className:'',iconSize:[16,16],iconAnchor:[8,8]});
+    _myLocMarker=L.marker([_myLat,_myLng],{icon:myIc}).addTo(_map);
+    _myLocMarker.bindPopup({ko:'📍 내 현재 위치',en:'📍 My Location',ja:'📍 現在地',zh:'📍 我的位置'}[S.lang]||'My Location').openPopup();
+    _map.setView([_myLat,_myLng],13);
+    renderMapMarkerList();
+  },()=>{
+    showToast({ko:'⚠️ 위치 권한을 허용해주세요',en:'⚠️ Allow location permission',ja:'⚠️ 位置情報を許可してください',zh:'⚠️ 请允许位置权限'}[S.lang]||'Allow location');
+  },{enableHighAccuracy:true,timeout:10000});
+}
+
+function renderMapMarkerList(){
+  const ml=document.getElementById('map-markers-list');
+  if(!ml)return;
+  if(S.mapView==='itinerary'){renderItinerary(ml);return;}
+  if(S.mapMarkers.length===0){
+    ml.innerHTML=`<div class="empty"><div class="empty-ic">🗺️</div><div class="empty-t">${t('map_empty')}</div></div>`;
+    return;
+  }
+  ml.innerHTML=S.mapMarkers.map((mk,i)=>{
+    let distHtml='';
+    if(_myLat!==null){
+      const km=haversineKm(_myLat,_myLng,mk.lat,mk.lng);
+      const walkMin=Math.round(km/5*60);
+      const driveMin=Math.round(km/40*60);
+      const distLabel=km<1?`${Math.round(km*1000)}m`:`${km.toFixed(1)}km`;
+      distHtml=`<div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+        <span style="font-size:11px;color:var(--pri);font-weight:600">📏 ${distLabel}</span>
+        <span style="font-size:11px;color:var(--mu)">🚶 ${walkMin}분</span>
+        <span style="font-size:11px;color:var(--mu)">🚗 ${driveMin}분</span>
+        <a href="https://www.google.com/maps/dir/?api=1&origin=${_myLat},${_myLng}&destination=${mk.lat},${mk.lng}" target="_blank"
+          style="font-size:11px;color:var(--acc);font-weight:600;text-decoration:none" onclick="event.stopPropagation()">🗺️ Google Maps</a>
+      </div>`;
+    }
+    return `<div class="mk" onclick="flyToMarker(${i})">
+      <div class="mk-ic">${mk.icon||'📍'}</div>
+      <div class="mk-body">
+        <div class="mk-name">${mk.name}</div>
+        <div class="mk-coord">${mk.lat.toFixed(4)}, ${mk.lng.toFixed(4)}</div>
+        ${mk.note?`<div style="font-size:12px;color:var(--mu);margin-top:2px">${mk.note}</div>`:''}
+        ${distHtml}
+      </div>
+      <button class="mk-del" onclick="event.stopPropagation();deleteMarker(${i})">🗑️</button>
+    </div>`;
+  }).join('');
+}
+
 function renderMap(){
   document.getElementById('map-toolbar').innerHTML=[
     {k:'markers',lk:'map_markers'},{k:'route',lk:'map_route'},{k:'itinerary',lk:'map_itinerary'}
   ].map(b=>`<button class="mtb${S.mapView===b.k?' on':''}" onclick="setMapView('${b.k}')">${t(b.lk)}</button>`).join('')
+  +`<button class="mtb" onclick="showMyLocation()" title="내 위치">📍 ${({ko:'내 위치',en:'My Loc',ja:'現在地',zh:'我的位置'})[S.lang]||'My Loc'}</button>`
   +`<button class="mtb" onclick="openAddMarker()" style="margin-left:auto">＋ ${t('map_add_marker').replace('+ ','')}</button>`;
 
   // Init map once
@@ -1537,25 +1911,7 @@ function renderMap(){
   }
 
   // Markers list
-  const ml=document.getElementById('map-markers-list');
-  if(S.mapView==='itinerary'){
-    renderItinerary(ml);
-  } else {
-    if(S.mapMarkers.length===0){
-      ml.innerHTML=`<div class="empty"><div class="empty-ic">🗺️</div><div class="empty-t">${t('map_empty')}</div></div>`;
-    } else {
-      ml.innerHTML=S.mapMarkers.map((mk,i)=>`
-        <div class="mk" onclick="flyToMarker(${i})">
-          <div class="mk-ic">${mk.icon||'📍'}</div>
-          <div class="mk-body">
-            <div class="mk-name">${mk.name}</div>
-            <div class="mk-coord">${mk.lat.toFixed(4)}, ${mk.lng.toFixed(4)}</div>
-            ${mk.note?`<div style="font-size:12px;color:var(--mu);margin-top:2px">${mk.note}</div>`:''}
-          </div>
-          <button class="mk-del" onclick="event.stopPropagation();deleteMarker(${i})">🗑️</button>
-        </div>`).join('');
-    }
-  }
+  renderMapMarkerList();
 }
 
 function setMapView(v){S.mapView=v;renderMap();}
